@@ -52,6 +52,12 @@ export async function reviewApi(id: string) {
   );
 }
 
+export async function reviewStatusApi() {
+  return json<{ hasOpenAI: boolean; visionModel: string }>(
+    await fetch("/api/ai-review", { cache: "no-store" }),
+  );
+}
+
 export async function assistApi(field: string, question: string, language?: string) {
   return json<{ answer: string; source: string }>(
     await fetch("/api/ai-assist", {

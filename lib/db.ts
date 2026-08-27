@@ -1,5 +1,6 @@
 import { promises as fs } from "fs";
 import path from "path";
+import { Redis } from "@upstash/redis";
 import type { Application, AuditEvent } from "@/lib/types";
 import { EMPTY_FORM } from "@/lib/types";
 import { FEE_USD } from "@/lib/constants";
@@ -12,7 +13,12 @@ type Database = {
 const g = globalThis as unknown as {
   __sahajDb?: Database;
   __sahajWrite?: Promise<void>;
+  __sahajRedis?: Redis | null;
 };
+
+const APP_PREFIX = "sahaj:app:";
+const PUBLIC_PREFIX = "sahaj:public:";
+const EMAIL_PREFIX = "sahaj:email:";
 
 function emptyDb(): Database {
   return { applications: {} };
@@ -21,6 +27,14 @@ function emptyDb(): Database {
 function dataPath() {
   if (process.env.VERCEL) return path.join("/tmp", "sahaj-db.json");
   return path.join(process.cwd(), "data", "sahaj-db.json");
+}
+
+function redis(): Redis | null {
+  if (g.__sahajRedis !== undefined) return g.__sahajRedis;
+  const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
+  g.__sahajRedis = url && token ? new Redis({ url, token }) : null;
+  return g.__sahajRedis;
 }
 
 async function readDisk(): Promise<Database> {
@@ -38,14 +52,14 @@ async function writeDisk(db: Database) {
   await fs.writeFile(file, JSON.stringify(db), "utf8");
 }
 
-async function load(): Promise<Database> {
+async function loadFile(): Promise<Database> {
   if (!g.__sahajDb) {
     g.__sahajDb = await readDisk();
   }
   return g.__sahajDb;
 }
 
-async function persist(db: Database) {
+async function persistFile(db: Database) {
   g.__sahajDb = db;
   g.__sahajWrite = (g.__sahajWrite ?? Promise.resolve()).then(() => writeDisk(db));
   await g.__sahajWrite;
@@ -103,17 +117,45 @@ export function createDraft(partial?: Partial<Application>): Application {
   };
 }
 
+async function indexEmail(kv: Redis, app: Application, prevEmail?: string) {
+  const nextEmail = app.form.email.trim().toLowerCase();
+  const old = prevEmail?.trim().toLowerCase();
+  if (old && old !== nextEmail) {
+    await kv.srem(`${EMAIL_PREFIX}${old}`, app.id);
+  }
+  if (nextEmail) {
+    await kv.sadd(`${EMAIL_PREFIX}${nextEmail}`, app.id);
+  }
+}
+
 export async function saveApplication(app: Application, event?: string) {
-  const db = await load();
-  const prev = db.applications[app.id];
+  const prev = await getApplication(app.id);
   const next = event ? stamp(app, event) : { ...app, updatedAt: nowIso() };
-  db.applications[app.id] = next;
-  await persist(db);
+  const kv = redis();
+  if (kv) {
+    await kv.set(`${APP_PREFIX}${next.id}`, next);
+    await kv.set(`${PUBLIC_PREFIX}${next.publicId}`, next.id);
+    await indexEmail(kv, next, prev?.form.email);
+    return next;
+  }
+  const db = await loadFile();
+  db.applications[next.id] = next;
+  await persistFile(db);
   return next;
 }
 
 export async function getApplication(id: string) {
-  const db = await load();
+  const kv = redis();
+  if (kv) {
+    const direct = await kv.get<Application>(`${APP_PREFIX}${id}`);
+    if (direct) return direct;
+    const resolved = await kv.get<string>(`${PUBLIC_PREFIX}${id}`);
+    if (resolved) {
+      return (await kv.get<Application>(`${APP_PREFIX}${resolved}`)) ?? null;
+    }
+    return null;
+  }
+  const db = await loadFile();
   return (
     db.applications[id] ??
     Object.values(db.applications).find((a) => a.publicId === id) ??
@@ -122,8 +164,18 @@ export async function getApplication(id: string) {
 }
 
 export async function listByEmail(email: string) {
-  const db = await load();
   const needle = email.trim().toLowerCase();
+  const kv = redis();
+  if (kv) {
+    const ids = await kv.smembers(`${EMAIL_PREFIX}${needle}`);
+    const apps = await Promise.all(
+      ids.map((id) => kv.get<Application>(`${APP_PREFIX}${String(id)}`)),
+    );
+    return apps
+      .filter((a): a is Application => Boolean(a))
+      .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+  }
+  const db = await loadFile();
   return Object.values(db.applications)
     .filter((a) => a.form.email.trim().toLowerCase() === needle)
     .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
@@ -142,10 +194,7 @@ export async function transition(
     `status:${fromStatus}->${toStatus}`,
     { fromStatus, toStatus, detail },
   );
-  const db = await load();
-  db.applications[next.id] = next;
-  await persist(db);
-  return next;
+  return saveApplication(next);
 }
 
 export async function upsertDraft(payload: Partial<Application> & { id?: string }) {

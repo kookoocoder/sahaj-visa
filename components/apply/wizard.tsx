@@ -13,13 +13,14 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Field, SelectInput, TextArea, TextInput } from "@/components/apply/field";
+import { Field, SelectInput, TextArea, TextInput, SavePulseContext } from "@/components/apply/field";
 import { useDraft, draftToPayload } from "@/lib/draft-store";
 import {
   getApplicationApi,
   payApi,
   reconcileApi,
   reviewApi,
+  reviewStatusApi,
   saveApplicationApi,
   submitApplicationApi,
 } from "@/lib/api";
@@ -78,6 +79,9 @@ export function Wizard() {
   const [busy, setBusy] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState<string>("idle");
   const [reviewing, setReviewing] = useState(false);
+  const [lastTouched, setLastTouched] = useState<string | null>(null);
+  const [pulsedField, setPulsedField] = useState<string | null>(null);
+  const [hasVision, setHasVision] = useState<boolean | null>(null);
   const savingLock = useRef(false);
   const issues = store.aiReview?.issues;
 
@@ -87,6 +91,12 @@ export function Wizard() {
       return () => clearTimeout(t);
     }
   }, [store.hydrated]);
+
+  useEffect(() => {
+    void reviewStatusApi()
+      .then((s) => setHasVision(s.hasOpenAI))
+      .catch(() => setHasVision(false));
+  }, []);
 
   useEffect(() => {
     if (!store.hydrated || !store.id) return;
@@ -129,6 +139,7 @@ export function Wizard() {
     try {
       const { application } = await saveApplicationApi(draftToPayload());
       store.markSaved(application);
+      if (lastTouched) setPulsedField(lastTouched);
     } catch (err) {
       store.markError(err instanceof Error ? err.message : "Could not save");
     } finally {
@@ -138,6 +149,7 @@ export function Wizard() {
 
   function set<K extends keyof VisaForm>(key: K, value: VisaForm[K]) {
     store.setForm(key, value);
+    setLastTouched(key);
     setErrors((e) => {
       if (!e[key]) return e;
       const next = { ...e };
@@ -251,7 +263,7 @@ export function Wizard() {
       store.hydrateFromServer(application);
       setPaymentStatus(application.payment.status);
       if (application.payment.status === "failed") {
-        toast.error(application.payment.lastError || "Declined — retry is immediate.");
+        setPaymentStatus("failed");
       } else {
         toast.message("Charged but not confirmed — the failure the live portal hides.");
       }
@@ -321,7 +333,8 @@ export function Wizard() {
   const step = store.currentStep;
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-4 py-6">
+    <SavePulseContext.Provider value={pulsedField}>
+    <div className="mx-auto w-full max-w-2xl px-4 py-6 pb-28 md:pb-6">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <p
           className={cn(
@@ -358,21 +371,35 @@ export function Wizard() {
       </div>
 
       <ol className="mb-8 grid grid-cols-6 gap-1">
-        {STEPS.map((s, i) => (
-          <li key={s.id}>
-            <button
-              type="button"
-              onClick={() => store.setStep(i)}
-              className={cn(
-                "w-full rounded-lg px-1 py-2 text-center text-[11px] leading-tight sm:text-xs",
-                i === step ? "bg-primary text-primary-foreground" : i < step ? "bg-primary/15 text-foreground" : "bg-muted text-muted-foreground",
-              )}
-            >
-              <span className="hidden sm:inline">{s.short}</span>
-              <span className="sm:hidden">{i + 1}</span>
-            </button>
-          </li>
-        ))}
+        {STEPS.map((s, i) => {
+          const done = i < step;
+          const active = i === step;
+          return (
+            <li key={s.id}>
+              <button
+                type="button"
+                onClick={() => store.setStep(i)}
+                className={cn(
+                  "flex min-h-12 w-full flex-col items-center justify-center gap-1 rounded-lg px-0.5 py-1.5 text-center text-[10px] leading-tight sm:text-xs",
+                  active && "bg-primary text-primary-foreground",
+                  done && "bg-primary/12 text-foreground",
+                  !active && !done && "bg-muted text-muted-foreground",
+                )}
+              >
+                <span
+                  className={cn(
+                    "flex size-5 items-center justify-center rounded-full border text-[10px]",
+                    active || done ? "border-current" : "border-transparent",
+                  )}
+                  aria-hidden
+                >
+                  {done ? <Check className="size-3" /> : i + 1}
+                </span>
+                <span>{s.short}</span>
+              </button>
+            </li>
+          );
+        })}
       </ol>
 
       {step === 0 && (
@@ -381,7 +408,7 @@ export function Wizard() {
           <p className="text-muted-foreground">
             One adult, e-Tourist Visa only. Copy the passport. This draft is yours even if the tab dies.
           </p>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-2">
             <Field label="Given names" htmlFor="givenNames" error={errors.givenNames}>
               <TextInput id="givenNames" autoComplete="given-name" value={store.form.givenNames} error={errors.givenNames} onChange={(e) => set("givenNames", e.target.value)} onBlur={() => void persist()} />
               <IssueList issues={issuesByField(issues, "givenNames")} />
@@ -428,8 +455,13 @@ export function Wizard() {
         <section className="space-y-4">
           <h1 className="font-heading text-3xl">Passport</h1>
           <p className="text-muted-foreground">Must stay valid six months after you land.</p>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Passport number" htmlFor="passportNumber" error={errors.passportNumber}>
+          <div className="grid gap-4 md:grid-cols-2">
+            <Field
+              label="Passport number"
+              htmlFor="passportNumber"
+              error={errors.passportNumber}
+              why="We match this to the biodata page so a mistyped number is caught before you pay, not at the airport."
+            >
               <TextInput id="passportNumber" value={store.form.passportNumber} error={errors.passportNumber} onChange={(e) => set("passportNumber", e.target.value.toUpperCase())} onBlur={() => void persist()} />
             </Field>
             <Field label="Place of issue" htmlFor="passportPlaceOfIssue" error={errors.passportPlaceOfIssue}>
@@ -450,7 +482,7 @@ export function Wizard() {
         <section className="space-y-4">
           <h1 className="font-heading text-3xl">Travel</h1>
           <p className="text-muted-foreground">{VISA_PRODUCT_LABEL}. Apply with more than four days in hand — recent waits are often longer.</p>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-2">
             <Field label="Intended arrival" htmlFor="arrivalDate" error={errors.arrivalDate} copilotField="arrivalDate">
               <TextInput id="arrivalDate" type="date" value={store.form.arrivalDate} error={errors.arrivalDate} onChange={(e) => set("arrivalDate", e.target.value)} />
               <IssueList issues={issuesByField(issues, "arrivalDate")} />
@@ -470,12 +502,12 @@ export function Wizard() {
             <Field label="City in India" htmlFor="cityInIndia" error={errors.cityInIndia}>
               <TextInput id="cityInIndia" value={store.form.cityInIndia} error={errors.cityInIndia} onChange={(e) => set("cityInIndia", e.target.value)} />
             </Field>
-            <div className="sm:col-span-2">
+            <div className="md:col-span-2">
               <Field label="First address in India" htmlFor="addressInIndia" error={errors.addressInIndia}>
                 <TextInput id="addressInIndia" value={store.form.addressInIndia} error={errors.addressInIndia} onChange={(e) => set("addressInIndia", e.target.value)} />
               </Field>
             </div>
-            <div className="sm:col-span-2">
+            <div className="md:col-span-2">
               <Field label="Purpose of visit" htmlFor="purpose" error={errors.purpose}>
                 <TextArea id="purpose" value={store.form.purpose} error={errors.purpose} onChange={(e) => set("purpose", e.target.value)} />
               </Field>
@@ -495,6 +527,7 @@ export function Wizard() {
           <UploadCard
             title="Face photograph"
             hint="JPEG, square, light background. We can prepare that here."
+            why="The live portal often rejects photos without saying why. We store this on your draft so a closed tab does not mean starting the photo again."
             preview={store.photo}
             busy={busy}
             copilotField="photo"
@@ -523,6 +556,17 @@ export function Wizard() {
           <p className="text-muted-foreground">
             This pre-check is assistive, not a decision. On a real system the backend would still do the final validation.
           </p>
+          {hasVision === false && (
+            <p className="rounded-xl border border-border bg-card px-4 py-3 text-sm">
+              OpenAI vision is not configured on this deployment. The scan will use the rules engine and will say so
+              in the result — it will not pretend to be an AI photo check.
+            </p>
+          )}
+          {hasVision === true && (
+            <p className="rounded-xl border border-border bg-card px-4 py-3 text-sm text-muted-foreground">
+              OpenAI vision is on. The result will name the model if the photo check actually ran.
+            </p>
+          )}
           <Button type="button" className="h-12 px-5 text-base" disabled={reviewing} onClick={() => void runPrecheck()}>
             {reviewing ? <Loader2 className="size-4 animate-spin" /> : <Sparkles className="size-4" />}
             Run rejection-risk scan
@@ -530,7 +574,9 @@ export function Wizard() {
           {store.aiReview && (
             <div className="rounded-xl border border-border bg-card p-4">
               <p className="text-sm uppercase tracking-wide text-muted-foreground">
-                {store.aiReview.source === "openai-vision" ? `OpenAI vision (${store.aiReview.model})` : "Rules engine (no API key, or images skipped)"}
+                {store.aiReview.source === "openai-vision"
+                  ? `OpenAI vision ran (${store.aiReview.model})`
+                  : "Rules engine — OpenAI vision did not run (no API key, the model failed, or no images)."}
               </p>
               <p className="mt-2 text-lg font-medium">{store.aiReview.summary}</p>
               <p className="mt-1 text-sm text-muted-foreground">
@@ -596,35 +642,56 @@ export function Wizard() {
             </div>
           )}
           {paymentStatus === "failed" && (
-            <p className="text-sm text-destructive">
-              Declined in this simulation. Retry whenever you want — there is no lockout.
-            </p>
+            <div className="space-y-3 rounded-xl border border-border bg-card p-4">
+              <p className="font-medium">The card was declined.</p>
+              <p className="text-sm text-muted-foreground">
+                Nothing was taken. You can try again now. We will not lock you out for 30 minutes.
+              </p>
+            </div>
           )}
         </section>
       )}
 
-      <div className="mt-8 flex items-center justify-between gap-3">
-        <Button variant="outline" className="h-12 px-4 text-base" disabled={step === 0 || step === 5 || busy} onClick={back}>
-          <ChevronLeft className="size-4" /> Back
-        </Button>
-        {step < 4 && (
-          <Button className="h-12 px-5 text-base" disabled={busy} onClick={() => void next()}>
-            Continue <ChevronRight className="size-4" />
+      <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-background/95 px-4 py-3 md:static md:mt-8 md:border-0 md:bg-transparent md:px-0 md:py-0">
+        <div className="mx-auto flex max-w-2xl items-center justify-between gap-3">
+          <Button variant="outline" className="h-12 px-4 text-base" disabled={step === 0 || step === 5 || busy} onClick={back}>
+            <ChevronLeft className="size-4" /> Back
           </Button>
-        )}
-        {step === 4 && (
-          <Button className="h-12 px-5 text-base" disabled={busy} onClick={() => void submit()}>
-            Submit application <ChevronRight className="size-4" />
-          </Button>
-        )}
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              className="h-12 px-4 text-base"
+              disabled={busy}
+              onClick={() => {
+                void persist().then(() => {
+                  window.location.href = "/";
+                });
+              }}
+            >
+              Save & exit
+            </Button>
+            {step < 4 && (
+              <Button className="h-12 px-5 text-base" disabled={busy} onClick={() => void next()}>
+                Continue <ChevronRight className="size-4" />
+              </Button>
+            )}
+            {step === 4 && (
+              <Button className="h-12 px-5 text-base" disabled={busy} onClick={() => void submit()}>
+                Submit application <ChevronRight className="size-4" />
+              </Button>
+            )}
+          </div>
+        </div>
       </div>
     </div>
+    </SavePulseContext.Provider>
   );
 }
 
 function UploadCard({
   title,
   hint,
+  why,
   preview,
   busy,
   onRaw,
@@ -635,6 +702,7 @@ function UploadCard({
 }: {
   title: string;
   hint: string;
+  why?: string;
   preview: { dataUrl: string; bytes: number; width?: number; height?: number; fileName: string; prepared?: boolean } | null;
   busy: boolean;
   onRaw: (file: File) => void;
@@ -645,9 +713,9 @@ function UploadCard({
 }) {
   return (
     <div className="rounded-xl border border-border bg-card p-4">
-      <Field label={title} hint={hint} copilotField={copilotField}>
+      <Field label={title} hint={hint} copilotField={copilotField} why={why}>
         <div className="flex flex-col gap-3 sm:flex-row">
-          <label className={cn("relative inline-flex h-12 cursor-pointer items-center justify-center overflow-hidden rounded-lg border border-input bg-background px-4 text-sm font-medium", busy && "opacity-50")}>
+          <label className={cn("relative inline-flex h-12 min-h-12 cursor-pointer items-center justify-center overflow-hidden rounded-lg border border-input bg-background px-4 text-sm font-medium", busy && "opacity-50")}>
             Upload as-is
             <input
               type="file"
@@ -660,7 +728,7 @@ function UploadCard({
               }}
             />
           </label>
-          <label className={cn("relative inline-flex h-12 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground", busy && "opacity-50")}>
+          <label className={cn("relative inline-flex h-12 min-h-12 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground", busy && "opacity-50")}>
             {prepareLabel}
             <input
               type="file"

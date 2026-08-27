@@ -18,6 +18,7 @@ type DraftState = {
   lastSavedAt: string | null;
   saveError: string | null;
   setForm: <K extends keyof VisaForm>(key: K, value: VisaForm[K]) => void;
+  patchForm: (partial: Partial<VisaForm>) => void;
   setStep: (step: number) => void;
   setPhoto: (photo: UploadMeta | null) => void;
   setPassportScan: (scan: UploadMeta | null) => void;
@@ -49,6 +50,8 @@ export const useDraft = create<DraftState>()(
       ...initial,
       setForm: (key, value) =>
         set((s) => ({ form: { ...s.form, [key]: value }, saveState: "idle" })),
+      patchForm: (partial) =>
+        set((s) => ({ form: { ...s.form, ...partial }, saveState: "idle" })),
       setStep: (currentStep) => set({ currentStep }),
       setPhoto: (photo) => set({ photo, saveState: "idle" }),
       setPassportScan: (passportScan) => set({ passportScan, saveState: "idle" }),

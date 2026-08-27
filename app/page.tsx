@@ -8,7 +8,7 @@ export default function HomePage() {
       <TrustBanner />
       <SiteHeader />
       <main>
-        <section className="border-b border-border bg-[linear-gradient(180deg,oklch(0.99_0.01_85),oklch(0.97_0.012_85))]">
+        <section className="border-b border-border bg-background">
           <div className="mx-auto max-w-5xl px-4 py-14 sm:py-20">
             <p className="text-sm font-medium uppercase tracking-[0.14em] text-primary">
               Build What Moves India · citizen journey

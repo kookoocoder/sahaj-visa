@@ -47,7 +47,7 @@ export function SiteHeader({ compact = false }: { compact?: boolean }) {
             Demo login
           </Link>
           <Link
-            className="rounded-lg bg-primary px-3 py-2 font-medium text-primary-foreground"
+            className="inline-flex min-h-12 items-center rounded-lg bg-primary px-4 font-medium text-primary-foreground"
             href="/apply"
           >
             Apply

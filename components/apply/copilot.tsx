@@ -31,7 +31,7 @@ export function Copilot({ field }: { field: string }) {
     <span className="relative inline-flex">
       <button
         type="button"
-        className="inline-flex size-8 items-center justify-center rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
+        className="inline-flex size-12 items-center justify-center rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
         aria-expanded={open}
         aria-label={`Help with ${canned?.title ?? field}`}
         onClick={() => (open ? setOpen(false) : ask())}
@@ -41,11 +41,11 @@ export function Copilot({ field }: { field: string }) {
       {open && (
         <div
           role="note"
-          className="absolute top-9 right-0 z-20 w-[min(18rem,calc(100vw-2rem))] rounded-xl border border-border bg-card p-3 text-left text-sm shadow-lg"
+          className="absolute top-14 right-0 z-20 w-[min(18rem,calc(100vw-2rem))] rounded-xl border border-border bg-card p-3 text-left text-sm shadow-lg"
         >
           <div className="mb-1 flex items-start justify-between gap-2">
             <p className="font-medium text-foreground">{canned?.title ?? "Help"}</p>
-            <button type="button" className="rounded p-1 hover:bg-muted" onClick={() => setOpen(false)} aria-label="Close help">
+            <button type="button" className="rounded p-2 hover:bg-muted" onClick={() => setOpen(false)} aria-label="Close help">
               <X className="size-3.5" />
             </button>
           </div>

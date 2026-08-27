@@ -8,7 +8,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [https://sahaj-visa.vercel.app](https://sahaj-visa.vercel.app) or run locally at [http://localhost:3000](http://localhost:3000).
 
 **Demo login:** `demo@visa.test` / `sahaj-demo`
 

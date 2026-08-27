@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
-import { Check, Circle, Loader2 } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 import { SiteFooter, SiteHeader, TrustBanner } from "@/components/site/chrome";
 import { Button } from "@/components/ui/button";
 import { etaApi, getApplicationApi } from "@/lib/api";
@@ -91,10 +91,16 @@ export default function StatusPage() {
         <SiteHeader />
         <main className="mx-auto max-w-lg flex-1 px-4 py-16">
           <h1 className="font-heading text-3xl">We could not find that application</h1>
-          <p className="mt-3 text-muted-foreground">
-            Server memory on a free host can reset. Your browser draft on /apply may still be there.
+          <p className="mt-3 leading-relaxed text-muted-foreground">
+            The ID in the address bar may be mistyped, or this draft was never saved. Your form on
+            this device may still be on the apply page — you have not lost the day.
           </p>
-          <Link className="mt-6 inline-block underline" href="/apply">Back to the form</Link>
+          <Link
+            className="mt-6 inline-flex min-h-12 items-center rounded-lg bg-primary px-5 font-medium text-primary-foreground"
+            href="/apply"
+          >
+            Return to the form
+          </Link>
         </main>
         <SiteFooter />
       </>
@@ -116,45 +122,61 @@ export default function StatusPage() {
       <TrustBanner />
       <SiteHeader compact />
       <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-10">
-        <p className="text-sm uppercase tracking-wide text-muted-foreground">Application</p>
-        <h1 className="font-heading text-4xl">{app.publicId}</h1>
-        <p className="mt-2 text-muted-foreground">
+        <p className="text-sm uppercase tracking-wide text-muted-foreground">Application {app.publicId}</p>
+        <h1 className="mt-2 font-heading text-4xl leading-tight sm:text-5xl">
+          About {QUEUE_STATS.p50}–{QUEUE_STATS.p90} days
+        </h1>
+        <p className="mt-3 text-lg text-muted-foreground">
+          Median in this mock queue is {QUEUE_STATS.medianDays} days. This is not a promise, and it is
+          not 72 hours.
+        </p>
+        <p className="mt-2 text-sm text-muted-foreground">
           {app.form.givenNames} {app.form.surname} · 30-day e-Tourist · updated {formatWhen(app.updatedAt)}
         </p>
 
         {app.status === "payment_charged_unconfirmed" && (
-          <div className="mt-6 rounded-xl border border-accent bg-accent/30 p-4">
-            A charge may have gone through and is not yet confirmed.{" "}
-            <Link className="underline" href="/apply">Return to payment</Link> to reconcile on the same key.
+          <div className="mt-6 rounded-xl border border-border bg-card p-4">
+            <p className="font-medium">A charge may have gone through, and it is not yet confirmed.</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              You do not need to pay again. Return to payment and confirm on the same key.
+            </p>
+            <Link className="mt-3 inline-flex min-h-12 items-center underline" href="/apply">
+              Return to payment
+            </Link>
           </div>
         )}
 
-        <ol className="mt-10 space-y-4">
+        <ol className="relative mt-10 space-y-0 border-l-2 border-border pl-6">
           {TRACK.map((item, i) => {
             const done = current > i;
             const active = current === i;
             return (
-              <li key={item.key} className="flex gap-3">
+              <li key={item.key} className="relative pb-8 last:pb-0">
                 <span
                   className={cn(
-                    "mt-0.5 flex size-8 items-center justify-center rounded-full border",
+                    "absolute top-0 -left-[1.9rem] flex size-8 items-center justify-center rounded-full border",
                     done || active ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card",
                   )}
                 >
-                  {done || active ? <Check className="size-4" /> : <Circle className="size-3" />}
+                  {done || active ? <Check className="size-4" /> : <span className="text-xs">{i + 1}</span>}
                 </span>
-                <div>
-                  <p className={cn("font-medium", active && "text-primary")}>{item.label}</p>
-                  <p className="text-sm text-muted-foreground">{item.hint}</p>
-                </div>
+                <p className={cn("font-heading text-xl", active && "text-primary")}>{item.label}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{item.hint}</p>
+                {active ? (
+                  <p className="mt-2 text-sm font-medium">You are here.</p>
+                ) : null}
               </li>
             );
           })}
         </ol>
 
-        <section className="mt-10 rounded-2xl border border-border bg-card p-5">
-          <h2 className="font-heading text-2xl">When might this move?</h2>
-          <p className="mt-3 leading-relaxed">{app.etaMessage || "Fetching an honest estimate…"}</p>
+        <section className="mt-4 rounded-2xl border border-border bg-card p-5 sm:p-7">
+          <h2 className="text-sm font-medium uppercase tracking-[0.12em] text-muted-foreground">
+            Honest estimate
+          </h2>
+          <p className="mt-3 font-heading text-2xl leading-snug sm:text-3xl">
+            {app.etaMessage || "Fetching an honest estimate…"}
+          </p>
           <p className="mt-4 text-sm text-muted-foreground">{QUEUE_STATS.sourceNote}</p>
         </section>
 
@@ -166,7 +188,7 @@ export default function StatusPage() {
         )}
 
         {app.status === "eta_issued" && (
-          <div className="mt-6 rounded-2xl border border-primary/30 bg-primary/10 p-5">
+          <div className="mt-6 rounded-2xl border border-primary/30 bg-card p-5">
             <h2 className="font-heading text-2xl">Electronic Travel Authorisation (mock)</h2>
             <p className="mt-2">
               This is not valid for travel. A real ETA is emailed by the Bureau of Immigration after
@@ -183,14 +205,19 @@ export default function StatusPage() {
           </div>
         )}
 
-        <section className="mt-10">
-          <h2 className="font-heading text-2xl">Audit log</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Public research found no citizen-facing SLA log on the live portal. Every transition here is timestamped.
-          </p>
-          <ol className="mt-4 space-y-3 border-l border-border pl-4">
+        <details className="mt-10 rounded-2xl border border-border bg-card open:pb-1">
+          <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between px-5 py-3 text-left">
+            <span>
+              <span className="font-heading text-xl">Audit log</span>
+              <span className="mt-0.5 block text-sm font-normal text-muted-foreground">
+                {app.auditLog.length} timestamped events · collapsed so the estimate stays readable
+              </span>
+            </span>
+            <span className="text-sm text-muted-foreground">Show</span>
+          </summary>
+          <ol className="space-y-3 border-t border-border px-5 py-4">
             {[...app.auditLog].reverse().map((event) => (
-              <li key={event.id}>
+              <li key={event.id} className="border-b border-border/70 pb-3 last:border-0 last:pb-0">
                 <p className="text-sm font-medium">{event.event}</p>
                 <p className="text-sm text-muted-foreground">
                   {formatWhen(event.at)}
@@ -199,7 +226,7 @@ export default function StatusPage() {
               </li>
             ))}
           </ol>
-        </section>
+        </details>
       </main>
       <SiteFooter />
     </>

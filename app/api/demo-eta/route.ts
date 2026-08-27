@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getApplication, transition } from "@/lib/db";
+import { getApplication, saveApplication, transition } from "@/lib/db";
 
 export async function POST(req: Request) {
   const { id } = (await req.json()) as { id?: string };
@@ -18,6 +18,9 @@ export async function POST(req: Request) {
     "Prototype shortcut: mock ETA issued. No real immigration clearance happened.",
   );
   if (!issued) return NextResponse.json({ error: "Failed" }, { status: 500 });
-  issued.etaIssuedAt = new Date().toISOString();
-  return NextResponse.json({ application: issued });
+  const withStamp = await saveApplication(
+    { ...issued, etaIssuedAt: new Date().toISOString() },
+    "eta_issued_at",
+  );
+  return NextResponse.json({ application: withStamp });
 }
