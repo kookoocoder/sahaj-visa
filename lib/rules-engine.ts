@@ -70,7 +70,7 @@ export function runRulesEngine(app: Application): ApplicationReview {
         "departureDate",
         "error",
         `This product is a 30-day e-Tourist Visa. Your stay is ${stay} days.`,
-        "Shorten the trip, or (in real life) look at the 1-year / 5-year products — not built in this prototype.",
+        "Shorten the trip or review the 1-year and 5-year e-Tourist options on the official portal.",
       );
     }
   }
@@ -104,7 +104,7 @@ export function runRulesEngine(app: Application): ApplicationReview {
           issues,
           "photo",
           "warning",
-          `Photo is ${width}×${height}px (not square). The live site rejects this with almost no explanation.`,
+          `Photo is ${width}×${height}px and is not square.`,
           "Use ‘Prepare a square photo’ — we crop from the centre and export a JPEG that should pass the size rules.",
         );
       }
@@ -157,7 +157,7 @@ export function runRulesEngine(app: Application): ApplicationReview {
         ? issues.length
           ? "No blocking issues. Read the warnings before you pay — the fee is non-refundable on the live system."
           : "This draft looks ready to submit. The assistive check did not find a blocking problem."
-        : `We found ${errors} blocking issue${errors === 1 ? "" : "s"} you would likely bounce on in the live portal. Fix them here so you do not start over after paying.`,
+        : `We found ${errors} blocking issue${errors === 1 ? "" : "s"}. Fix them before continuing to the official portal.`,
     issues,
     source: "rules-engine",
   };

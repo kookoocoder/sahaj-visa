@@ -5,22 +5,21 @@ import { cn } from "@/lib/utils";
 
 export const SavePulseContext = createContext<string | null>(null);
 
-export const controlClass =
-  "min-h-12 w-full rounded-md border border-input bg-card px-3 text-base text-foreground outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/40 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20";
+export const controlClass = "ux4g-input-input";
 
 function WhyAsk({ text }: { text: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="mt-1">
+    <div className="ux4g-mt-xs">
       <button
         type="button"
-        className="inline-flex min-h-8 items-center text-xs font-medium text-muted-foreground underline decoration-dotted underline-offset-4"
+        className="ux4g-btn ux4g-btn-text-primary ux4g-btn-sm"
         aria-expanded={open}
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => setOpen((value) => !value)}
       >
         Why we ask this
       </button>
-      {open ? <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{text}</p> : null}
+      {open ? <p className="ux4g-body-xs-default ux4g-mt-xs">{text}</p> : null}
     </div>
   );
 }
@@ -47,30 +46,31 @@ export function Field({
   const pulsed = useContext(SavePulseContext);
   const justSaved = Boolean(htmlFor && pulsed === htmlFor);
   return (
-    <div className="space-y-1.5">
-      <div className="flex items-center justify-between gap-2">
-        <label htmlFor={htmlFor} className="flex min-h-8 items-center gap-2 text-sm font-medium">
+    <div className={cn("ux4g-input-container ux4g-input-md", error && "ux4g-input-error")}>
+      <div className="ux4g-d-flex ux4g-jc-between ux4g-ai-center">
+        <label htmlFor={htmlFor} className="ux4g-label-m-default">
           {label}
-          {required ? (
-            <span className="text-destructive" aria-hidden>
-              *
-            </span>
-          ) : null}
+          {required ? <span className="ux4g-text-error"> *</span> : null}
           {justSaved ? (
-            <span className="saved-pulse text-xs font-normal text-primary" aria-live="polite">
+            <span className="saved-pulse ux4g-body-xs-default ux4g-text-primary" aria-live="polite">
+              {" "}
               Saved
             </span>
           ) : null}
         </label>
         {helpField ? <FieldHelp field={helpField} /> : null}
       </div>
-      {children}
+      <div className="ux4g-input">{children}</div>
       {error ? (
-        <p className="text-sm text-destructive" role="alert">
-          {error}
-        </p>
+        <div className="ux4g-input-helper" role="alert">
+          <span className="ux4g-icon-outlined ux4g-input-helper-icon">error</span>
+          <span className="ux4g-input-helper-text">{error}</span>
+        </div>
       ) : hint ? (
-        <p className="text-sm text-muted-foreground">{hint}</p>
+        <div className="ux4g-input-helper">
+          <span className="ux4g-icon-outlined ux4g-input-helper-icon">info</span>
+          <span className="ux4g-input-helper-text">{hint}</span>
+        </div>
       ) : null}
       {why ? <WhyAsk text={why} /> : null}
     </div>
@@ -124,7 +124,7 @@ export function SelectInput({
   return (
     <select
       id={id}
-      className={controlClass}
+      className={cn(controlClass, "sahaj-input-select")}
       aria-invalid={error ? true : undefined}
       {...props}
     >
@@ -146,7 +146,7 @@ export function TextArea({
     <textarea
       {...props}
       id={id}
-      className={cn(controlClass, "min-h-24 py-3")}
+      className={cn("ux4g-textarea-input", "sahaj-input-textarea")}
       aria-invalid={error ? true : undefined}
       maxLength={maxLength ?? spec?.maxLength}
       onChange={(e) => {

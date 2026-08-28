@@ -1,50 +1,28 @@
 export const PRIMARY_NAV = [
   { href: "/", label: "Home", exact: true },
-  { href: "/instructions", label: "Instructions" },
-  { href: "/#visa-services", label: "Visa Categories" },
-  { href: "/e-visa", label: "e-Visa Application Process" },
+  { href: "/e-visa", label: "e-Visa" },
+  { href: "/paper-visa", label: "Regular Visa" },
   { href: "/visa-on-arrival", label: "Visa on Arrival" },
-  { href: "/track", label: "Track Application" },
-  { href: "/contact#weblinks", label: "Useful Weblinks" },
-  { href: "/faqs", label: "FAQs" },
-  { href: "/contact", label: "Contact Us" },
+  { href: "/instructions", label: "Requirements" },
+  { href: "/track", label: "My Application" },
+  { href: "/faqs", label: "Help" },
 ] as const;
 
 export const QUICK_ACTIONS = [
   {
     href: "/apply",
-    label: "Open the guided form",
-    description: "Try the working 30-day e-Tourist journey",
-  },
-  {
-    href: "/apply",
-    label: "Apply here for e-Visa",
-    description: "Start a resumable draft",
+    label: "Start an application",
+    description: "Prepare a complete 30-day e-Tourist application",
   },
   {
     href: "/track",
-    label: "Complete a partial application",
+    label: "Resume an application",
     description: "Resume with your application ID",
   },
   {
-    href: "/track",
-    label: "Verify payment",
-    description: "See if a charge was confirmed",
-  },
-  {
-    href: "/track",
-    label: "Open application record",
-    description: "Open status and the audit log",
-  },
-  {
-    href: "/track",
-    label: "Check visa status",
-    description: "Honest timeline, not a frozen 72 hours",
-  },
-  {
-    href: "/apply",
-    label: "Update draft documents",
-    description: "Return to your saved photo and passport scan",
+    href: "https://indianvisaonline.gov.in/evisa/StatusEnquiry",
+    label: "Check official status",
+    description: "Open the Government of India status service",
   },
 ] as const;
 
@@ -53,5 +31,5 @@ export const OFFICIAL_HELPDESK = {
   phoneHref: "tel:+918278087808",
   email: "indianvisaonline-boi@mha.gov.in",
   emailHref: "mailto:indianvisaonline-boi@mha.gov.in",
-  note: "Bureau of Immigration helpdesk on the live government portal — not staffed by this prototype.",
+  note: "Bureau of Immigration e-Visa helpdesk for official applications.",
 };

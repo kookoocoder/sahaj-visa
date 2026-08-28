@@ -31,15 +31,18 @@ export function ResumeForm({ compact = false }: { compact?: boolean }) {
         router.push(`/status/${application.id}`);
       }
     } catch {
-      toast.error("No application with that ID on this server. Drafts live in this demo’s memory.");
+      toast.error("No saved application matches that ID. Check every character and try again.");
     } finally {
       setBusy(false);
     }
   }
 
   return (
-    <form onSubmit={onSubmit} className={compact ? "flex flex-col gap-3 sm:flex-row sm:items-end" : "space-y-3"}>
-      <div className="min-w-0 flex-1">
+    <form
+      onSubmit={onSubmit}
+      className={compact ? "sahaj-resume-inline" : "ux4g-d-flex ux4g-flex-column ux4g-gap-y-s"}
+    >
+      <div className="ux4g-min-w-0 ux4g-flex-1">
         <Field label="Resume with application ID" htmlFor="resume-id" hint={compact ? undefined : FORMAT_SPECS.applicationId.hint}>
           <TextInput
             id="resume-id"
@@ -52,11 +55,7 @@ export function ResumeForm({ compact = false }: { compact?: boolean }) {
           />
         </Field>
       </div>
-      <button
-        type="submit"
-        disabled={busy}
-        className="inline-flex h-12 shrink-0 items-center justify-center rounded-lg border border-border bg-card px-5 text-base font-medium disabled:opacity-50"
-      >
+      <button type="submit" disabled={busy} className="ux4g-btn ux4g-btn-primary ux4g-btn-md">
         {busy ? "Looking…" : "Open"}
       </button>
     </form>

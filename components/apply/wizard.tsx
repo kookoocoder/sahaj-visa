@@ -4,28 +4,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import type { ReactNode } from "react";
-import {
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  ClipboardCheck,
-  Cloud,
-  CloudOff,
-  CreditCard,
-  ImageIcon,
-  Loader2,
-  Plane,
-  UserRound,
-  BookOpen,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Field, SelectInput, TextArea, TextInput, SavePulseContext } from "@/components/apply/field";
 import { HelpdeskCard, InfoCallout } from "@/components/site/chrome";
+import { Icon } from "@/components/site/icon";
 import { useDraft, draftToPayload } from "@/lib/draft-store";
 import {
   getApplicationApi,
-  payApi,
-  reconcileApi,
   precheckApi,
   saveApplicationApi,
   submitApplicationApi,
@@ -33,20 +17,12 @@ import {
 import { STEPS, type VisaForm } from "@/lib/types";
 import { GENDERS } from "@/lib/types";
 import { FORMAT_SPECS, sanitizeFormValue, validateVisaFields } from "@/lib/input-format";
-import {
-  DEMO_EMAIL,
-  FEE_USD,
-  HUMAN_CHECK_PROMPT,
-  NATIONALITIES,
-  PORTS,
-  VISA_PRODUCT_LABEL,
-} from "@/lib/constants";
-import { daysFromToday, formatMoney } from "@/lib/id";
+import { HUMAN_CHECK_PROMPT, NATIONALITIES, OFFICIAL_PORTAL, PORTS, VISA_PRODUCT_LABEL } from "@/lib/constants";
 import { fileToUpload } from "@/lib/photo";
 import { cn } from "@/lib/utils";
 import type { ReviewIssue } from "@/lib/types";
 
-const STEP_ICONS = [UserRound, BookOpen, Plane, ImageIcon, ClipboardCheck, CreditCard] as const;
+const STEP_ICONS = ["person", "menu_book", "flight", "photo_camera", "fact_check", "open_in_new"] as const;
 
 function AccordionStep({
   index,
@@ -66,69 +42,56 @@ function AccordionStep({
   children: ReactNode;
 }) {
   return (
-    <section className="overflow-hidden rounded-xl border border-border bg-card">
-      <h2>
+    <section className="ux4g-accordion__item">
+      <h2 className="ux4g-accordion__header">
         <button
           type="button"
-          className={cn(
-            "flex min-h-12 w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors",
-            active ? "bg-info text-primary" : "hover:bg-muted/70",
-            disabled && "cursor-not-allowed opacity-60",
-          )}
+          className={cn("ux4g-accordion__button", !active && "collapsed")}
           aria-expanded={active}
           disabled={disabled}
           onClick={onOpen}
         >
-          <span className="flex items-center gap-3">
-            <span
-              className={cn(
-                "flex size-7 items-center justify-center rounded-full text-xs font-semibold",
-                active || done ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground",
-              )}
-            >
-              {done && !active ? <Check className="size-3.5" /> : index + 1}
-            </span>
-            <span className="font-heading text-sm uppercase tracking-wide sm:text-base">{title}</span>
+          <span className="ux4g-accordion__button-content ux4g-d-flex ux4g-ai-center ux4g-gap-x-s">
+            <span className="ux4g-stepper-head-icon">{done && !active ? <Icon name="check" /> : index + 1}</span>
+            <span className="ux4g-accordion__title">{title}</span>
           </span>
-          <ChevronRight className={cn("size-4 shrink-0 transition-transform duration-200", active && "rotate-90")} />
         </button>
       </h2>
-      <div
-        className={cn(
-          "grid transition-[grid-template-rows] duration-200 ease-out",
-          active ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
-        )}
-      >
-        <div className="overflow-hidden">
-          {active ? <div className="border-t border-border px-4 py-5 sm:px-6">{children}</div> : null}
-        </div>
-      </div>
+      {active ? <div className="ux4g-accordion__body">{children}</div> : null}
     </section>
   );
 }
 
 function GuidelinesPanel({ step }: { step: number }) {
   return (
-    <div className="space-y-4">
-      <div className="rounded-xl border border-border bg-card p-4">
-        <p className="font-heading text-sm uppercase tracking-wide text-primary">Documents to be uploaded</p>
-        <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
-          <li>Face photograph (JPEG, square, light background)</li>
-          <li>Passport biodata page (all four corners visible)</li>
-        </ul>
+    <div className="ux4g-d-flex ux4g-flex-column ux4g-gap-y-s">
+      <div className="ux4g-card ux4g-card-outline ux4g-card-vertical">
+        <div className="ux4g-card-body">
+          <p className="ux4g-card-title">Documents to be uploaded</p>
+          <ul className="sahaj-list ux4g-body-xs-default ux4g-mt-xs">
+            <li>Face photograph (JPEG, square, light background)</li>
+            <li>Passport biodata page (all four corners visible)</li>
+          </ul>
+        </div>
       </div>
-      <div className="rounded-xl border border-accent/50 bg-warning p-4 text-sm text-warning-foreground">
-        <p className="font-heading text-primary">Photo guidelines</p>
-        <ul className="mt-2 list-disc space-y-1 pl-5">
-          <li>Recent, colour, face clearly visible</li>
-          <li>We can square-crop on this device — no desktop required</li>
-          <li>A rejection here is explained next to the field, not after you pay</li>
-        </ul>
+      <div className="ux4g-alert ux4g-alert-warning">
+        <Icon name="photo_camera" className="ux4g-alert-icon" />
+        <div className="ux4g-alert-content ux4g-d-flex ux4g-flex-column">
+          <p className="ux4g-alert-title">Photo guidelines</p>
+          <ul className="sahaj-list ux4g-alert-message">
+            <li>Recent, colour, face clearly visible</li>
+            <li>We can square-crop on this device — no desktop required</li>
+            <li>File issues are explained before you continue to submission</li>
+          </ul>
+        </div>
       </div>
-      <div className="rounded-xl border border-[color:oklch(0.55_0.12_155/0.35)] bg-success p-4 text-sm text-success-foreground">
-        {step < 5
-          ? "You can save and continue later. Closing the tab does not restart page 1."
-          : "After payment, status lives on its own page so you are not sent back to the form."}
+      <div className="ux4g-alert ux4g-alert-success">
+        <Icon name="cloud_done" className="ux4g-alert-icon" />
+        <p className="ux4g-alert-message">
+          {step < 5
+            ? "You can save and continue later. Your application ID lets you return to this record."
+            : "Your checked record remains available after you continue to the official application service."}
+        </p>
       </div>
     </div>
   );
@@ -148,19 +111,23 @@ function issuesByField(issues: ReviewIssue[] | undefined, field: string) {
 function IssueList({ issues }: { issues: ReviewIssue[] }) {
   if (!issues.length) return null;
   return (
-    <ul className="mt-1 space-y-1">
+    <ul className="ux4g-d-flex ux4g-flex-column ux4g-gap-y-xs ux4g-mt-xs">
       {issues.map((issue) => (
-        <li
-          key={issue.issue}
-          className={cn(
-            "rounded-lg px-3 py-2 text-sm",
-            issue.severity === "error" && "bg-destructive/10 text-destructive",
-            issue.severity === "warning" && "bg-accent/40 text-foreground",
-            issue.severity === "info" && "bg-muted text-muted-foreground",
-          )}
-        >
-          <strong className="font-medium">{issue.issue}</strong>
-          <span className="block">{issue.fix_suggestion}</span>
+        <li key={issue.issue}>
+          <div
+            className={cn(
+              "ux4g-alert ux4g-alert-wide",
+              issue.severity === "error" && "ux4g-alert-error",
+              issue.severity === "warning" && "ux4g-alert-warning",
+              issue.severity === "info" && "ux4g-alert-info",
+            )}
+            role="status"
+          >
+            <div className="ux4g-alert-content ux4g-d-flex ux4g-flex-column">
+              <p className="ux4g-alert-title">{issue.issue}</p>
+              <p className="ux4g-alert-message">{issue.fix_suggestion}</p>
+            </div>
+          </div>
         </li>
       ))}
     </ul>
@@ -172,7 +139,6 @@ export function Wizard() {
   const store = useDraft();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
-  const [paymentStatus, setPaymentStatus] = useState<string>("idle");
   const [reviewing, setReviewing] = useState(false);
   const [lastTouched, setLastTouched] = useState<string | null>(null);
   const [pulsedField, setPulsedField] = useState<string | null>(null);
@@ -193,14 +159,9 @@ export function Wizard() {
     if (!store.hydrated || !store.id) return;
     getApplicationApi(store.id)
       .then(({ application }) => {
-        if (application.status !== "draft" && application.payment.status === "confirmed") {
-          router.replace(`/status/${application.id}`);
-          return;
-        }
         if (application.updatedAt > (store.lastSavedAt || "")) {
           store.hydrateFromServer(application);
         }
-        setPaymentStatus(application.payment.status);
       })
       .catch(() => {
         /* local draft still applies */
@@ -374,77 +335,12 @@ export function Wizard() {
       const { application } = await submitApplicationApi(saved.id);
       store.hydrateFromServer(application);
       store.setStep(5);
-      toast.success("Submitted. Your answers are locked. Pay when you are ready.");
+      toast.success("Preparation complete. Your checked application record is ready.");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Could not submit");
     } finally {
       setBusy(false);
     }
-  }
-
-  async function pay(scenario: "success" | "decline" | "charged_unconfirmed") {
-    if (!store.id) return;
-    setBusy(true);
-    try {
-      const { application } = await payApi(store.id, scenario);
-      if (application.payment.status === "confirmed") {
-        toast.success("Payment confirmed. Opening your status.");
-        router.push(`/status/${application.id}`);
-        return;
-      }
-      store.hydrateFromServer(application);
-      setPaymentStatus(application.payment.status);
-      if (application.payment.status === "failed") {
-        setPaymentStatus("failed");
-      } else {
-        toast.message("Charged but not confirmed — the failure the live portal hides.");
-      }
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Payment error");
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function reconcile() {
-    if (!store.id) return;
-    setBusy(true);
-    try {
-      const { application } = await reconcileApi(store.id);
-      toast.success("Reconciled on the same payment key. You were not charged twice.");
-      router.push(`/status/${application.id}`);
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Could not reconcile");
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  function fillSample() {
-    store.patchForm({
-      givenNames: "Priya Anand",
-      surname: "Shah",
-      dateOfBirth: "1992-04-17",
-      gender: "female",
-      nationality: "United States of America",
-      cityOfBirth: "Boston",
-      countryOfBirth: "United States of America",
-      email: DEMO_EMAIL,
-      phone: "+14155550123",
-      passportNumber: "X1234567",
-      passportIssueDate: "2021-01-12",
-      passportExpiryDate: "2031-01-11",
-      passportPlaceOfIssue: "New York",
-      arrivalDate: daysFromToday(14),
-      departureDate: daysFromToday(24),
-      portOfArrival: "DEL",
-      addressInIndia: "12 Khan Market, New Delhi",
-      cityInIndia: "New Delhi",
-      purpose: "Tourism - family visit and museums.",
-      declaration: true,
-      humanCheck: "INDIA",
-    });
-    toast.message("Sample answers filled. Add a photo still — that’s the interesting part.");
   }
 
   const saveLabel = useMemo(() => {
@@ -456,8 +352,8 @@ export function Wizard() {
 
   if (!store.hydrated) {
     return (
-      <div className="flex min-h-[40vh] items-center justify-center text-muted-foreground">
-        <Loader2 className="mr-2 size-4 animate-spin" /> Restoring your draft…
+      <div className="ux4g-d-flex ux4g-ai-center ux4g-jc-center ux4g-gap-x-xs" style={{ minHeight: "40vh" }}>
+        <Icon name="progress_activity" className="ux4g-spinner-xs" /> Restoring your draft…
       </div>
     );
   }
@@ -465,14 +361,14 @@ export function Wizard() {
   const step = store.currentStep;
 
   const nav = (
-    <div className="flex flex-wrap items-center justify-between gap-3">
-      <Button variant="outline" className="h-12 px-4 text-base" disabled={step === 0 || step === 5 || busy} onClick={back}>
-        <ChevronLeft className="size-4" /> Back
-      </Button>
-      <div className="flex flex-wrap items-center justify-end gap-2">
-        <Button
-          variant="outline"
-          className="h-12 px-4 text-base"
+    <div className="ux4g-d-flex ux4g-flex-wrap ux4g-jc-between ux4g-ai-center ux4g-gap-x-s ux4g-gap-y-xs">
+      <button type="button" className="ux4g-btn ux4g-btn-outline-primary ux4g-btn-md" disabled={step === 0 || step === 5 || busy} onClick={back}>
+        <Icon name="arrow_back" /> Back
+      </button>
+      <div className="ux4g-d-flex ux4g-flex-wrap ux4g-ai-center ux4g-gap-x-xs">
+        <button
+          type="button"
+          className="ux4g-btn ux4g-btn-outline-neutral ux4g-btn-md"
           disabled={busy}
           onClick={() => {
             void persist().then((saved) => {
@@ -482,16 +378,16 @@ export function Wizard() {
           }}
         >
           Save & exit
-        </Button>
+        </button>
         {step < 4 && (
-          <Button className="h-12 px-5 text-base" disabled={busy} onClick={() => void next()}>
-            Save & Continue <ChevronRight className="size-4" />
-          </Button>
+          <button type="button" className="ux4g-btn ux4g-btn-primary ux4g-btn-md" disabled={busy} onClick={() => void next()}>
+            Save & Continue <Icon name="arrow_forward" />
+          </button>
         )}
         {step === 4 && (
-          <Button className="h-12 px-5 text-base" disabled={busy} onClick={() => void submit()}>
-            Submit application <ChevronRight className="size-4" />
-          </Button>
+          <button type="button" className="ux4g-btn ux4g-btn-primary ux4g-btn-md" disabled={busy} onClick={() => void submit()}>
+            Submit application <Icon name="arrow_forward" />
+          </button>
         )}
       </div>
     </div>
@@ -499,101 +395,104 @@ export function Wizard() {
 
   return (
     <SavePulseContext.Provider value={pulsedField}>
-    <div className="mx-auto w-full max-w-6xl px-4 py-6 pb-28 lg:pb-10">
-      <div className="grid items-start gap-6 lg:grid-cols-[15.5rem_minmax(0,1fr)_15.5rem]">
-        <aside className="hidden space-y-4 lg:block lg:self-start">
-          <nav className="overflow-hidden rounded-xl border border-border bg-card" aria-label="Application steps">
-            <p className="border-b border-border px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              Application progress
-            </p>
-            <ol>
-              {STEPS.map((s, i) => {
-                const Icon = STEP_ICONS[i];
-                const done = i < step;
-                const active = i === step;
-                const locked =
-                  (store.status !== "draft" && i < 5) ||
-                  (store.status === "draft" && i === 5);
-                return (
-                  <li key={s.id} className="border-b border-border last:border-0">
-                    <button
-                      type="button"
-                      onClick={() => store.setStep(i)}
-                      disabled={locked}
-                      aria-current={active ? "step" : undefined}
-                      className={cn(
-                        "flex min-h-12 w-full items-center gap-3 px-4 py-3 text-left text-sm transition-colors",
-                        active && "bg-info font-medium text-primary",
-                        done && !active && "text-foreground",
-                        !active && !done && "text-muted-foreground hover:bg-muted/60",
-                        locked && "cursor-not-allowed opacity-60",
-                      )}
-                    >
-                      <span
-                        className={cn(
-                          "flex size-8 shrink-0 items-center justify-center rounded-full",
-                          active ? "bg-primary text-primary-foreground" : done ? "bg-primary/15 text-primary" : "bg-muted",
-                        )}
+    <div className="sahaj-wizard">
+      <div className="sahaj-wizard-layout">
+        <aside className="sahaj-wizard-sidebar">
+          <nav className="ux4g-card ux4g-card-outline ux4g-card-vertical sahaj-step-nav" aria-label="Application steps">
+            <div className="ux4g-card-header">
+              <p lang="hi" className="sahaj-brand-hi">आवेदन प्रगति</p>
+              <p className="ux4g-label-m-strong ux4g-mt-xs">Application progress</p>
+            </div>
+            <div className="ux4g-card-body">
+              <ol>
+                {STEPS.map((s, i) => {
+                  const icon = STEP_ICONS[i];
+                  const done = i < step;
+                  const active = i === step;
+                  const locked =
+                    (store.status !== "draft" && i < 5) ||
+                    (store.status === "draft" && i === 5);
+                  return (
+                    <li key={s.id}>
+                      <button
+                        type="button"
+                        onClick={() => store.setStep(i)}
+                        disabled={locked}
+                        aria-current={active ? "step" : undefined}
+                        data-done={done && !active ? "true" : undefined}
                       >
-                        {done && !active ? <Check className="size-4" /> : <Icon className="size-4" />}
-                      </span>
-                      <span>
-                        <span className="block text-[11px] uppercase tracking-wide opacity-70">Step {i + 1}</span>
-                        {s.label}
-                      </span>
-                    </button>
-                  </li>
-                );
-              })}
-            </ol>
+                        <span className="sahaj-step-icon">
+                          {done && !active ? <Icon name="check" /> : active ? <Icon name={icon} /> : i + 1}
+                        </span>
+                        <span>
+                          <span className="ux4g-body-xs-default ux4g-text-neutral-tertiary">Step {i + 1}</span>
+                          <span className="ux4g-label-m-default ux4g-d-block">{s.label}</span>
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ol>
+            </div>
           </nav>
-          <HelpdeskCard />
+          <div className="ux4g-mt-s">
+            <HelpdeskCard />
+          </div>
         </aside>
 
-        <div className="min-w-0 space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <p
+        <div className="ux4g-min-w-0 ux4g-d-flex ux4g-flex-column ux4g-gap-y-s">
+          <div className="ux4g-stepper ux4g-stepper-horizontal ux4g-stepper-bottom-line ux4g-stepper-mobile sahaj-wizard-mobile-only">
+            {STEPS.slice(0, 5).map((s, i) => (
+              <div
+                key={s.id}
+                className={cn(
+                  "ux4g-stepper-step",
+                  i < step && "completed",
+                  i === step && "active",
+                )}
+              >
+                {s.label}
+              </div>
+            ))}
+          </div>
+
+          <div className="ux4g-d-flex ux4g-flex-wrap ux4g-jc-between ux4g-ai-center ux4g-gap-x-s ux4g-gap-y-xs">
+            <span
               className={cn(
-                "inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm",
-                store.saveState === "error"
-                  ? "border-destructive/40 text-destructive"
-                  : "border-border bg-card text-muted-foreground",
+                "ux4g-tag-tonal-neutral ux4g-d-inline-flex ux4g-ai-center ux4g-gap-x-xs",
+                store.saveState === "error" && "ux4g-tag-tonal-error",
+                store.saveState === "saved" && "ux4g-tag-tonal-success",
               )}
             >
               {store.saveState === "saving" ? (
-                <Loader2 className="size-3.5 animate-spin" />
+                <Icon name="progress_activity" />
               ) : store.saveState === "error" ? (
-                <CloudOff className="size-3.5" />
+                <Icon name="cloud_off" />
               ) : (
-                <Cloud className="size-3.5" />
+                <Icon name="cloud_done" />
               )}
               {saveLabel}
-            </p>
-            <div className="flex gap-4">
-              <button type="button" className="text-sm underline underline-offset-2 disabled:opacity-50" disabled={store.status !== "draft"} onClick={fillSample}>
-                Fill sample answers
-              </button>
-              <button
-                type="button"
-                className="text-sm underline underline-offset-2"
-                onClick={() => {
-                  store.reset();
-                  toast.message("Started a fresh draft on this device.");
-                }}
-              >
-                Start over
-              </button>
-            </div>
+            </span>
+            <button
+              type="button"
+              className="ux4g-btn ux4g-btn-text-neutral ux4g-btn-sm"
+              onClick={() => {
+                store.reset();
+                toast.message("Started a fresh draft on this device.");
+              }}
+            >
+              Start over
+            </button>
           </div>
 
           <InfoCallout>
             <p>
-              Note down your Application ID when it appears. Fields marked <span className="text-destructive">*</span>{" "}
-              are required. One adult, e-Tourist Visa only.
+              Note down your Application ID when it appears. Fields marked <span className="ux4g-text-error">*</span>{" "}
+              are required. This guided form currently supports one adult applying for a 30-day e-Tourist Visa.
             </p>
           </InfoCallout>
 
-          <div className="space-y-2">
+          <div className="ux4g-accordion ux4g-accordion-arrow-right space-y-2">
             <AccordionStep
               index={0}
               title={STEPS[0].label}
@@ -602,16 +501,16 @@ export function Wizard() {
               disabled={store.status !== "draft"}
               onOpen={() => store.setStep(0)}
             >
-              <p className="mb-4 text-sm text-muted-foreground">
-                Copy the passport. This draft is yours even if the tab dies.
+              <p className="ux4g-body-m-default ux4g-mb-s">
+                Enter each detail exactly as it appears in your passport.
               </p>
-              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="sahaj-form-grid-3">
                 <Field label="Full name (as in passport)" htmlFor="fullName" hint="Filled from given name and surname.">
                   <TextInput
                     id="fullName"
                     readOnly
                     value={[store.form.givenNames, store.form.surname].filter(Boolean).join(" ")}
-                    className="bg-muted/60"
+                    className="ux4g-bg-neutral-soft"
                   />
                 </Field>
                 <Field label="Given names" htmlFor="givenNames" hint={FORMAT_SPECS.personName.hint} error={errors.givenNames} helpField="givenNames" required>
@@ -634,7 +533,7 @@ export function Wizard() {
                 </Field>
                 <Field label="Nationality" htmlFor="nationality" error={errors.nationality} helpField="nationality" required>
                   <SelectInput id="nationality" value={store.form.nationality} error={errors.nationality} onChange={(e) => set("nationality", e.target.value)}>
-                    <option value="">Select (mocked list)</option>
+                    <option value="">Select nationality</option>
                     {NATIONALITIES.map((n) => (
                       <option key={n} value={n}>{n}</option>
                     ))}
@@ -653,7 +552,7 @@ export function Wizard() {
                   <TextInput id="phone" type="tel" format="mobile" autoComplete="tel" value={store.form.phone} error={errors.phone} onChange={(e) => set("phone", e.target.value)} onBlur={() => blurField("phone")} />
                 </Field>
               </div>
-              <div className="mt-6 hidden lg:block">{nav}</div>
+              <div className="ux4g-mt-m sahaj-wizard-desktop-only">{nav}</div>
             </AccordionStep>
 
             <AccordionStep
@@ -664,8 +563,8 @@ export function Wizard() {
               disabled={store.status !== "draft"}
               onOpen={() => store.setStep(1)}
             >
-              <p className="mb-4 text-sm text-muted-foreground">Must stay valid six months after you land.</p>
-              <div className="grid gap-4 sm:grid-cols-2">
+              <p className="ux4g-body-m-default ux4g-mb-s">Must stay valid six months after you land.</p>
+              <div className="sahaj-form-grid">
                 <Field
                   label="Passport number"
                   htmlFor="passportNumber"
@@ -688,7 +587,7 @@ export function Wizard() {
                   <IssueList issues={issuesByField(issues, "passportExpiryDate")} />
                 </Field>
               </div>
-              <div className="mt-6 hidden lg:block">{nav}</div>
+              <div className="ux4g-mt-m sahaj-wizard-desktop-only">{nav}</div>
             </AccordionStep>
 
             <AccordionStep
@@ -699,10 +598,10 @@ export function Wizard() {
               disabled={store.status !== "draft"}
               onOpen={() => store.setStep(2)}
             >
-              <p className="mb-4 text-sm text-muted-foreground">
+              <p className="ux4g-body-m-default ux4g-mb-s">
                 {VISA_PRODUCT_LABEL}. Apply with more than four days in hand — recent waits are often longer.
               </p>
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="sahaj-form-grid">
                 <Field label="Intended arrival" htmlFor="arrivalDate" error={errors.arrivalDate} helpField="arrivalDate" required>
                   <TextInput id="arrivalDate" type="date" value={store.form.arrivalDate} error={errors.arrivalDate} onChange={(e) => set("arrivalDate", e.target.value)} />
                   <IssueList issues={issuesByField(issues, "arrivalDate")} />
@@ -722,18 +621,18 @@ export function Wizard() {
                 <Field label="City in India" htmlFor="cityInIndia" hint={FORMAT_SPECS.place.hint} error={errors.cityInIndia} required>
                   <TextInput id="cityInIndia" format="place" value={store.form.cityInIndia} error={errors.cityInIndia} onChange={(e) => set("cityInIndia", e.target.value)} onBlur={() => blurField("cityInIndia")} />
                 </Field>
-                <div className="sm:col-span-2">
+                <div className="sahaj-form-span-2">
                   <Field label="First address in India" htmlFor="addressInIndia" hint={FORMAT_SPECS.address.hint} error={errors.addressInIndia} required>
                     <TextInput id="addressInIndia" format="address" value={store.form.addressInIndia} error={errors.addressInIndia} onChange={(e) => set("addressInIndia", e.target.value)} onBlur={() => blurField("addressInIndia")} />
                   </Field>
                 </div>
-                <div className="sm:col-span-2">
+                <div className="sahaj-form-span-2">
                   <Field label="Purpose of visit" htmlFor="purpose" hint={FORMAT_SPECS.purpose.hint} error={errors.purpose} required>
                     <TextArea id="purpose" format="purpose" value={store.form.purpose} error={errors.purpose} onChange={(e) => set("purpose", e.target.value)} onBlur={() => blurField("purpose")} />
                   </Field>
                 </div>
               </div>
-              <div className="mt-6 hidden lg:block">{nav}</div>
+              <div className="ux4g-mt-m sahaj-wizard-desktop-only">{nav}</div>
             </AccordionStep>
 
             <AccordionStep
@@ -744,14 +643,14 @@ export function Wizard() {
               disabled={store.status !== "draft"}
               onOpen={() => store.setStep(3)}
             >
-              <p className="mb-4 text-sm text-muted-foreground">
-                The live site rejects uploads for pixels and kilobytes without saying why. We square-crop on your phone first.
+              <p className="ux4g-body-m-default ux4g-mb-s">
+                Preview and prepare clear document files before continuing to the official portal.
               </p>
-              <div className="space-y-4">
+              <div className="ux4g-d-flex ux4g-flex-column ux4g-gap-y-s">
                 <UploadCard
                   title="Face photograph"
                   hint="JPEG, square, light background. We can prepare that here."
-                  why="The live portal often rejects photos without saying why. We store this on your draft so a closed tab does not mean starting the photo again."
+                  why="A compliant photo reduces avoidable upload errors. This file stays attached to your saved preparation record."
                   preview={store.photo}
                   busy={busy}
                   helpField="photo"
@@ -772,7 +671,7 @@ export function Wizard() {
                   prepareLabel="Square-crop the scan"
                 />
               </div>
-              <div className="mt-6 hidden lg:block">{nav}</div>
+              <div className="ux4g-mt-m sahaj-wizard-desktop-only">{nav}</div>
             </AccordionStep>
 
             <AccordionStep
@@ -783,47 +682,61 @@ export function Wizard() {
               disabled={store.status !== "draft"}
               onOpen={() => store.setStep(4)}
             >
-              <p className="mb-4 text-sm text-muted-foreground">
-                This pre-check is assistive, not a decision. On a real system the backend would still do the final validation.
+              <p className="ux4g-body-m-default ux4g-mb-s">
+                This check reviews the information and file metadata available here. It is guidance, not an immigration decision.
               </p>
-              <p className="mb-4 rounded-xl border border-border bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
-                The scan uses fixed validation rules for field formats, dates, passport validity, and uploaded file
-                dimensions and sizes. It does not inspect image contents or make a visa decision.
-              </p>
-              <Button type="button" className="h-12 px-5 text-base" disabled={reviewing} onClick={() => void runPrecheck()}>
-                {reviewing ? <Loader2 className="size-4 animate-spin" /> : <ClipboardCheck className="size-4" />}
-                Run rejection-risk scan
-              </Button>
-              {store.precheck && (
-                <div className="mt-4 rounded-xl border border-border bg-muted/40 p-4">
-                  <p className="text-sm uppercase tracking-wide text-muted-foreground">Deterministic rules engine</p>
-                  <p className="mt-2 text-lg font-medium">{store.precheck.summary}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Risk: {store.precheck.overall_risk}
-                    {store.precheck.can_submit ? " · clear to submit" : " · blocking issues remain"}
+              <div className="ux4g-alert ux4g-alert-info ux4g-alert-wide ux4g-mb-s">
+                <Icon name="info" className="ux4g-alert-icon" />
+                <div className="ux4g-alert-content">
+                  <p className="ux4g-alert-message">
+                    The check covers field formats, dates, passport validity, and uploaded file dimensions and sizes.
+                    The Government of India applies its own validation when you submit on the official portal.
                   </p>
-                  <IssueList issues={store.precheck.issues} />
+                </div>
+              </div>
+              <button type="button" className="ux4g-btn ux4g-btn-primary ux4g-btn-md" disabled={reviewing} onClick={() => void runPrecheck()}>
+                {reviewing ? <Icon name="progress_activity" /> : <Icon name="fact_check" />}
+                Run rejection-risk scan
+              </button>
+              {store.precheck && (
+                <div className="ux4g-card ux4g-card-outline ux4g-card-vertical ux4g-mt-s">
+                  <div className="ux4g-card-body">
+                    <p className="ux4g-label-m-strong ux4g-text-neutral-tertiary">Application readiness check</p>
+                    <p className="ux4g-title-m-strong ux4g-mt-xs">{store.precheck.summary}</p>
+                    <p className="ux4g-body-m-default ux4g-mt-xs">
+                      Risk: {store.precheck.overall_risk}
+                      {store.precheck.can_submit ? " · clear to submit" : " · blocking issues remain"}
+                    </p>
+                    <IssueList issues={store.precheck.issues} />
+                  </div>
                 </div>
               )}
-              <div className="mt-5">
+              <div className="ux4g-mt-s">
                 <Field label={HUMAN_CHECK_PROMPT} htmlFor="humanCheck" error={errors.humanCheck} helpField="humanCheck" required>
                   <TextInput id="humanCheck" value={store.form.humanCheck} error={errors.humanCheck} onChange={(e) => set("humanCheck", e.target.value)} autoComplete="off" />
                 </Field>
               </div>
-              <label className="mt-4 flex items-start gap-3 rounded-xl border border-border bg-muted/40 p-4">
+              <label className={cn("ux4g-checkbox ux4g-checkbox-md ux4g-mt-s", errors.declaration && "ux4g-checkbox-error")}>
                 <input
                   type="checkbox"
-                  className="mt-1 size-5"
+                  className="ux4g-checkbox-input"
                   checked={store.form.declaration}
                   onChange={(e) => set("declaration", e.target.checked)}
                 />
-                <span>
-                  I understand this is a prototype, answers cannot be edited after submit, and a real e-Visa fee is
-                  non-refundable. No real payment will be taken here.
+                <span className="ux4g-radio-control">
+                  <span className="ux4g-checkmark" />
+                </span>
+                <span className="ux4g-checkbox-content">
+                  I confirm that I have checked these details against my passport and understand that visa submission,
+                  payment, and approval take place only on the official Government of India portal.
                 </span>
               </label>
-              {errors.declaration && <p className="mt-2 text-sm text-destructive">{errors.declaration}</p>}
-              <div className="mt-6 hidden lg:block">{nav}</div>
+              {errors.declaration ? (
+                <p className="ux4g-body-xs-default ux4g-text-error ux4g-mt-xs" role="alert">
+                  {errors.declaration}
+                </p>
+              ) : null}
+              <div className="ux4g-mt-m sahaj-wizard-desktop-only">{nav}</div>
             </AccordionStep>
 
             <AccordionStep
@@ -834,68 +747,55 @@ export function Wizard() {
               disabled={store.status === "draft"}
               onOpen={() => store.setStep(5)}
             >
-              <p className="mb-4 text-sm text-muted-foreground">
-                Mock gateway. Same idempotency key on every retry: {store.id ? "locked to this application" : "will lock after save"}.
-                No 30-minute lockout. No silent double charge.
-              </p>
-              <div className="rounded-xl border border-border bg-muted/40 p-4 text-sm">
-                <p><strong>Product</strong> {VISA_PRODUCT_LABEL}</p>
-                <p><strong>Amount</strong> {formatMoney(FEE_USD)} (no 2.5% surcharge in this demo)</p>
-                <p>
-                  <strong>Status</strong>{" "}
-                  {store.status === "submitted"
-                    ? "application submitted, waiting for payment"
-                    : store.status === "draft"
-                      ? "submit the application first"
-                      : "payment already processed"}
-                </p>
-              </div>
-              <div className="mt-4 grid gap-3">
-                <Button className="h-12 px-5 text-base" disabled={busy} onClick={() => void pay("success")}>
-                  {busy ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
-                  Pay successfully
-                </Button>
-                <Button variant="outline" className="h-12 px-5 text-base" disabled={busy} onClick={() => void pay("decline")}>
-                  Simulate decline (retry immediately)
-                </Button>
-                <Button variant="secondary" className="h-12 px-5 text-base" disabled={busy} onClick={() => void pay("charged_unconfirmed")}>
-                  Simulate “charged, not confirmed”
-                </Button>
-              </div>
-              {paymentStatus === "charged_unconfirmed" && (
-                <div className="mt-4 space-y-3 rounded-xl border border-accent bg-warning p-4">
-                  <p className="font-medium">We can see a charge may have gone through.</p>
-                  <p className="text-sm text-muted-foreground">
-                    The live portal would leave you guessing and lock retries for 30–120 minutes. We keep the same
-                    payment key and let you reconcile — not pay again.
+              <div className="ux4g-card ux4g-card-solid ux4g-card-vertical">
+                <div className="ux4g-card-body">
+                  <span className="sahaj-step-icon" style={{ width: "2.75rem", height: "2.75rem" }}>
+                    <Icon name="check" />
+                  </span>
+                  <h3 className="ux4g-title-m-strong ux4g-mt-s">Your preparation record is ready</h3>
+                  <p className="ux4g-body-m-default ux4g-mt-xs">
+                    Save your application ID before leaving this page. Sahaj Visa does not submit your visa,
+                    accept government fees, or make an approval decision.
                   </p>
-                  <Button className="h-12 px-5 text-base" disabled={busy} onClick={() => void reconcile()}>
-                    Confirm payment received (no second charge)
-                  </Button>
+                  <dl className="ux4g-grid ux4g-grid-auto-fit-250 ux4g-mt-s ux4g-bg-neutral-elevated ux4g-p-m ux4g-radius-m">
+                    <div>
+                      <dt className="ux4g-body-xs-default ux4g-text-neutral-tertiary">Application ID</dt>
+                      <dd className="ux4g-label-m-strong ux4g-mt-xs">{store.publicId}</dd>
+                    </div>
+                    <div>
+                      <dt className="ux4g-body-xs-default ux4g-text-neutral-tertiary">Visa route</dt>
+                      <dd className="ux4g-label-m-strong ux4g-mt-xs">{VISA_PRODUCT_LABEL}</dd>
+                    </div>
+                  </dl>
                 </div>
-              )}
-              {paymentStatus === "failed" && (
-                <div className="mt-4 space-y-3 rounded-xl border border-border bg-muted/40 p-4">
-                  <p className="font-medium">The card was declined.</p>
-                  <p className="text-sm text-muted-foreground">
-                    Nothing was taken. You can try again now. We will not lock you out for 30 minutes.
-                  </p>
-                </div>
-              )}
+              </div>
+              <div className="ux4g-grid ux4g-grid-auto-fit-250 ux4g-mt-s">
+                <button type="button" className="ux4g-btn ux4g-btn-outline-primary ux4g-btn-md" onClick={() => store.id && router.push(`/status/${store.id}`)}>
+                  View saved record
+                </button>
+                <a
+                  href={OFFICIAL_PORTAL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="ux4g-btn ux4g-btn-primary ux4g-btn-md"
+                >
+                  Continue to official portal <Icon name="open_in_new" />
+                </a>
+              </div>
             </AccordionStep>
           </div>
         </div>
 
-        <aside className="hidden lg:block lg:self-start">
+        <aside className="sahaj-wizard-sidebar">
           <GuidelinesPanel step={step} />
         </aside>
       </div>
 
-      <div className="mt-6 lg:hidden">
+      <div className="ux4g-mt-s sahaj-wizard-mobile-only">
         <GuidelinesPanel step={step} />
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-background/95 px-4 py-3 backdrop-blur lg:hidden">
+      <div className="sahaj-wizard-mobile-bar sahaj-wizard-mobile-only">
         {nav}
       </div>
     </div>
@@ -927,51 +827,51 @@ function UploadCard({
   helpField: string;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-4">
-      <Field label={title} hint={hint} helpField={helpField} why={why}>
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <label className={cn("relative inline-flex h-12 min-h-12 cursor-pointer items-center justify-center overflow-hidden rounded-lg border border-input bg-background px-4 text-sm font-medium", busy && "opacity-50")}>
-            Upload as-is
-            <input
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              className="absolute inset-0 cursor-pointer opacity-0"
-              disabled={busy}
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) onRaw(file);
-              }}
-            />
-          </label>
-          <label className={cn("relative inline-flex h-12 min-h-12 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground", busy && "opacity-50")}>
-            {prepareLabel}
-            <input
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              className="absolute inset-0 cursor-pointer opacity-0"
-              disabled={busy}
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) onPrepare(file);
-              }}
-            />
-          </label>
-        </div>
-      </Field>
-      {preview && (
-        <div className="mt-4 flex items-start gap-4">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={preview.dataUrl} alt="" className="size-28 rounded-lg object-cover ring-1 ring-border" />
-          <p className="text-sm text-muted-foreground">
-            {preview.fileName}
-            <br />
-            {preview.width && preview.height ? `${preview.width}×${preview.height}px · ` : ""}
-            {Math.round(preview.bytes / 1024)} KB
-            {preview.prepared ? " · prepared on this device" : " · original file"}
-          </p>
-        </div>
-      )}
-      <IssueList issues={issues} />
+    <div className="ux4g-card ux4g-card-outline ux4g-card-vertical">
+      <div className="ux4g-card-body">
+        <Field label={title} hint={hint} helpField={helpField} why={why}>
+          <div className="sahaj-upload-actions">
+            <label className={cn("ux4g-btn ux4g-btn-outline-neutral ux4g-btn-md sahaj-file-input-label", busy && "ux4g-opacity-50")}>
+              Upload as-is
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                disabled={busy}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) onRaw(file);
+                }}
+              />
+            </label>
+            <label className={cn("ux4g-btn ux4g-btn-primary ux4g-btn-md sahaj-file-input-label", busy && "ux4g-opacity-50")}>
+              {prepareLabel}
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                disabled={busy}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) onPrepare(file);
+                }}
+              />
+            </label>
+          </div>
+        </Field>
+        {preview ? (
+          <div className="ux4g-d-flex ux4g-ai-start ux4g-gap-x-s ux4g-mt-s">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={preview.dataUrl} alt="" className="sahaj-upload-preview" />
+            <p className="ux4g-body-m-default ux4g-text-neutral-tertiary">
+              {preview.fileName}
+              <br />
+              {preview.width && preview.height ? `${preview.width}×${preview.height}px · ` : ""}
+              {Math.round(preview.bytes / 1024)} KB
+              {preview.prepared ? " · prepared on this device" : " · original file"}
+            </p>
+          </div>
+        ) : null}
+        <IssueList issues={issues} />
+      </div>
     </div>
   );
 }

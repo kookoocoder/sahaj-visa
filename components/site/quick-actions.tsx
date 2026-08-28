@@ -1,37 +1,24 @@
 import Link from "next/link";
-import {
-  CloudUpload,
-  CreditCard,
-  FileSearch,
-  IdCard,
-  Monitor,
-  PencilLine,
-  Printer,
-} from "lucide-react";
 import { QUICK_ACTIONS } from "@/lib/nav";
+import { Icon } from "@/components/site/icon";
 import { cn } from "@/lib/utils";
 
-const ICONS = [FileSearch, Monitor, PencilLine, CreditCard, Printer, IdCard, CloudUpload];
+const ICONS = ["draw", "history", "policy"];
 
 export function QuickActions({ className }: { className?: string }) {
   return (
-    <ul className={cn("grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7", className)}>
-      {QUICK_ACTIONS.map((action, i) => {
-        const Icon = ICONS[i] ?? Monitor;
-        return (
-          <li key={`${action.label}-${i}`}>
-            <Link
-              href={action.href}
-              className="portal-shadow-hover flex h-full flex-col items-center gap-2 rounded-xl border border-border bg-card px-3 py-4 text-center"
-            >
-              <span className="flex size-12 items-center justify-center rounded-full bg-info text-primary">
-                <Icon className="size-6" aria-hidden />
-              </span>
-              <span className="text-xs font-medium leading-snug text-foreground sm:text-sm">{action.label}</span>
-            </Link>
-          </li>
-        );
-      })}
+    <ul className={cn("ux4g-grid ux4g-grid-auto-fit-250", className)}>
+      {QUICK_ACTIONS.map((action, i) => (
+        <li key={`${action.label}-${i}`}>
+          <Link href={action.href} className="ux4g-card ux4g-card-outline ux4g-card-vertical ux4g-w-100">
+            <div className="ux4g-card-body ux4g-d-flex ux4g-flex-column ux4g-ai-center ux4g-text-center">
+              <Icon name={ICONS[i] ?? "open_in_new"} className="ux4g-fs-32 ux4g-text-primary" />
+              <span className="ux4g-card-title ux4g-mt-xs">{action.label}</span>
+              <span className="ux4g-card-sub-title">{action.description}</span>
+            </div>
+          </Link>
+        </li>
+      ))}
     </ul>
   );
 }

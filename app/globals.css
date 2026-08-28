@@ -1,13 +1,31 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:is([data-theme="dark"] *));
+
+/* Brand retheme: swap the UX4G design-system default purple for a civic navy.
+   These override the design-system's own --ux4g-color-primary-* scale, so every
+   component that already consumes it (buttons, topbar, footer, links, focus rings)
+   picks up navy automatically without touching component classes. */
+:root {
+  --ux4g-color-primary-50: #eef3fa;
+  --ux4g-color-primary-100: #d7e4f2;
+  --ux4g-color-primary-200: #aecae6;
+  --ux4g-color-primary-300: #7fa8d3;
+  --ux4g-color-primary-400: #4c81ba;
+  --ux4g-color-primary-500: #2c5f97;
+  --ux4g-color-primary-600: #123a6e;
+  --ux4g-color-primary-700: #0e2c56;
+  --ux4g-color-primary-800: #0a2143;
+  --ux4g-color-primary-900: #071730;
+  --ux4g-color-primary-950: #040f20;
+}
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-figtree);
-  --font-heading: var(--font-figtree);
+  --font-sans: var(--ux4g-font-family-base);
+  --font-heading: var(--ux4g-font-family-display);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -43,84 +61,54 @@
   --color-warning-foreground: var(--warning-foreground);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
-  --color-navy: var(--navy);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-sm: var(--ux4g-radius-sm, 0.25rem);
+  --radius-md: var(--ux4g-radius-md, 0.5rem);
+  --radius-lg: var(--ux4g-radius-lg, 0.75rem);
+  --radius-xl: var(--ux4g-radius-xl, 1rem);
 }
 
 :root {
-  --background: oklch(0.985 0.008 250);
-  --foreground: oklch(0.24 0.05 250);
-  --card: oklch(0.995 0.004 250);
-  --card-foreground: oklch(0.24 0.05 250);
-  --popover: oklch(0.995 0.004 250);
-  --popover-foreground: oklch(0.24 0.05 250);
-  --primary: oklch(0.38 0.11 250);
-  --primary-foreground: oklch(0.99 0.01 95);
-  --secondary: oklch(0.94 0.02 250);
-  --secondary-foreground: oklch(0.28 0.06 250);
-  --muted: oklch(0.95 0.015 250);
-  --muted-foreground: oklch(0.48 0.04 250);
-  --accent: oklch(0.82 0.12 75);
-  --accent-foreground: oklch(0.32 0.08 55);
-  --destructive: oklch(0.52 0.18 25);
-  --border: oklch(0.9 0.02 250);
-  --input: oklch(0.86 0.03 250);
-  --ring: oklch(0.38 0.11 250);
-  --navy: oklch(0.28 0.09 250);
-  --info: oklch(0.95 0.03 240);
-  --info-foreground: oklch(0.32 0.1 250);
-  --warning: oklch(0.96 0.04 85);
-  --warning-foreground: oklch(0.42 0.12 55);
-  --success: oklch(0.95 0.04 155);
-  --success-foreground: oklch(0.32 0.08 155);
-  --chart-1: oklch(0.38 0.11 250);
-  --chart-2: oklch(0.62 0.14 75);
-  --chart-3: oklch(0.55 0.12 155);
-  --chart-4: oklch(0.5 0.1 25);
-  --chart-5: oklch(0.45 0.08 280);
-  --radius: 0.5rem;
-  --sidebar: oklch(0.32 0.09 250);
-  --sidebar-foreground: oklch(0.98 0.01 250);
-  --sidebar-primary: oklch(0.98 0.01 250);
-  --sidebar-primary-foreground: oklch(0.28 0.09 250);
-  --sidebar-accent: oklch(0.4 0.1 250);
-  --sidebar-accent-foreground: oklch(0.98 0.01 250);
-  --sidebar-border: oklch(0.4 0.08 250);
-  --sidebar-ring: oklch(0.7 0.08 250);
+  --ux4g-font-family-base: var(--font-noto-sans), "Noto Sans", system-ui, sans-serif;
+  --ux4g-font-family-display: var(--font-noto-display), "Noto Sans Display", "Noto Sans", sans-serif;
+  --background: var(--ux4g-bg-neutral, #fafafa);
+  --foreground: var(--ux4g-text-neutral-primary, #171717);
+  --card: var(--ux4g-bg-neutral-elevated, #ffffff);
+  --card-foreground: var(--ux4g-text-neutral-primary, #171717);
+  --popover: var(--ux4g-bg-neutral-elevated, #ffffff);
+  --popover-foreground: var(--ux4g-text-neutral-primary, #171717);
+  --primary: var(--ux4g-bg-primary-strong, #123a6e);
+  --primary-foreground: var(--ux4g-text-white, #fafafa);
+  --secondary: var(--ux4g-bg-primary, #eef3fa);
+  --secondary-foreground: var(--ux4g-text-brand-primary-default, #0e2c56);
+  --muted: var(--ux4g-bg-neutral-soft, #f5f5f5);
+  --muted-foreground: var(--ux4g-text-neutral-secondary, #525252);
+  --accent: var(--ux4g-bg-secondary-emphasis, #ffbe6f);
+  --accent-foreground: var(--ux4g-text-status-warning, #7a370b);
+  --destructive: var(--ux4g-bg-error-strong, #8a1a16);
+  --border: var(--ux4g-border-color-neutral-subtle, #d9d9d9);
+  --input: var(--ux4g-control-border-default, #737373);
+  --ring: var(--ux4g-border-color-primary-strong, #123a6e);
+  --info: var(--ux4g-bg-info, #e8f7fc);
+  --info-foreground: var(--ux4g-text-status-info, #0b5c6e);
+  --warning: var(--ux4g-bg-warning, #fff4eb);
+  --warning-foreground: var(--ux4g-text-status-warning, #7a370b);
+  --success: var(--ux4g-bg-success, #e8f6ee);
+  --success-foreground: var(--ux4g-text-status-success, #0a5c2c);
 }
 
-.dark {
-  --background: oklch(0.18 0.03 250);
-  --foreground: oklch(0.97 0.01 250);
-  --card: oklch(0.22 0.03 250);
-  --card-foreground: oklch(0.97 0.01 250);
-  --popover: oklch(0.22 0.03 250);
-  --popover-foreground: oklch(0.97 0.01 250);
-  --primary: oklch(0.72 0.1 250);
-  --primary-foreground: oklch(0.18 0.04 250);
-  --secondary: oklch(0.28 0.04 250);
-  --secondary-foreground: oklch(0.97 0.01 250);
-  --muted: oklch(0.28 0.03 250);
-  --muted-foreground: oklch(0.72 0.03 250);
-  --accent: oklch(0.7 0.12 75);
-  --accent-foreground: oklch(0.2 0.04 55);
-  --destructive: oklch(0.7 0.16 25);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 16%);
-  --ring: oklch(0.72 0.1 250);
-  --navy: oklch(0.22 0.06 250);
-  --info: oklch(0.28 0.05 240);
-  --info-foreground: oklch(0.86 0.04 240);
-  --warning: oklch(0.3 0.05 85);
-  --warning-foreground: oklch(0.9 0.06 85);
-  --success: oklch(0.28 0.05 155);
-  --success-foreground: oklch(0.86 0.05 155);
+[data-theme="dark"] {
+  --background: var(--ux4g-bg-neutral, #121820);
+  --foreground: var(--ux4g-text-neutral-primary, #fafafa);
+  --card: var(--ux4g-bg-neutral-elevated, #0e131a);
+  --card-foreground: var(--ux4g-text-neutral-primary, #fafafa);
+  --popover: var(--ux4g-bg-neutral-elevated, #0e131a);
+  --popover-foreground: var(--ux4g-text-neutral-primary, #fafafa);
+  --muted: var(--ux4g-bg-neutral-soft, #1b2430);
+  --muted-foreground: var(--ux4g-text-neutral-secondary, #d9d9d9);
+  --border: var(--ux4g-border-color-neutral-subtle, #525252);
+  --input: var(--ux4g-control-border-default, #a1a1a1);
+  --ring: var(--ux4g-border-color-primary-strong, #7fa8d3);
+  --primary-foreground: var(--ux4g-text-white, #fafafa);
 }
 
 html.text-size-sm {
@@ -138,19 +126,25 @@ html.text-size-lg {
     @apply border-border outline-ring/50;
   }
   html {
-    @apply font-sans;
+    font-family: var(--ux4g-font-family-base);
     scroll-behavior: smooth;
   }
-  body {
-    @apply bg-background text-foreground antialiased;
+  body,
+  .sahaj-body {
+    background: var(--ux4g-bg-neutral, #fafafa);
+    color: var(--ux4g-text-neutral-primary, #171717);
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
   }
   h1,
   h2,
   h3,
-  .font-heading {
-    font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
-    font-weight: 700;
-    letter-spacing: -0.02em;
+  .font-heading,
+  .ux4g-card-title,
+  .ux4g-heading-xs-strong,
+  .ux4g-title-m-strong {
+    font-family: var(--ux4g-font-family-display);
   }
   @media (prefers-reduced-motion: reduce) {
     html {
@@ -163,6 +157,261 @@ html.text-size-lg {
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
+  }
+}
+
+.sahaj-main {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.sahaj-main:focus {
+  outline: none;
+}
+
+/* Custom: jaali lattice motif — architectural, not heraldic */
+.sahaj-jaali {
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='none' stroke='%23123a6e' stroke-width='1' opacity='0.12'%3E%3Cpath d='M8 10c4 0 4 8 0 8s-4-8 0-8zm8 0c4 0 4 8 0 8s-4-8 0-8zm8 0c4 0 4 8 0 8s-4-8 0-8zm8 0c4 0 4 8 0 8s-4-8 0-8z'/%3E%3Cpath d='M8 22c4 0 4 8 0 8s-4-8 0-8zm8 0c4 0 4 8 0 8s-4-8 0-8zm8 0c4 0 4 8 0 8s-4-8 0-8zm8 0c4 0 4 8 0 8s-4-8 0-8z'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 3rem 3rem;
+}
+
+@media (forced-colors: active) {
+  .sahaj-jaali {
+    display: none;
+  }
+}
+
+/* Custom: sticky civic header — UX4G navbar is not sticky */
+.sahaj-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--ux4g-bg-neutral-elevated);
+  box-shadow: var(--ux4g-shadow-sm, 0 1px 2px rgb(0 0 0 / 8%));
+}
+
+.sahaj-header .ux4g-navbar {
+  background: transparent;
+}
+
+.sahaj-header .ux4g-navbar-links a[aria-current="page"] {
+  color: var(--ux4g-color-primary-700);
+  font-weight: 600;
+}
+
+.sahaj-brand-hi {
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: var(--ux4g-text-brand-secondary-default, #9e480e);
+}
+
+/* Custom: cinematic visa hero with photography overlay */
+.sahaj-hero {
+  position: relative;
+  isolation: isolate;
+  min-height: min(38rem, 86svh);
+  overflow: hidden;
+  color: #fffdf8;
+}
+
+.sahaj-hero-media,
+.sahaj-hero-media img,
+.sahaj-masthead-media,
+.sahaj-masthead-media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sahaj-hero-media img {
+  animation: sahaj-kenburns 32s ease-in-out alternate infinite;
+  transform-origin: 55% 40%;
+}
+
+.sahaj-hero-veil {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgb(7 23 48 / 82%) 0%, rgb(7 23 48 / 58%) 46%, rgb(7 23 48 / 28%) 100%),
+    linear-gradient(180deg, rgb(7 23 48 / 18%) 0%, rgb(7 23 48 / 55%) 100%);
+}
+
+.sahaj-hero-copy {
+  position: relative;
+  z-index: 1;
+  padding-block: var(--ux4g-space-16, 4rem);
+}
+
+.sahaj-kicker {
+  font-family: var(--ux4g-font-family-base);
+  font-size: var(--ux4g-fs-18, 1.125rem);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--ux4g-color-primary-200, #aecae6);
+}
+
+/* Custom: uppercase section eyebrow on light backgrounds */
+.sahaj-kicker-light {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ux4g-color-primary-600, #123a6e);
+}
+
+.sahaj-hero h1 {
+  max-width: 18ch;
+  margin-top: var(--ux4g-space-3, 0.75rem);
+  font-size: clamp(2rem, 4.6vw, 3.75rem);
+  line-height: 1.12;
+  color: #fffdf8;
+}
+
+.sahaj-hero p.sahaj-lede {
+  max-width: 42rem;
+  margin-top: var(--ux4g-space-4, 1rem);
+  font-size: var(--ux4g-fs-18, 1.125rem);
+  line-height: 1.65;
+  color: rgb(255 253 248 / 88%);
+}
+
+.sahaj-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ux4g-space-3, 0.75rem);
+  margin-top: var(--ux4g-space-8, 2rem);
+}
+
+.sahaj-hero .ux4g-label-m-default {
+  color: rgb(255 253 248 / 90%);
+}
+
+/* Custom: inner-page photographic masthead */
+.sahaj-masthead {
+  position: relative;
+  isolation: isolate;
+  min-height: 14rem;
+  overflow: hidden;
+  color: #fffdf8;
+}
+
+.sahaj-masthead-veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgb(7 23 48 / 78%) 0%, rgb(7 23 48 / 42%) 100%);
+}
+
+.sahaj-masthead-copy {
+  position: relative;
+  z-index: 1;
+  padding-block: var(--ux4g-space-10, 2.5rem);
+}
+
+.sahaj-masthead h1 {
+  color: #fffdf8;
+  font-size: clamp(1.75rem, 3vw, 2.75rem);
+}
+
+.sahaj-masthead p {
+  color: rgb(255 253 248 / 82%);
+}
+
+/* Custom: restore readable lists — UX4G resets ul list-style */
+.sahaj-list {
+  list-style: disc;
+  padding-left: 1.25rem;
+}
+
+.sahaj-list li + li {
+  margin-top: 0.35rem;
+}
+
+/* Custom: destination mosaic */
+.sahaj-mosaic {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  grid-template-rows: 10.5rem 10.5rem;
+  gap: var(--ux4g-space-3, 0.75rem);
+}
+
+.sahaj-mosaic figure {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--ux4g-radius-md);
+  margin: 0;
+}
+
+.sahaj-mosaic figure:first-child {
+  grid-row: 1 / span 2;
+}
+
+.sahaj-mosaic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sahaj-mosaic figcaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0.65rem 0.8rem;
+  background: linear-gradient(transparent, rgb(4 15 32 / 82%));
+  color: #fffdf8;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+@media (max-width: 767px) {
+  .sahaj-mosaic {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 9rem 9rem 9rem;
+  }
+  .sahaj-mosaic figure:first-child {
+    grid-column: 1 / span 2;
+    grid-row: auto;
+    min-height: 12rem;
+  }
+}
+
+.sahaj-footer .ux4g-footer-wrapper {
+  padding: var(--ux4g-space-10, 2.5rem) var(--ux4g-space-6, 1.5rem) 0;
+  max-width: 80rem;
+  margin-inline: auto;
+}
+
+.sahaj-footer .ux4g-f-links {
+  gap: var(--ux4g-space-8, 2rem);
+}
+
+.sahaj-emblem {
+  width: 2.75rem;
+  height: 2.75rem;
+  display: block;
+}
+
+.sahaj-emblem.ux4g-navbar-logo {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+[data-theme="dark"] .sahaj-emblem.ux4g-navbar-logo {
+  filter: none;
+}
+
+@keyframes sahaj-kenburns {
+  from {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.08) translate3d(-1.5%, -1%, 0);
   }
 }
 
@@ -182,23 +431,650 @@ html.text-size-lg {
   animation: saved-pulse 0.7s ease-out;
 }
 
-.portal-shadow {
-  box-shadow: 0 8px 24px -12px oklch(0.28 0.09 250 / 18%);
+.sahaj-input-select,
+.sahaj-input-textarea {
+  width: 100%;
 }
 
-.portal-shadow-hover {
-  transition:
-    box-shadow 200ms ease,
-    transform 200ms ease,
-    border-color 200ms ease;
+.sahaj-card-photo {
+  position: relative;
+  min-height: 10.5rem;
 }
-.portal-shadow-hover:hover {
-  box-shadow: 0 14px 32px -14px oklch(0.28 0.09 250 / 28%);
-  transform: translateY(-1px);
+
+.sahaj-narrow-sm {
+  max-width: 40rem;
+}
+
+.sahaj-narrow {
+  max-width: 45rem;
+  margin-inline: auto;
+}
+
+/* Custom: subtle Ashoka-inspired backdrop for long forms */
+.sahaj-chakra-bg {
+  background:
+    radial-gradient(circle at 6% 8%, rgb(74 43 194 / 5%) 0%, transparent 38%),
+    radial-gradient(circle at 94% 92%, rgb(255 190 111 / 5%) 0%, transparent 34%),
+    var(--ux4g-bg-neutral, #fafafa);
+}
+
+/* Custom: two-column civic layouts */
+.sahaj-split {
+  display: grid;
+  gap: var(--ux4g-space-4, 1rem);
+}
+
+/* Custom: application wizard shell */
+.sahaj-wizard {
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding: var(--ux4g-space-6, 1.5rem) var(--ux4g-space-4, 1rem)
+    calc(9rem + env(safe-area-inset-bottom, 0px));
+}
+
+.sahaj-wizard-layout {
+  display: grid;
+  align-items: start;
+  gap: var(--ux4g-space-6, 1.5rem);
+}
+
+.sahaj-wizard-sidebar {
+  position: sticky;
+  top: 6rem;
+  display: none;
+}
+
+.sahaj-step-nav .ux4g-card-body {
+  padding: 0;
+}
+
+.sahaj-step-nav ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sahaj-step-nav li + li {
+  border-top: 1px solid var(--ux4g-border-color-neutral-default, #d9d9d9);
+}
+
+.sahaj-step-nav button {
+  display: flex;
+  width: 100%;
+  min-height: 3rem;
+  align-items: center;
+  gap: var(--ux4g-space-3, 0.75rem);
+  padding: var(--ux4g-space-3, 0.75rem) var(--ux4g-space-4, 1rem);
+  border: 0;
+  background: transparent;
+  text-align: left;
+  color: var(--ux4g-text-neutral-secondary, #404040);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.sahaj-step-nav button:hover:not(:disabled) {
+  background: var(--ux4g-bg-neutral-soft);
+}
+
+.sahaj-step-nav button[aria-current="step"] {
+  background: var(--ux4g-color-primary-50);
+  color: var(--ux4g-color-primary-800);
+  font-weight: 600;
+}
+
+.sahaj-step-nav button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.sahaj-step-icon {
+  display: inline-flex;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--ux4g-bg-neutral-soft);
+  color: var(--ux4g-color-primary-700);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.sahaj-step-nav button[aria-current="step"] .sahaj-step-icon {
+  background: var(--ux4g-color-primary-600);
+  color: #fffdf8;
+}
+
+.sahaj-step-nav button[data-done="true"]:not([aria-current="step"]) .sahaj-step-icon {
+  background: var(--ux4g-color-tertiary-100);
+  color: var(--ux4g-color-tertiary-700);
+}
+
+.sahaj-form-grid {
+  display: grid;
+  gap: var(--ux4g-space-4, 1rem);
+  grid-template-columns: 1fr;
+}
+
+.sahaj-form-grid-3 {
+  display: grid;
+  gap: var(--ux4g-space-4, 1rem);
+  grid-template-columns: 1fr;
+}
+
+.sahaj-form-span-2 {
+  grid-column: 1 / -1;
+}
+
+.sahaj-wizard-mobile-bar {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 20;
+  border-top: 1px solid var(--ux4g-border-color-neutral-default, #d9d9d9);
+  background: color-mix(in srgb, var(--ux4g-bg-neutral-elevated) 94%, transparent);
+  backdrop-filter: blur(8px);
+  padding: var(--ux4g-space-3, 0.75rem) var(--ux4g-space-4, 1rem)
+    max(0.75rem, env(safe-area-inset-bottom));
+}
+
+.sahaj-journey-band {
+  position: relative;
+  isolation: isolate;
+  min-height: 18rem;
+  overflow: hidden;
+  color: #fffdf8;
+}
+
+.sahaj-journey-band .sahaj-masthead-veil {
+  background: linear-gradient(90deg, rgb(6 25 48 / 84%) 0%, rgb(6 25 48 / 52%) 100%);
+}
+
+.sahaj-journey-band-copy {
+  position: relative;
+  z-index: 1;
+  padding-block: var(--ux4g-space-12, 3rem);
+}
+
+.sahaj-upload-preview {
+  width: 7rem;
+  height: 7rem;
+  object-fit: cover;
+  border-radius: var(--ux4g-radius-md);
+  border: 1px solid var(--ux4g-border-color-neutral-default, #d9d9d9);
+}
+
+.sahaj-resume-inline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ux4g-space-3, 0.75rem);
+}
+
+.sahaj-upload-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ux4g-space-3, 0.75rem);
+}
+
+.sahaj-file-input-label {
+  position: relative;
+  cursor: pointer;
+}
+
+.sahaj-file-input-label input[type="file"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+@media (min-width: 640px) {
+  .sahaj-resume-inline {
+    flex-direction: row;
+    align-items: flex-end;
+  }
+  .sahaj-upload-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+@media (min-width: 640px) {
+  .sahaj-form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 992px) {
+  .sahaj-split-journey {
+    grid-template-columns: minmax(0, 1.1fr) minmax(16rem, 0.9fr);
+  }
+  .sahaj-split-help {
+    grid-template-columns: minmax(0, 1fr) 18rem;
+  }
+  .sahaj-wizard {
+    padding-bottom: var(--ux4g-space-6, 1.5rem);
+  }
+  .sahaj-wizard-layout {
+    grid-template-columns: 15.5rem minmax(0, 1fr) 15.5rem;
+  }
+  .sahaj-wizard-sidebar {
+    display: block;
+  }
+  .sahaj-form-grid-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .sahaj-wizard-mobile-only {
+    display: none !important;
+  }
+}
+
+@media (max-width: 991px) {
+  .sahaj-wizard-desktop-only {
+    display: none !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .portal-shadow-hover:hover {
-    transform: none;
+  .sahaj-hero-media img {
+    animation: none;
   }
+}
+
+/* ---------------------------------------------------------------------- */
+/* Light home hero — split layout, photo fades into the page background   */
+/* ---------------------------------------------------------------------- */
+.sahaj-hero-light {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+  padding-block: 2.5rem 2rem;
+}
+
+@media (min-width: 992px) {
+  .sahaj-hero-light {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
+    padding-block: 4rem 2.5rem;
+  }
+}
+
+.sahaj-hero-light h1 {
+  max-width: 16ch;
+  margin-top: 0.75rem;
+  font-size: clamp(2rem, 4.4vw, 3.5rem);
+  line-height: 1.1;
+  color: var(--ux4g-text-neutral-primary, #171717);
+}
+
+.sahaj-hero-light h1 .sahaj-accent {
+  color: var(--ux4g-color-primary-600, #123a6e);
+}
+
+.sahaj-hero-light p.sahaj-lede {
+  max-width: 34rem;
+  margin-top: 1rem;
+  font-size: var(--ux4g-fs-16, 1rem);
+  line-height: 1.6;
+  color: var(--ux4g-text-neutral-secondary, #525252);
+}
+
+.sahaj-hero-photo {
+  position: relative;
+  isolation: isolate;
+  aspect-ratio: 4 / 3.4;
+  border-radius: var(--ux4g-radius-xl, 1.25rem);
+  overflow: hidden;
+}
+
+.sahaj-hero-photo img {
+  object-fit: cover;
+  mask-image: radial-gradient(120% 115% at 66% 38%, black 58%, transparent 96%);
+  -webkit-mask-image: radial-gradient(120% 115% at 66% 38%, black 58%, transparent 96%);
+}
+
+@media (max-width: 991px) {
+  .sahaj-hero-photo {
+    aspect-ratio: 16 / 11;
+  }
+  .sahaj-hero-photo img {
+    mask-image: radial-gradient(130% 120% at 50% 40%, black 62%, transparent 97%);
+    -webkit-mask-image: radial-gradient(130% 120% at 50% 40%, black 62%, transparent 97%);
+  }
+}
+
+.sahaj-feature-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.sahaj-feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.sahaj-feature-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--ux4g-radius-md, 0.5rem);
+  background: var(--ux4g-color-primary-50, #eef3fa);
+}
+
+.sahaj-feature-icon .ux4g-icon-outlined {
+  color: var(--ux4g-color-primary-600, #123a6e) !important;
+}
+
+.sahaj-feature-copy p:first-child {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--ux4g-text-neutral-primary, #171717);
+}
+
+.sahaj-feature-copy p:last-child {
+  font-size: 0.8rem;
+  color: var(--ux4g-text-neutral-tertiary, #737373);
+}
+
+.sahaj-hero-actions-light {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.sahaj-resume-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--ux4g-color-primary-600, #123a6e);
+}
+
+.sahaj-resume-link .ux4g-icon-outlined {
+  color: var(--ux4g-color-primary-600, #123a6e) !important;
+}
+
+.sahaj-resume-link .sahaj-resume-copy p:first-child {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.sahaj-resume-link .sahaj-resume-copy p:last-child {
+  font-size: 0.78rem;
+  color: var(--ux4g-text-neutral-tertiary, #737373);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Section heads — centered eyebrow, or eyebrow + action on one row       */
+/* ---------------------------------------------------------------------- */
+.sahaj-section-head {
+  max-width: 40rem;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.sahaj-section-head p.ux4g-body-m-default {
+  color: var(--ux4g-text-neutral-secondary, #525252);
+}
+
+.sahaj-section-head-split {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sahaj-section-head-split p.ux4g-body-m-default {
+  max-width: 34rem;
+  color: var(--ux4g-text-neutral-secondary, #525252);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Visa route cards — icon badge overlapping the photo                   */
+/* ---------------------------------------------------------------------- */
+.sahaj-visa-card-badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 1;
+  display: inline-flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--ux4g-color-primary-600, #123a6e);
+  box-shadow: 0 2px 6px rgb(7 23 48 / 30%);
+}
+
+.sahaj-visa-card-badge .ux4g-icon-outlined {
+  color: #fffdf8 !important;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Destinations strip — horizontal scroller with arrow controls           */
+/* ---------------------------------------------------------------------- */
+.sahaj-strip-scroller {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding-bottom: 0.25rem;
+}
+
+.sahaj-strip-scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.sahaj-strip-item {
+  position: relative;
+  flex: 0 0 auto;
+  width: min(78vw, 15rem);
+  height: 11rem;
+  margin: 0;
+  scroll-snap-align: start;
+  border-radius: var(--ux4g-radius-md, 0.5rem);
+  overflow: hidden;
+}
+
+.sahaj-strip-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sahaj-strip-item figcaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0.75rem 0.85rem;
+  background: linear-gradient(transparent, rgb(4 15 32 / 82%));
+  color: #fffdf8;
+}
+
+.sahaj-strip-item figcaption .sahaj-strip-title {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.sahaj-strip-item figcaption .sahaj-strip-sub {
+  display: block;
+  font-size: 0.72rem;
+  opacity: 0.85;
+}
+
+.sahaj-strip-nav {
+  display: inline-flex;
+  width: 2.25rem;
+  height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid var(--ux4g-border-color-neutral-default, #d9d9d9);
+  background: var(--ux4g-bg-neutral-elevated, #fff);
+  color: var(--ux4g-color-primary-600, #123a6e);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.sahaj-strip-nav:hover {
+  background: var(--ux4g-color-primary-50, #eef3fa);
+}
+
+.sahaj-strip-nav .ux4g-icon-outlined {
+  color: var(--ux4g-color-primary-600, #123a6e) !important;
+  font-size: 1.1rem;
+}
+
+@media (min-width: 768px) {
+  .sahaj-strip-item {
+    width: calc((100% - 4 * 0.75rem) / 5);
+    height: 13rem;
+  }
+}
+
+/* ---------------------------------------------------------------------- */
+/* "How it works" stepper — numbered circles joined by a dotted line      */
+/* ---------------------------------------------------------------------- */
+.sahaj-steps {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+@media (min-width: 768px) {
+  .sahaj-steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .sahaj-steps::before {
+    content: "";
+    position: absolute;
+    top: 1.35rem;
+    left: 16.5%;
+    right: 16.5%;
+    border-top: 2px dashed var(--ux4g-border-color-neutral-default, #d9d9d9);
+    z-index: 0;
+  }
+}
+
+.sahaj-step {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.sahaj-step-circle {
+  display: inline-flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+  border-radius: 999px;
+  background: var(--ux4g-color-primary-600, #123a6e);
+  color: #fffdf8;
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: 0 0 0 6px var(--ux4g-bg-neutral, #fafafa);
+}
+
+.sahaj-step-icon {
+  display: block;
+  margin: 0 auto 0.5rem;
+  color: var(--ux4g-color-primary-600, #123a6e);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Reassurance band — light-tinted strip of small feature callouts        */
+/* ---------------------------------------------------------------------- */
+.sahaj-assurance-band {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem 1.5rem;
+  border-radius: var(--ux4g-radius-lg, 0.75rem);
+  background: var(--ux4g-color-primary-50, #eef3fa);
+  padding: 1.25rem 1.5rem;
+}
+
+.sahaj-assurance-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  flex: 1 1 12rem;
+}
+
+.sahaj-assurance-item .ux4g-icon-outlined {
+  color: var(--ux4g-color-primary-600, #123a6e);
+}
+
+.sahaj-assurance-item p:first-child {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--ux4g-text-neutral-primary, #171717);
+}
+
+.sahaj-assurance-item p:last-child {
+  font-size: 0.78rem;
+  color: var(--ux4g-text-neutral-tertiary, #737373);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Dark CTA band — full-bleed navy strip above the footer                 */
+/* ---------------------------------------------------------------------- */
+.sahaj-help-band {
+  background: var(--ux4g-color-primary-800, #0a2143);
+  color: #fffdf8;
+}
+
+.sahaj-help-band-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-block: 2rem;
+}
+
+.sahaj-help-band h2 {
+  color: #fffdf8;
+  font-size: 1.5rem;
+}
+
+.sahaj-help-band p {
+  color: rgb(255 253 248 / 78%);
+}
+
+.sahaj-help-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.sahaj-help-contact a {
+  color: #fffdf8;
+}
+
+.sahaj-help-contact a .ux4g-icon-outlined {
+  color: #fffdf8 !important;
+}
+
+.sahaj-help-contact .ux4g-label-m-default {
+  color: rgb(255 253 248 / 68%);
 }

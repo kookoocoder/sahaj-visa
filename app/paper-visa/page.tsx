@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CloudUpload, FileText, IdCard, Monitor, Printer } from "lucide-react";
 import {
   AdvisoryCallout,
   Breadcrumbs,
@@ -9,22 +8,28 @@ import {
   InfoCallout,
   PageMasthead,
 } from "@/components/site/chrome";
+import { Icon } from "@/components/site/icon";
 
 export const metadata: Metadata = { title: "Regular / Paper visa" };
 
 const SIDEBAR = [
-  { href: "/apply", label: "Apply here for Regular / Paper Visa", icon: Monitor },
-  { href: "/track", label: "Complete partially filled form", icon: FileText },
-  { href: "/track", label: "Check your visa status", icon: IdCard },
-  { href: "/track", label: "Print visa application", icon: Printer },
-  { href: "/apply", label: "Re-upload data", icon: CloudUpload },
+  { href: "https://indianvisaonline.gov.in/visa/", label: "Open official regular visa portal", icon: "open_in_new" },
+  { href: "/instructions", label: "Review document requirements", icon: "description" },
+  { href: "https://indianvisaonline.gov.in/visa/", label: "Resume or print official application", icon: "print" },
+  { href: "/contact", label: "Find official support links", icon: "support_agent" },
 ];
 
 export default function PaperVisaPage() {
   return (
     <div>
-      <PageMasthead title="Regular / Paper Visa Application" subtitle="Mission or Post submission — mapped, not fully implemented" />
-      <Container className="py-6 sm:py-8">
+      <PageMasthead
+        kicker="नियमित वीज़ा"
+        title="Regular / Paper Visa"
+        subtitle="Prepare online, then submit through the responsible Indian Mission or Post"
+        image="/india/india-gate.jpg"
+        imageAlt="India Gate, New Delhi"
+      />
+      <Container className="ux4g-py-xs">
         <Breadcrumbs
           items={[
             { href: "/", label: "Home" },
@@ -33,85 +38,58 @@ export default function PaperVisaPage() {
           ]}
         />
 
-        <div className="mt-6 grid gap-6 lg:grid-cols-[16rem_minmax(0,1fr)_16rem]">
-          <aside className="space-y-4">
-            <nav className="overflow-hidden rounded-xl bg-navy text-primary-foreground">
-              <ul>
-                {SIDEBAR.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <li key={item.label} className="border-b border-white/10 last:border-0">
-                      <Link
-                        href={item.href}
-                        className="flex min-h-12 items-center gap-3 px-4 py-3 text-sm hover:bg-white/10"
-                      >
-                        <Icon className="size-4 shrink-0" aria-hidden />
-                        {item.label}
-                      </Link>
-                    </li>
-                  );
-                })}
+        <div className="sahaj-split sahaj-split-help ux4g-mt-s">
+          <aside>
+            <nav className="ux4g-card ux4g-card-solid ux4g-card-vertical" aria-label="Related services">
+              <ul className="ux4g-f-link-list ux4g-p-m">
+                {SIDEBAR.map((item) => (
+                  <li key={item.label}>
+                    <Link href={item.href} className="ux4g-d-flex ux4g-ai-center ux4g-gap-x-s ux4g-text-link-sm">
+                      <Icon name={item.icon} />
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </nav>
-            <HelpdeskCard dark />
+            <div className="ux4g-mt-s">
+              <HelpdeskCard />
+            </div>
           </aside>
 
-          <div className="space-y-6">
-            <ol className="grid gap-3 sm:grid-cols-3">
+          <div className="ux4g-d-flex ux4g-flex-column ux4g-gap-y-s">
+            <ol className="ux4g-grid ux4g-grid-auto-fit-250">
               {[
-                { n: "1", t: "Apply online", d: "Fill the form. In this prototype the working path is still e-Tourist." },
-                { n: "2", t: "Submit documents", d: "A real paper visa is lodged at a Mission or Post with the printed form." },
-                { n: "3", t: "Receive passport / visa", d: "Collection is handled by the Mission. We do not simulate that queue." },
+                { n: "1", t: "Apply online", d: "Complete the regular visa form on the Government of India portal." },
+                { n: "2", t: "Submit documents", d: "Print and sign the form, then submit the required documents and passport." },
+                { n: "3", t: "Receive passport / visa", d: "Collection or return delivery is handled by the Mission or application centre." },
               ].map((step) => (
-                <li key={step.n} className="rounded-xl border border-border bg-card p-4">
-                  <span className="flex size-8 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
-                    {step.n}
-                  </span>
-                  <p className="mt-3 font-heading text-lg">{step.t}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">{step.d}</p>
+                <li key={step.n} className="ux4g-card ux4g-card-outline ux4g-card-vertical">
+                  <div className="ux4g-card-body">
+                    <span className="ux4g-tag-tonal-primary">{step.n}</span>
+                    <p className="ux4g-card-title ux4g-mt-xs">{step.t}</p>
+                    <p className="ux4g-card-sub-title">{step.d}</p>
+                  </div>
                 </li>
               ))}
             </ol>
             <InfoCallout title="Instructions">
               <p>
                 A regular visa is applied online and then submitted in person or by post to an Indian
-                Mission. That physical step is why this category is informational in the demo. If you
-                want to feel the resumable form, use the e-Visa path.
+                Mission. Requirements, appointment rules, fees, and processing times vary by location.
+                Confirm them with the Mission responsible for your place of residence.
               </p>
-              <Link href="/apply" className="mt-3 inline-flex font-medium text-primary underline-offset-2 hover:underline">
-                Open the working e-Tourist form →
+              <Link href="/apply" className="ux4g-alert-link">
+                Prepare an e-Tourist application
               </Link>
             </InfoCallout>
-          </div>
-
-          <aside className="space-y-4">
-            <div className="rounded-xl border border-border bg-card p-4">
-              <p className="font-heading text-base">Useful weblinks</p>
-              <ul className="mt-3 space-y-2 text-sm">
-                <li>
-                  <a className="text-primary underline-offset-2 hover:underline" href="https://www.mha.gov.in/" target="_blank" rel="noreferrer">
-                    Ministry of Home Affairs
-                  </a>
-                </li>
-                <li>
-                  <a className="text-primary underline-offset-2 hover:underline" href="https://www.mea.gov.in/" target="_blank" rel="noreferrer">
-                    Ministry of External Affairs
-                  </a>
-                </li>
-                <li>
-                  <a className="text-primary underline-offset-2 hover:underline" href="https://www.boi.gov.in/" target="_blank" rel="noreferrer">
-                    Bureau of Immigration
-                  </a>
-                </li>
-              </ul>
-            </div>
             <AdvisoryCallout>
               <p>
-                There are no extra fees for “emergency” processing on this prototype, and none you
-                should pay to an agent for a real visa either.
+                Be cautious of anyone promising guaranteed or unofficial “emergency” approval.
+                Use only the Mission’s published payment channels.
               </p>
             </AdvisoryCallout>
-          </aside>
+          </div>
         </div>
       </Container>
     </div>

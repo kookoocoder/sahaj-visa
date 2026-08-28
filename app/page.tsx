@@ -1,163 +1,285 @@
 import Link from "next/link";
-import { FileText, Landmark, Plane, UserRound } from "lucide-react";
-import { AdvisoryCallout, Container, HelpdeskCard, InfoCallout, PageMasthead } from "@/components/site/chrome";
-import { QuickActions } from "@/components/site/quick-actions";
-import { DEMO_EMAIL, DEMO_PASSWORD, PRODUCT_NAME } from "@/lib/constants";
-import { cn } from "@/lib/utils";
+import Image from "next/image";
+import { Container } from "@/components/site/chrome";
+import { Icon } from "@/components/site/icon";
+import { DestinationsStrip } from "@/components/site/destinations-strip";
+import { OFFICIAL_PORTAL } from "@/lib/constants";
+import { OFFICIAL_HELPDESK } from "@/lib/nav";
+
+const HERO_FEATURES = [
+  {
+    icon: "shield_lock",
+    title: "Careful & independent",
+    caption: "Not a government website",
+  },
+  {
+    icon: "checklist",
+    title: "Simple process",
+    caption: "Prepare in 3 easy steps",
+  },
+  {
+    icon: "diversity_3",
+    title: "Built for travellers",
+    caption: "Plain-language guidance",
+  },
+];
 
 const SERVICES = [
   {
-    href: "/paper-visa",
-    title: "Regular / Paper Visa",
-    body: "For applicants who must apply through an Indian Mission or Post. The paper journey is mapped here; the working demo is e-Tourist.",
-    cta: "Apply Here",
-    icon: FileText,
-    iconClass: "bg-info text-primary",
+    href: "/e-visa",
+    icon: "flight_takeoff",
+    title: "e-Visa",
+    hindi: "ई-वीज़ा",
+    body: "Prepare tourism, business, medical and other eligible electronic visa details before the official submission.",
+    cta: "Apply Now",
+    image: "/india/taj.jpg",
+    alt: "Taj Mahal, Agra",
   },
   {
-    href: "/e-visa",
-    title: "e-Visa",
-    body: "Tourism, business, medical and conference categories. This prototype runs the 30-day e-Tourist path end to end.",
-    cta: "Apply e-Visa",
-    icon: Landmark,
-    iconClass: "bg-success text-success-foreground",
+    href: "/paper-visa",
+    icon: "description",
+    title: "Regular / Paper Visa",
+    hindi: "नियमित वीज़ा",
+    body: "For applicants who must complete the process through an Indian Mission, Post, or visa centre.",
+    cta: "Learn More",
+    image: "/india/india-gate.jpg",
+    alt: "India Gate, New Delhi",
   },
   {
     href: "/visa-on-arrival",
+    icon: "flight_land",
     title: "Visa on Arrival",
+    hindi: "आगमन पर वीज़ा",
     body: "Facility for eligible nationals of Japan, South Korea and the UAE at selected airports.",
-    cta: "View Eligibility",
-    icon: Plane,
-    iconClass: "bg-warning text-accent-foreground",
+    cta: "Check Eligibility",
+    image: "/india/kerala.jpg",
+    alt: "Alleppey backwaters, Kerala",
   },
   {
     href: "/afghanistan",
+    icon: "public",
     title: "Afghan Visa",
-    body: "Entry, medical, student and other categories for Afghanistan nationals, explained in plain language.",
-    cta: "Apply Here",
-    icon: UserRound,
-    iconClass: "bg-info text-primary",
+    hindi: "अफगान वीज़ा",
+    body: "Dedicated official routes for Afghanistan nationals applying for entry, medical, student and other visas.",
+    cta: "View Details",
+    image: "/india/lotus.jpg",
+    alt: "Lotus Temple, New Delhi",
   },
+];
+
+const JOURNEY = [
+  { icon: "edit_document", title: "Fill Application", body: "Provide your details and travel information in the online form." },
+  { icon: "upload_file", title: "Upload Documents", body: "Upload required documents and check them carefully before you continue." },
+  { icon: "mark_email_read", title: "Get Ready to Apply", body: "Take your checked, complete record to the official application portal." },
+];
+
+const ASSURANCE = [
+  { icon: "lock", title: "Secure & Encrypted", body: "Your draft is saved with 256-bit encryption" },
+  { icon: "support_agent", title: "Independent Support", body: "We're here to help anytime you need" },
+  { icon: "smartphone", title: "Mobile Friendly", body: "Apply on the go from any device" },
+  { icon: "sync", title: "Autosaved Progress", body: "Come back and continue where you left off" },
+];
+
+const PLACES = [
+  { src: "/india/taj.jpg", title: "Agra", subtitle: "Taj Mahal", alt: "Taj Mahal" },
+  { src: "/india/jaipur.jpg", title: "Jaipur", subtitle: "Pink City", alt: "Hawa Mahal, Jaipur" },
+  { src: "/india/varanasi.jpg", title: "Varanasi", subtitle: "Spiritual Capital", alt: "Ghats at Varanasi" },
+  { src: "/india/india-gate.jpg", title: "Delhi", subtitle: "Gateway to India", alt: "India Gate, New Delhi" },
+  { src: "/india/mumbai.jpg", title: "Mumbai", subtitle: "Gateway of India", alt: "Gateway of India, Mumbai" },
+  { src: "/india/kerala.jpg", title: "Kerala", subtitle: "God's Own Country", alt: "Kerala backwaters" },
 ];
 
 export default function HomePage() {
   return (
     <div>
-      <PageMasthead
-        kicker="Designed and built with ChatGPT"
-        title="Portal for Visa Application to India"
-        subtitle={`${PRODUCT_NAME} · not indianvisaonline.gov.in`}
-      />
-
-      <Container className="py-6 sm:py-8">
-        <InfoCallout>
-          <p>
-            All foreign nationals need a valid passport and an appropriate visa or ETA before travel,
-            except where the Government of India has notified otherwise. This site does not issue
-            either.
-          </p>
-          <p className="mt-2">
-            The live government e-Arrival card is on the official portal — we link out, we do not
-            scrape it.
-          </p>
-        </InfoCallout>
-
-        <section id="visa-services" className="mt-8 scroll-mt-28">
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {SERVICES.map((service) => {
-              const Icon = service.icon;
-              return (
-                <article
-                  key={service.title}
-                  className="portal-shadow portal-shadow-hover flex flex-col rounded-xl border border-border bg-card p-5"
-                >
-                  <span className={cn("flex size-12 items-center justify-center rounded-xl", service.iconClass)}>
-                    <Icon className="size-6" aria-hidden />
+      <Container>
+        <section className="sahaj-hero-light">
+          <div>
+            <span className="sahaj-kicker-light">e-Visa preparation service</span>
+            <h1>
+              Your journey to <span className="sahaj-accent">India</span> begins here
+            </h1>
+            <p className="sahaj-lede">
+              Prepare your India e-Visa information quickly and carefully. Check requirements, organise
+              documents, and save your progress — then continue to the official Government of India portal
+              to submit and pay.
+            </p>
+            <div className="sahaj-feature-row">
+              {HERO_FEATURES.map((feature) => (
+                <div key={feature.title} className="sahaj-feature-item">
+                  <span className="sahaj-feature-icon">
+                    <Icon name={feature.icon} className="ux4g-fs-18" />
                   </span>
-                  <h2 className="mt-4 font-heading text-xl">{service.title}</h2>
-                  <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">{service.body}</p>
-                  <Link
-                    href={service.href}
-                    className="mt-5 inline-flex h-11 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground"
-                  >
-                    {service.cta} →
-                  </Link>
-                </article>
-              );
-            })}
+                  <div className="sahaj-feature-copy">
+                    <p>{feature.title}</p>
+                    <p>{feature.caption}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="sahaj-hero-actions-light">
+              <Link href="/apply" className="ux4g-btn ux4g-btn-primary ux4g-btn-lg">
+                Prepare an e-Visa
+                <Icon name="arrow_forward" />
+              </Link>
+              <Link href="/track" className="sahaj-resume-link">
+                <div className="sahaj-resume-copy">
+                  <p>Resume Application</p>
+                  <p>Continue where you left off</p>
+                </div>
+                <Icon name="arrow_forward" />
+              </Link>
+            </div>
+          </div>
+          <div className="sahaj-hero-photo">
+            <Image src="/india/taj.jpg" alt="Taj Mahal in Agra at sunrise" fill priority sizes="(max-width: 991px) 100vw, 45vw" />
           </div>
         </section>
+      </Container>
 
-        <AdvisoryCallout className="mt-8">
-          <p>
-            Do not pay anyone who claims they can “speed up” or “guarantee” an Indian visa. The live
-            government portal charges only the notified fee. This prototype takes no real money.
-            Fake lookalike sites are common — if you need a real visa, use{" "}
+      <Container className="ux4g-py-2xl">
+        <section id="visa-services" className="scroll-mt-28 sahaj-section-head">
+          <span className="sahaj-kicker-light">Choose your visa</span>
+          <h2 className="ux4g-title-m-strong ux4g-mt-xs">Find the right route for your trip</h2>
+          <p className="ux4g-body-m-default ux4g-mt-xs">
+            Visa rules depend on nationality, purpose, and travel history. Start with the category that
+            matches your journey.
+          </p>
+        </section>
+        <div className="ux4g-grid ux4g-grid-auto-fit-250 ux4g-mt-m">
+          {SERVICES.map((service) => (
+            <article key={service.title} className="ux4g-card ux4g-o-hidden ux4g-card-outline ux4g-card-vertical">
+              <div className="ux4g-card-header ux4g-pb-none">
+                <div className="ux4g-card-header-img ux4g-radius-l sahaj-card-photo">
+                  <span className="sahaj-visa-card-badge">
+                    <Icon name={service.icon} className="ux4g-fs-20" />
+                  </span>
+                  <Image src={service.image} alt={service.alt} fill sizes="(max-width: 768px) 100vw, 25vw" className="ux4g-radius-l ux4g-card-header-image" />
+                </div>
+              </div>
+              <div className="ux4g-card-body">
+                <h3 className="ux4g-card-title">{service.title}</h3>
+                <p lang="hi" className="sahaj-brand-hi">
+                  {service.hindi}
+                </p>
+                <p className="ux4g-card-sub-title ux4g-mt-xs">{service.body}</p>
+              </div>
+              <div className="ux4g-card-footer">
+                <Link href={service.href} className="ux4g-text-link-sm ux4g-d-flex ux4g-ai-center ux4g-gap-x-xs">
+                  {service.cta}
+                  <Icon name="arrow_forward" className="ux4g-fs-18" />
+                </Link>
+              </div>
+            </article>
+          ))}
+        </div>
+        <div className="ux4g-d-flex ux4g-jc-center ux4g-mt-m">
+          <Link href="/instructions" className="ux4g-btn ux4g-btn-outline-primary ux4g-btn-md ux4g-radius-full ux4g-gap-x-xs">
+            View all visa types
+            <Icon name="expand_more" />
+          </Link>
+        </div>
+
+        <section className="ux4g-mt-2xl">
+          <div className="sahaj-section-head-split">
+            <div>
+              <span className="sahaj-kicker-light">Explore India</span>
+              <h2 className="ux4g-title-m-strong ux4g-mt-xs">The India this visa is for</h2>
+              <p className="ux4g-body-m-default ux4g-mt-xs">
+                From timeless monuments to vibrant cities, explore a land of diverse cultures and
+                unforgettable experiences.
+              </p>
+            </div>
             <a
-              className="font-medium underline underline-offset-2"
-              href="https://indianvisaonline.gov.in/evisa/tvoa.html"
+              href="https://www.incredibleindia.gov.in/"
               target="_blank"
               rel="noreferrer"
+              className="ux4g-btn ux4g-btn-outline-primary ux4g-btn-md"
             >
-              indianvisaonline.gov.in
-            </a>{" "}
-            only.
-          </p>
-        </AdvisoryCallout>
-
-        <section className="mt-10">
-          <h2 className="mb-4 font-heading text-2xl">Continue an application</h2>
-          <QuickActions />
-        </section>
-
-        <section className="mt-12 grid gap-6 lg:grid-cols-[1fr_16rem]">
-          <div className="space-y-6">
-            <div className="rounded-xl border border-border bg-card p-5 sm:p-6">
-              <h2 className="font-heading text-2xl">The same four official steps. A state layer that does not forget you.</h2>
-              <ol className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                {[
-                  { n: "1", t: "Apply online", d: "Resumable form, one adult, e-Tourist only" },
-                  { n: "2", t: "Pay the fee", d: "Mocked, idempotent, no 30-minute lockout" },
-                  { n: "3", t: "Receive ETA", d: "Honest range from mocked queue stats" },
-                  { n: "4", t: "Fly to India", d: "Out of scope — we do not pretend to be IVFRT" },
-                ].map((step) => (
-                  <li key={step.n} className="rounded-lg border border-border bg-background p-4">
-                    <span className="flex size-8 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
-                      {step.n}
-                    </span>
-                    <p className="mt-3 font-medium">{step.t}</p>
-                    <p className="mt-1 text-sm text-muted-foreground">{step.d}</p>
-                  </li>
-                ))}
-              </ol>
-            </div>
-
-            <div id="mocked" className="grid gap-4 scroll-mt-28 sm:grid-cols-2">
-              <div className="rounded-xl border border-border bg-card p-5">
-                <h3 className="font-heading text-lg">Working in this demo</h3>
-                <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
-                  <li>Resumable application and application ID</li>
-                  <li>Status timeline and timestamped audit log</li>
-                  <li>Deterministic pre-submission validation</li>
-                  <li>Plain-language field help from a hand-written rules doc</li>
-                </ul>
-              </div>
-              <div className="rounded-xl border border-border bg-card p-5">
-                <h3 className="font-heading text-lg">Mocked on purpose</h3>
-                <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
-                  <li>Payment gateway (state machine only)</li>
-                  <li>Biometrics, security clearance, IVFRT</li>
-                  <li>Immigration Check Posts and the live country list</li>
-                  <li>We do not scrape or contact indianvisaonline.gov.in</li>
-                </ul>
-              </div>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Demo login {DEMO_EMAIL} · {DEMO_PASSWORD} · no real money, no official visa.
-            </p>
+              Explore destinations
+            </a>
           </div>
-          <HelpdeskCard />
+          <div className="ux4g-mt-s">
+            <DestinationsStrip places={PLACES} />
+          </div>
         </section>
+
+        <section className="ux4g-mt-2xl sahaj-section-head">
+          <span className="sahaj-kicker-light">How it works</span>
+          <h2 className="ux4g-title-m-strong ux4g-mt-xs">Simple steps to prepare your e-Visa</h2>
+          <p className="ux4g-body-m-default ux4g-mt-xs">A straightforward process designed for your convenience.</p>
+        </section>
+        <ol className="sahaj-steps">
+          {JOURNEY.map((step, index) => (
+            <li key={step.title} className="sahaj-step">
+              <span className="sahaj-step-circle">{index + 1}</span>
+              <Icon name={step.icon} className="sahaj-step-icon ux4g-fs-28" />
+              <p className="ux4g-label-m-strong">{step.title}</p>
+              <p className="ux4g-body-xs-default ux4g-mt-xs">{step.body}</p>
+            </li>
+          ))}
+        </ol>
+
+        <div className="ux4g-mt-2xl sahaj-assurance-band">
+          {ASSURANCE.map((item) => (
+            <div key={item.title} className="sahaj-assurance-item">
+              <Icon name={item.icon} className="ux4g-fs-24" />
+              <div>
+                <p>{item.title}</p>
+                <p>{item.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Container>
+
+      <section className="sahaj-help-band">
+        <Container>
+          <div className="sahaj-help-band-inner">
+            <div>
+              <h2 className="ux4g-title-s-strong">Need help?</h2>
+              <p className="ux4g-body-m-default ux4g-mt-xs">Our support team is here to assist you</p>
+              <Link href="/contact" className="ux4g-btn ux4g-btn-lg ux4g-mt-m" style={{ background: "#fffdf8", color: "#0a2143" }}>
+                Contact Support
+              </Link>
+            </div>
+            <div className="sahaj-help-contact">
+              <div>
+                <p className="ux4g-label-m-default">Visa Helpline</p>
+                <a href={OFFICIAL_HELPDESK.phoneHref} className="ux4g-d-flex ux4g-ai-center ux4g-gap-x-xs ux4g-mt-xs">
+                  <Icon name="call" />
+                  {OFFICIAL_HELPDESK.phone}
+                </a>
+              </div>
+              <div>
+                <p className="ux4g-label-m-default">&nbsp;</p>
+                <a href={OFFICIAL_HELPDESK.emailHref} className="ux4g-d-flex ux4g-ai-center ux4g-gap-x-xs ux4g-mt-xs">
+                  <Icon name="mail" />
+                  {OFFICIAL_HELPDESK.email}
+                </a>
+              </div>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      <Container className="ux4g-py-m">
+        <div className="ux4g-alert ux4g-alert-warning ux4g-alert-wide" role="note">
+          <Icon name="warning" className="ux4g-alert-icon" />
+          <div className="ux4g-alert-content ux4g-d-flex ux4g-flex-column">
+            <p className="ux4g-alert-title">Advisory</p>
+            <div className="ux4g-alert-message">
+              <p>
+                No service can guarantee approval or faster processing. Visa applications and payments must
+                be completed on{" "}
+                <a className="ux4g-alert-link" href={OFFICIAL_PORTAL} target="_blank" rel="noreferrer">
+                  indianvisaonline.gov.in
+                </a>
+                . Sahaj Visa is an independent preparation service and does not make immigration decisions.
+              </p>
+            </div>
+          </div>
+        </div>
       </Container>
     </div>
   );

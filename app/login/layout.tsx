@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Demo login" };
+export const metadata: Metadata = { title: "My application" };
 
 export default function LoginLayout({ children }: LayoutProps<"/login">) {
   return children;

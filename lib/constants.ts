@@ -1,9 +1,6 @@
 export const PRODUCT_NAME = "Sahaj Visa";
-export const PRODUCT_TAGLINE = "An independent prototype of a calmer Indian e-Visa.";
-export const BUILD_CREDIT = "Designed and built with ChatGPT";
-
-export const DEMO_EMAIL = "demo@visa.test";
-export const DEMO_PASSWORD = "sahaj-demo";
+export const PRODUCT_TAGLINE = "Clear guidance for your journey to India.";
+export const BUILD_CREDIT = "Accessible, plain-language visa guidance";
 
 export const FEE_USD = 25;
 export const VISA_PRODUCT_LABEL = "30-day e-Tourist Visa (double entry)";
@@ -47,21 +44,6 @@ export const PORTS = [
   { code: "JAI", label: "Jaipur (JAI)" },
   { code: "TRV", label: "Thiruvananthapuram (TRV)" },
 ] as const;
-
-/** Mocked throughput for Feature 3 — calibrated to 2025–26 traveller reports, not the five-year 72h average. */
-export const QUEUE_STATS = {
-  asOf: "28 August 2026",
-  applicationsThisMonth: 18420,
-  medianDays: 6,
-  p50: 5,
-  p75: 8,
-  p90: 11,
-  pctCleared72hOfficialFiveYear: 91.24,
-  pctCleared72hThisMonthMock: 41,
-  similarShare: 78,
-  sourceNote:
-    "Official Cabinet figure: 91.24% cleared within 72 hours over five years (PIB, 25 Mar 2026). Universal Weather (Dec 2025) reported 8–10 day waits in practice. This prototype uses mocked current-queue stats so the citizen sees an honest range, not a frozen promise.",
-};
 
 export const HUMAN_CHECK_PROMPT = "Type the word INDIA to confirm you are a person applying for yourself.";
 export const HUMAN_CHECK_ANSWER = "INDIA";

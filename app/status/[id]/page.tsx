@@ -3,228 +3,139 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { toast } from "sonner";
-import { Check, Loader2 } from "lucide-react";
 import { Breadcrumbs, Container, PageMasthead } from "@/components/site/chrome";
-import { Button } from "@/components/ui/button";
-import { getApplicationApi, statusMessageApi } from "@/lib/api";
+import { Icon } from "@/components/site/icon";
+import { getApplicationApi } from "@/lib/api";
 import { useDraft } from "@/lib/draft-store";
-import type { Application, ApplicationStatus } from "@/lib/types";
-import { QUEUE_STATS } from "@/lib/constants";
+import type { Application } from "@/lib/types";
+import { OFFICIAL_PORTAL, VISA_PRODUCT_LABEL } from "@/lib/constants";
 import { formatWhen } from "@/lib/id";
-import { cn } from "@/lib/utils";
 
-const TRACK: { key: ApplicationStatus; label: string; hint: string }[] = [
-  { key: "submitted", label: "Submitted", hint: "Answers locked. You will not be sent back to page 1." },
-  { key: "payment_confirmed", label: "Payment confirmed", hint: "Idempotent. A glitch cannot quietly charge you twice." },
-  { key: "under_review", label: "Under review", hint: "Mock queue — not IVFRT, not a security clearance." },
-  { key: "eta_issued", label: "ETA issued", hint: "Prototype only. Print nothing; this is not a travel document." },
-];
-
-function rank(status: ApplicationStatus) {
-  if (status === "eta_issued") return 3;
-  if (status === "under_review") return 2;
-  if (status === "payment_confirmed") return 1;
-  if (
-    status === "submitted" ||
-    status === "payment_charged_unconfirmed" ||
-    status === "payment_failed" ||
-    status === "payment_pending"
-  ) {
-    return 0;
-  }
-  return -1;
-}
-
-export default function StatusPage() {
+export default function ApplicationRecordPage() {
   const params = useParams<{ id: string }>();
-  const [app, setApp] = useState<Application | null>(null);
+  const [application, setApplication] = useState<Application | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
-
   const loaded = useRef(false);
-
-  async function load() {
-    try {
-      const { application } = await getApplicationApi(params.id);
-      setApp(application);
-      if (!application.etaMessage && application.status !== "draft") {
-        const { application: next } = await statusMessageApi(application.id);
-        setApp(next);
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Not found");
-    }
-  }
 
   useEffect(() => {
     if (loaded.current) return;
     loaded.current = true;
-    void load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    getApplicationApi(params.id)
+      .then(({ application: saved }) => setApplication(saved))
+      .catch((reason: unknown) => setError(reason instanceof Error ? reason.message : "Application not found"));
   }, [params.id]);
-
-  async function issueEta() {
-    if (!app) return;
-    setBusy(true);
-    try {
-      const res = await fetch("/api/demo-eta", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: app.id }),
-      });
-      const body = await res.json();
-      if (!res.ok) throw new Error(body.error || "Could not issue ETA");
-      setApp(body.application);
-      toast.success("Mock ETA issued for the demo.");
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed");
-    } finally {
-      setBusy(false);
-    }
-  }
 
   if (error) {
     return (
       <div>
         <PageMasthead title="Application not found" />
-        <Container className="max-w-lg py-10">
-          <p className="leading-relaxed text-muted-foreground">
-            The ID in the address bar may be mistyped, or this draft was never saved. Your form on
-            this device may still be on the apply page — you have not lost the day.
+        <Container className="ux4g-py-s">
+          <p className="ux4g-body-m-default">
+            Check the application ID and try again. If you started on this device, your local draft may still be available.
           </p>
-          <Link
-            className="mt-6 inline-flex min-h-12 items-center rounded-md bg-primary px-5 font-medium text-primary-foreground"
-            href="/apply"
-          >
-            Return to the form
+          <Link className="ux4g-btn ux4g-btn-primary ux4g-btn-md ux4g-mt-s" href="/track">
+            Find an application
           </Link>
         </Container>
       </div>
     );
   }
 
-  if (!app) {
+  if (!application) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center text-muted-foreground">
-        <Loader2 className="mr-2 size-4 animate-spin" /> Loading status…
+      <div className="ux4g-d-flex ux4g-ai-center ux4g-jc-center ux4g-gap-x-xs" style={{ minHeight: "50vh" }}>
+        <Icon name="progress_activity" /> Loading application…
       </div>
     );
   }
 
-  const current = rank(app.status);
+  const fullName = `${application.form.givenNames} ${application.form.surname}`.trim();
+  const isDraft = application.status === "draft";
 
   return (
     <div>
-      <PageMasthead title="Track Application" subtitle={`Application ${app.publicId}`} />
-      <Container className="max-w-2xl py-8">
-        <Breadcrumbs
-          items={[
-            { href: "/", label: "Home" },
-            { href: "/track", label: "Track Application" },
-            { label: app.publicId },
-          ]}
-        />
-        <h2 className="mt-6 font-heading text-4xl leading-tight sm:text-5xl">
-          About {QUEUE_STATS.p50}–{QUEUE_STATS.p90} days
-        </h2>
-        <p className="mt-3 text-lg text-muted-foreground">
-          Median in this mock queue is {QUEUE_STATS.medianDays} days. This is not a promise, and it is
-          not 72 hours.
-        </p>
-        <p className="mt-2 text-sm text-muted-foreground">
-          {app.form.givenNames} {app.form.surname} · 30-day e-Tourist · updated {formatWhen(app.updatedAt)}
-        </p>
+      <PageMasthead title="Application Record" subtitle={application.publicId} image="/india/india-gate.jpg" />
+      <Container className="ux4g-py-s">
+        <Breadcrumbs items={[{ href: "/", label: "Home" }, { href: "/track", label: "My Application" }, { label: application.publicId }]} />
 
-        {app.status === "payment_charged_unconfirmed" && (
-          <div className="mt-6 rounded-xl border border-border bg-card p-4">
-            <p className="font-medium">A charge may have gone through, and it is not yet confirmed.</p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              You do not need to pay again. Return to payment and confirm on the same key.
-            </p>
-            <Link className="mt-3 inline-flex min-h-12 items-center underline" href="/apply">
-              Return to payment
-            </Link>
-          </div>
-        )}
-
-        <ol className="relative mt-10 space-y-0 border-l-2 border-border pl-6">
-          {TRACK.map((item, i) => {
-            const done = current > i;
-            const active = current === i;
-            return (
-              <li key={item.key} className="relative pb-8 last:pb-0">
-                <span
-                  className={cn(
-                    "absolute top-0 -left-[1.9rem] flex size-8 items-center justify-center rounded-full border",
-                    done || active ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card",
-                  )}
+        <section className="ux4g-card ux4g-card-outline ux4g-card-vertical ux4g-mt-s">
+          <div className="ux4g-card-body">
+            <div className="ux4g-d-flex ux4g-flex-wrap ux4g-jc-between ux4g-ai-center ux4g-gap-x-m ux4g-gap-y-s">
+              <div className="ux4g-d-flex ux4g-gap-x-m">
+                <Icon name={isDraft ? "edit" : "check_circle"} className="ux4g-fs-32 ux4g-text-primary" />
+                <div>
+                  <p className="ux4g-label-m-strong ux4g-text-primary">
+                    {isDraft ? "In progress" : "Preparation complete"}
+                  </p>
+                  <h1 className="ux4g-title-m-strong">
+                    {isDraft ? "Continue where you left off" : "Your details have passed the readiness check"}
+                  </h1>
+                  <p className="ux4g-body-xs-default">Last saved {formatWhen(application.updatedAt)}</p>
+                </div>
+              </div>
+              {isDraft ? (
+                <Link
+                  href="/apply"
+                  onClick={() => useDraft.getState().hydrateFromServer(application)}
+                  className="ux4g-btn ux4g-btn-primary ux4g-btn-md"
                 >
-                  {done || active ? <Check className="size-4" /> : <span className="text-xs">{i + 1}</span>}
-                </span>
-                <p className={cn("font-heading text-xl", active && "text-primary")}>{item.label}</p>
-                <p className="mt-1 text-sm text-muted-foreground">{item.hint}</p>
-                {active ? (
-                  <p className="mt-2 text-sm font-medium">You are here.</p>
-                ) : null}
-              </li>
-            );
-          })}
-        </ol>
-
-        <section className="mt-4 rounded-2xl border border-border bg-card p-5 sm:p-7">
-          <h2 className="text-sm font-medium uppercase tracking-[0.12em] text-muted-foreground">
-            Honest estimate
-          </h2>
-          <p className="mt-3 font-heading text-2xl leading-snug sm:text-3xl">
-            {app.etaMessage || "Fetching an honest estimate…"}
-          </p>
-          <p className="mt-4 text-sm text-muted-foreground">{QUEUE_STATS.sourceNote}</p>
+                  Continue editing
+                </Link>
+              ) : (
+                <a href={OFFICIAL_PORTAL} target="_blank" rel="noreferrer" className="ux4g-btn ux4g-btn-primary ux4g-btn-md">
+                  Open official portal <Icon name="open_in_new" />
+                </a>
+              )}
+            </div>
+          </div>
+          <dl className="ux4g-grid ux4g-grid-auto-fit-250">
+            {[
+              ["Applicant", fullName || "Not entered"],
+              ["Visa route", VISA_PRODUCT_LABEL],
+              ["Passport", application.form.passportNumber ? `•••• ${application.form.passportNumber.slice(-4)}` : "Not entered"],
+              ["Planned arrival", application.form.arrivalDate || "Not entered"],
+            ].map(([label, value]) => (
+              <div key={label} className="ux4g-p-m">
+                <dt className="ux4g-body-xs-default">{label}</dt>
+                <dd className="ux4g-label-m-strong">{value}</dd>
+              </div>
+            ))}
+          </dl>
         </section>
 
-        {app.status === "under_review" && (
-          <Button className="mt-6 h-12 px-5 text-base" disabled={busy} onClick={() => void issueEta()}>
-            {busy ? <Loader2 className="size-4 animate-spin" /> : null}
-            Issue mock ETA (demo shortcut)
-          </Button>
-        )}
-
-        {app.status === "eta_issued" && (
-          <div className="mt-6 rounded-2xl border border-primary/30 bg-card p-5">
-            <h2 className="font-heading text-2xl">Electronic Travel Authorisation (mock)</h2>
-            <p className="mt-2">
-              This is not valid for travel. A real ETA is emailed by the Bureau of Immigration after
-              clearance you will not get from this website.
-            </p>
-            {app.etaIssuedAt && <p className="mt-2 text-sm text-muted-foreground">Issued {formatWhen(app.etaIssuedAt)}</p>}
-            <Link
-              href="/apply"
-              className="mt-4 inline-flex h-12 items-center rounded-lg bg-primary px-5 text-base font-medium text-primary-foreground"
-              onClick={() => useDraft.getState().reset()}
-            >
-              Start a new application
-            </Link>
+        {!isDraft && (
+          <div className="sahaj-split sahaj-split-journey ux4g-mt-s">
+            <section className="ux4g-card ux4g-card-outline ux4g-card-vertical">
+              <div className="ux4g-card-body">
+                <Icon name="fact_check" className="ux4g-fs-24 ux4g-text-primary" />
+                <h2 className="ux4g-card-title ux4g-mt-xs">What was checked</h2>
+                <ul className="sahaj-list ux4g-body-m-default ux4g-mt-xs">
+                  <li>Required fields and accepted formats</li>
+                  <li>Passport and travel date consistency</li>
+                  <li>Photo and passport file metadata</li>
+                </ul>
+              </div>
+            </section>
+            <section className="ux4g-card ux4g-card-outline ux4g-card-vertical">
+              <div className="ux4g-card-body">
+                <Icon name="verified_user" className="ux4g-fs-24 ux4g-text-primary" />
+                <h2 className="ux4g-card-title ux4g-mt-xs">Final submission</h2>
+                <p className="ux4g-card-sub-title">
+                  Visa fees, identity checks, submission, status updates, and approval are handled only by the Government of India.
+                  Re-check every value when transferring it to the official form.
+                </p>
+              </div>
+            </section>
           </div>
         )}
 
-        <details className="mt-10 rounded-2xl border border-border bg-card open:pb-1">
-          <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between px-5 py-3 text-left">
-            <span>
-              <span className="font-heading text-xl">Audit log</span>
-              <span className="mt-0.5 block text-sm font-normal text-muted-foreground">
-                {app.auditLog.length} timestamped events · collapsed so the estimate stays readable
-              </span>
-            </span>
-            <span className="text-sm text-muted-foreground">Show</span>
-          </summary>
-          <ol className="space-y-3 border-t border-border px-5 py-4">
-            {[...app.auditLog].reverse().map((event) => (
-              <li key={event.id} className="border-b border-border/70 pb-3 last:border-0 last:pb-0">
-                <p className="text-sm font-medium">{event.event}</p>
-                <p className="text-sm text-muted-foreground">
-                  {formatWhen(event.at)}
-                  {event.detail ? ` · ${event.detail}` : ""}
-                </p>
+        <details className="ux4g-accordion__item ux4g-mt-s">
+          <summary className="ux4g-accordion__button">Record activity</summary>
+          <ol className="ux4g-accordion__body">
+            {[...application.auditLog].reverse().map((event) => (
+              <li key={event.id} className="ux4g-mb-m">
+                <p className="ux4g-label-m-strong">{event.event.replaceAll("_", " ")}</p>
+                <p className="ux4g-body-xs-default">{formatWhen(event.at)}{event.detail ? ` · ${event.detail}` : ""}</p>
               </li>
             ))}
           </ol>

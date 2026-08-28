@@ -1,0 +1,562 @@
+**Comprehensive exploration of https://indianvisaonline.gov.in/**
+
+This is the official Government of India portal (managed by Bureau of Immigration, Ministry of Home Affairs; designed/developed by NIC) for visa applications to India. It is the **only authorized** site for e-Visa, regular/paper visa applications, Afghan national visas, and e-Arrival Card. Strong warnings appear against agents, intermediaries, or fake sites that charge extra fees.
+
+### High-Level Structure & Main Entry Points
+
+**Homepage** (`/`):  
+- Clear banner: “Authorized Portal for Visa Application to India”.  
+- Key advisory text about passport + visa/e-Visa/OCI requirements.  
+- Prominent note that foreigners and OCI cardholders must complete the **e-Arrival Card** online within 72 hours before arrival (also available on boi.gov.in or the official mobile app).  
+- Four main action cards:  
+  1. Regular/Paper visa by Indian Mission/Post → `/visa`  
+  2. eVisa by Bureau of Immigration → `/evisa`  
+  3. Visa on Arrival (Japan, South Korea, UAE under conditions) – info only, available at selected airports  
+  4. Afghan Visa (Afghanistan nationals) → `/avisa`  
+- Footer links to Digital India, india.gov.in, myGov, Study in India, social channels, and NIC.  
+- Strong anti-scam advisory.
+
+**Secondary official channels**:  
+- **Indian Visa Su-Swagatam** mobile app (Android/iOS) – one-stop for e-Visa, regular visa form filling, Visa on Arrival forms, status tracking, ETA download, e-FRRO services (extensions, conversions, exit permits), Form-C, FTI-TTP for OCI, chatbot, multilingual support, location services, etc.  
+- Cross-links to boi.gov.in, airsuvidha.civilaviation.gov.in (Self-Declaration Form), and ministry sites.
+
+### Core User Workflows
+
+#### 1. e-Visa (most common, fully online) – `/evisa/` or `/evisa/tvoa.html`
+
+**Categories** (as listed):  
+e-Tourist (30-day / 1-year / 5-year variants), e-Business, e-Medical, e-Medical Attendant, e-Student, e-Family, e-Transit, e-Miscellaneous.
+
+**4-step process** (prominently displayed):  
+1. Apply online – fill form + upload photo + passport bio page.  
+2. Pay fee online (Credit/Debit card / Payment Wallet; SBI ePay & Axis Bank mentioned; ~2.5% transaction charges common).  
+3. Receive ETA (Electronic Travel Authorization) by email.  
+4. Print ETA and present at Immigration Check Post (e-Visa stamped on passport).
+
+**Supporting tools on the page**:  
+- Sample e-Visa Application (PDF)  
+- Apply here for e-visa  
+- Complete Partially Filled Application Form  
+- Verify Payment / Pay e-Visa Fee  
+- Print e-Visa Application  
+- Check your Visa Status  
+- Reupload Data  
+
+**Side navigation / info**:  
+- Countries/Regions eligible  
+- Instructions for Applicant  
+- FAQ’s  
+- Authorized Immigration checkposts (airports + some seaports)  
+- Payment Related / Payment Helpdesk  
+- eVisa Helpdesk: (+91) 82 7808 7808, indian-evisa@gov.in  
+- Useful links (MHA, MEA, Tourism, BoI, Incredible India)  
+- Text-size controls (A+/A/A-)  
+- “Chat with Mani” chatbot widget  
+
+**Key constraints & rules** (from site + public guidance):  
+- Apply minimum 4 days in advance (up to 30/120 days depending on type).  
+- Passport valid ≥ 6 months from arrival + usually 2 blank pages.  
+- Exact match of name, DOB, passport number, etc., to passport bio page.  
+- Photo: JPEG, square (equal height/width), specific size (typically 10–300 KB), full face, white/light background, eyes open, no glasses in many cases.  
+- Passport scan: clear colour bio page (MRZ readable).  
+- Processing usually within 72 hours (often faster).  
+- Ineligible: defence/military/security background, official/diplomatic passports in some cases, Pakistani origin (must use regular visa), etc.  
+- Partial save + resume exists; re-upload for rejected photos/docs.
+
+#### 2. Regular / Paper Visa – `/visa`
+
+**3-step process**:  
+1. Apply Online – fill & submit form (generates Application ID).  
+2. Submit Documents – print signed form + supporting docs + passport at Indian Visa Application Centre (IVAC) or Indian Mission on scheduled appointment.  
+3. Receive Passport/Visa – collect from Mission/IVAC or by post.
+
+**Tools**:  
+- Regular/Paper Visa Application  
+- Complete Partially Filled Form  
+- Check your Visa Status  
+- Print Registered Application Form  
+- Re-upload Document  
+
+**Navigation**: Instructions, Authorized Entry/Exit Points, Visa Categories, Visa Processing Time, Visa Fee, Useful Weblinks.  
+
+**Instructions page** details photo specs, one application per person, no post-submission edits, appointment scheduling (date/time + fee calculation including service charges/VAT), etc. Mission-specific rules still apply (users directed to individual Mission websites).
+
+#### 3. e-Arrival Card – `/earrival`
+
+Free service (arrival information only, **not a visa**). Must be completed within 72 hours before arrival.  
+
+Form sections:  
+- Quick Fill from Existing Data (passport + nationality + captcha)  
+- Personal Details (name, nationality, passport, purpose)  
+- Arrival Details (date, countries visited in last 6 days)  
+- Address Details in India (state, district)  
+- Contact Details (email, mobile, emergency)  
+- Add Member (for groups/family)  
+- Declaration + Submit  
+
+Also available via the Su-Swagatam app and boi.gov.in.
+
+#### 4. Afghan Visa Portal – `/avisa`
+
+Dedicated for Afghanistan nationals. Categories: Business, Student, Medical, Medical Attendant, Entry, UN Diplomat. Similar tools (Apply, Complete Partially, Print, Status, Reupload). Contact: indianvisaonline-boi@mha.gov.in / same helpline.
+
+### What the Site Currently Has (Strengths)
+
+- Clear separation of e-Visa vs regular vs special cases.  
+- Partial-save / resume functionality.  
+- Status enquiry, print, re-upload, payment verification.  
+- Helpdesk contacts and chatbot.  
+- Sample form and basic instructions.  
+- Multi-device claim (Android/iOS compatible).  
+- Strong anti-fraud messaging.  
+- Integration path to the more modern Su-Swagatam app.  
+- Official branding and government seals.
+
+### Major Gaps, Pain Points & What It Lacks (Critical for Redesign)
+
+**UX / Design & Technical Reliability** (most frequently complained about in 2025–2026 reports):  
+- Dated, cluttered interface; poor visual hierarchy.  
+- Frequent crashes, session timeouts, data loss on “Next”, especially under load.  
+- Mobile experience is poor (better suited to desktop; many users struggle on phones).  
+- Strict, unforgiving upload rules with opaque error messages (“image not clear”, wrong format expectations that flip between JPEG/PDF).  
+- Captcha and form validation feel brittle.  
+- Character limits on travel history fields cause real problems for frequent travellers.  
+- No robust progress indicator or auto-save feedback.  
+- Inconsistent browser support notes (still mentions IE 9+).  
+
+**Information Architecture & Guidance**:  
+- Eligibility, fees, processing times, photo specs, and category activities are scattered or require digging into PDFs/side links.  
+- No interactive eligibility checker or fee calculator on the main flows (exists more in the app).  
+- Instructions are text-heavy and legalistic rather than guided/step-by-step with examples.  
+- Pakistani origin / dual nationality / previous visa questions are easy to mis-answer.  
+- No clear comparison table of visa types (duration, entries, allowed activities, fees by nationality).  
+
+**Functionality Missing or Weak**:  
+- No real-time photo validation / preview / crop tool before upload.  
+- Limited multi-language support on the website itself (app is better).  
+- No integrated appointment booking UX for regular visas beyond basic scheduling.  
+- Weak group/family application flow (mostly one-by-one; e-Arrival has “Add Member”).  
+- Status tracking is basic (no push notifications, detailed timeline, or estimated completion).  
+- Payment failures / verification friction.  
+- No in-form OCR assist from passport scan to auto-fill fields (despite OCR being used on backend for verification).  
+- Limited accessibility (screen-reader, high-contrast, keyboard navigation).  
+- No clear offline/resume across devices beyond partial form.  
+- Helpdesk is phone/email only; chatbot is basic.  
+- No proactive alerts for common rejection reasons before submission.  
+
+**Process & Trust Issues**:  
+- High rejection rates driven by photo/passport quality and data mismatches (users report 30–40% preventable).  
+- Users must still visit Mission websites for regular visa details → fragmented experience.  
+- e-Arrival + Self-Declaration Form (separate Civil Aviation site) create multiple pre-arrival steps.  
+- No transparent SLA or average processing time shown dynamically.  
+
+### Opportunities for Redesign & Improvement (Prioritized)
+
+1. **Modern, mobile-first UI** – Clean card-based flows, progressive disclosure, sticky progress bar, dark mode, true responsive design.  
+2. **Smart form engine** – OCR passport scan → auto-fill + highlight mismatches; real-time photo checker with live preview, crop, and compliance scoring; dynamic fields based on nationality/visa type/occupation.  
+3. **Guided wizard + eligibility tool** – Start with nationality + purpose → recommend exact visa type, show fees, timelines, required docs, and sample successful photos.  
+4. **Reliability & performance** – Robust auto-save, offline capability for form filling, better error recovery, CDN/queue handling for peak loads.  
+5. **Unified experience** – Deeper integration or seamless hand-off with Su-Swagatam app; single dashboard for all applications, e-Arrival, FRRO, and status.  
+6. **Better support** – Contextual help, video walkthroughs, expanded multilingual content, smarter chatbot, in-app ticket system.  
+7. **Transparency** – Live average processing times, rejection reason analytics (anonymized), clear fee breakdown before payment.  
+8. **Accessibility & inclusion** – WCAG compliance, larger touch targets, language selector, simplified language options.  
+9. **Group applications** – Proper multi-applicant flow with shared address/payment.  
+10. **Post-approval** – Digital wallet for ETA, calendar reminders, airport guides, and easy re-application for extensions.
+
+**Summary of current state**: Functionally complete for core visa application and status checking, with decent coverage of categories and official warnings. However, the experience is brittle, dated, and friction-heavy—especially on mobile and around document uploads—leading to high user frustration, repeated attempts, and reliance on third-party “helpers” (which the government explicitly discourages). The Su-Swagatam app already shows the direction of a better integrated experience; the website needs to catch up in usability, reliability, and guidance while remaining the authoritative source.
+
+This analysis is based on direct browsing of the live site (homepage, e-Visa, regular visa, e-Arrival, Afghan portal, instructions, status pages) plus cross-referenced public documentation and user reports as of late 2026. Specific form fields and exact photo pixel requirements can shift, so a redesign should include ongoing content management for rules.
+
+**Complete Report: Using UX4G Design System to Redesign indianvisaonline.gov.in**
+
+**Prepared for:** Redesign of the Official Indian Visa Online Portal  
+**Date:** 28 August 2026  
+**Sources reviewed:**  
+- https://www.ux4g.gov.in/get-started/for-developers  
+- https://www.ux4g.gov.in/foundations/content-system  
+- https://www.ux4g.gov.in/foundations/spacing  
+- https://www.ux4g.gov.in/foundations/tokens  
+- https://www.ux4g.gov.in/foundations/iconography  
+- https://www.ux4g.gov.in/skills/Design.md  
+- https://www.ux4g.gov.in/skills/SKILL.md  
+- https://www.ux4g.gov.in/get-started/build-with-ai  
+
+---
+
+### 1. What is UX4G?
+
+UX4G is the **official Government of India Design System** (v3.x) for building consistent, accessible, citizen-facing digital services. It provides:
+
+- Design tokens (colours, spacing, typography, radius, shadows, etc.)
+- Ready-to-use components (buttons, forms, cards, alerts, etc.)
+- Content patterns (labels, errors, helper text, consent language)
+- Iconography (Material Symbols)
+- Spacing & layout system
+- Accessibility baseline (WCAG 2.1 AA)
+- AI agent skills (`SKILL.md` + `Design.md`) so any AI coding tool follows the same rules
+
+It is the **mandatory contract** for new or redesigned government websites/apps. Using it ensures compliance, consistency with other GoI services, and better citizen experience.
+
+**Current authoritative packages (as of Aug 2026):**
+- Web: `npm install ux4g-web-components` (v2.0.1) or CDN `https://cdn.ux4g.gov.in/UX4G@3.1.0/`
+- Flutter: `ux4g_flutter_components` (v1.3.0)
+- Docs: https://doc.ux4g.gov.in/web/ and /flutter/
+- Figma: UX4G Design System 3.0
+
+**Never use** legacy/stale sources (old Bootstrap docs, netlify mirrors, deprecated Flutter package).
+
+---
+
+### 2. Why UX4G is Perfect for Indian Visa Online Redesign
+
+From the previous analysis, the current portal suffers from:
+- Dated UI, poor mobile experience, crashes, strict opaque uploads
+- Inconsistent labels/errors, weak guidance
+- Fragmented flows (e-Visa / Regular / e-Arrival / Afghan)
+- Accessibility & reliability gaps
+
+UX4G directly solves these by providing:
+- Modern, responsive, mobile-first components
+- Plain-language content system (exactly what visa applicants need)
+- Token-based theming (easy to keep government branding)
+- Built-in WCAG AA, keyboard, focus, contrast rules
+- AI-ready skill files so you (or any developer/AI) stay compliant
+
+---
+
+### 3. What You Should Do — Step-by-Step Action Plan
+
+#### Phase 0: Setup & Governance (1–2 days)
+1. Download the two skill files and keep them together:
+   - https://www.ux4g.gov.in/skills/SKILL.md
+   - https://www.ux4g.gov.in/skills/Design.md
+2. Place them in your project as `.claude/skills/ux4g-design/` (or equivalent for Cursor / Copilot / Codex).
+3. Read **both files completely** before writing any code (mandatory per the contract).
+4. Decide theme:
+   - Option A (recommended first): Use **default UX4G theme**.
+   - Option B: Provide primary + secondary colours (and status colours if needed). Map them only to confirmed semantic tokens at `:root` with `!important`.
+5. Install the package:
+   ```bash
+   npm install ux4g-web-components
+   ```
+6. In your entry file:
+   ```ts
+   import 'ux4g-web-components/styles.css';
+   import 'ux4g-web-components/design-system';
+   ```
+7. Set up Storybook / docs reference: https://doc.ux4g.gov.in/
+
+#### Phase 1: Content System First (Critical for Visa)
+Use the **Content Design System** as the single source of truth for all text.
+
+**Principles to enforce:**
+- Plain language (Class 8–10 reading level)
+- Specific + actionable (“Enter a 10-digit mobile number” not “Invalid input”)
+- Concise, positive, consistent terminology
+- Respect user dignity (no blame)
+
+**Immediate mappings for Visa portal:**
+
+| Current Problematic Text | UX4G-style Replacement |
+|--------------------------|------------------------|
+| Vague errors / “Invalid” | “Passport number is required. Enter it exactly as shown in your passport.” |
+| Photo upload failures | “Photo must be square JPEG, 10–300 KB, white background, full face, eyes open. [View sample]” |
+| Long legal advisories | Short plain-language version + expandable “Read full advisory” |
+| Field labels | Use standardised ones: “Full Name”, “Passport Number”, “Date of Birth”, “Mobile Number”, “Email Address” |
+
+Create a `content-library.ts` (or JSON) with:
+- 50+ field labels
+- 40+ error patterns
+- Helper texts (photo specs, passport validity, countries visited)
+- Consent / declaration templates
+- Success messages (“Application submitted. Reference: XXX. ETA will arrive by email within 72 hours.”)
+
+#### Phase 2: Foundations Application
+**Spacing & Layout**
+- Use base-4 scale (`--ux4g-space-1` = 2px … `--ux4g-space-15` = 120px)
+- Prefer semantic roles: `--ux4g-inline-*`, `--ux4g-stack-*`, `--ux4g-padding-*`, `--ux4g-section-*`
+- Max content width: 1200 px (desktop), 1320 px (XL)
+- Body text ≤ ~720 px width
+- Touch targets ≥ 44×44 px, ≥ 8 px gap
+
+**Tokens**
+- Never hard-code colours / spacing / radius / fonts
+- Always use `--ux4g-*` custom properties
+- Typography: Noto Sans family, semantic sizes (`--ux4g-fs-16`, etc.)
+- Radius: none / sm / md / lg / full
+- Support light + dark themes via `data-theme="light|dark"`
+
+**Iconography**
+- Use **Material Symbols Outlined** (default) or Rounded
+- Categories ready for visa: Documents, Identity, Payments, Security, Alerts, Forms, Travel
+- Always pair icons with text labels for primary actions
+- Size via `.ux4g-fs-*` classes
+- Semantic colours only (success / error / warning / info)
+
+#### Phase 3: Component Mapping for Key Flows
+Before coding any screen, list every UX4G component + exact variant + size + location (mandatory preflight rule).
+
+**Recommended core components for Visa:**
+- Buttons: `ux4g-btn ux4g-btn-primary ux4g-btn-md` (and outline, danger, text variants)
+- Form controls: inputs, selects, file upload, date picker, radio/checkbox
+- Cards for service selection (e-Visa / Regular / e-Arrival / Afghan)
+- Stepper / Progress indicator for multi-step application
+- Alerts / Toasts for status, errors, success
+- Modal / Accordion for long instructions & consent
+- Status badges for application tracking
+- File upload with live preview + compliance checker (photo + passport)
+- Tables for status history (if needed)
+
+**Flows to rebuild first:**
+1. Homepage service selector (clean cards + clear CTAs)
+2. e-Visa application wizard (step-by-step with partial save)
+3. Photo / passport upload with real-time validation
+4. Status enquiry + ETA download
+5. e-Arrival Card (simplified form)
+6. Helpdesk / FAQ / Chatbot integration points
+
+#### Phase 4: AI-Assisted Implementation (Recommended)
+1. Put `SKILL.md` + `Design.md` in your AI agent.
+2. Use the official prompts:
+   - Figma Make Prompt v3 (for design screens)
+   - CodeGen Prompt v1 (for coded product)
+   - UX4G BRD Template (structure requirements first)
+3. Always start prompts with:  
+   “Use the ux4g-design skill. Read Design.md completely before editing.”
+4. After any generation, demand the **mandatory completion report**:
+   - Package/CDN used
+   - Components + variants + sizes + tokens used
+   - Theme (default or custom overrides)
+   - Every custom CSS rule + why
+   - Light/dark, responsive, keyboard, focus, contrast, target-size verification
+   - Unresolved gaps
+
+#### Phase 5: Accessibility, Testing & Compliance
+- WCAG 2.1 AA minimum (built into UX4G)
+- Keyboard navigation + visible focus never suppressed
+- Contrast checked in real context
+- Touch targets, semantic HTML, ARIA where needed
+- Test light + dark, mobile → desktop XL
+- Multilingual readiness (content system makes translation easier)
+
+#### Phase 6: Rollout Strategy
+1. Start with e-Visa + e-Arrival (highest volume)
+2. Parallel run or feature-flag the new UI
+3. Keep Su-Swagatam app in sync (same design system)
+4. Add real-time photo validation, OCR auto-fill from passport, clearer rejection reasons
+5. Measure: completion rate, rejection rate (photo/data mismatch), support tickets, mobile success rate
+
+---
+
+### 4. Immediate Next Actions for You
+
+1. **Today:** Download SKILL.md + Design.md and install `ux4g-web-components`.
+2. **This week:** Create the content library (labels + errors + helpers) mapped to visa fields.
+3. **Next:** Produce a short BRD using the official UX4G BRD template (users, journeys, page inventory, accessibility requirements).
+4. **Then:** Generate first screen (homepage or e-Visa start) with the AI skill and review the completion report.
+5. Ask me for any of the following and I will produce it using the UX4G contract:
+   - Component plan for a specific flow
+   - Sample React/Next.js code for a form step
+   - Content library starter for visa fields
+   - Full page wireframe description in UX4G terms
+   - Accessibility audit checklist tailored to visa
+
+---
+
+### 5. Key Risks & Guardrails
+
+- Do **not** invent tokens or rebuild components that already exist.
+- Do **not** mix npm + CDN.
+- Do **not** hard-code colours/spacing.
+- Always include the full class composition (`ux4g-btn ux4g-btn-primary ux4g-btn-md`).
+- Version drift exists across Figma / npm / CDN / Flutter — treat the table in Design.md as the single source of truth and update it on every release.
+- Custom CSS only for true gaps; document every instance.
+
+---
+
+**Bottom line:**  
+UX4G gives you the complete, government-approved contract, components, content patterns, tokens, icons, spacing, and AI workflow needed to turn the current fragile visa portal into a modern, reliable, accessible, mobile-first service that matches the quality of the best GoI digital products.
+
+Start with the two skill files + content system + package install. Everything else follows from the contract.
+**Complete Prototype Plan for Redesigning indianvisaonline.gov.in**  
+**Goal:** Build a fully functional, clickable prototype that demonstrates dramatically improved user flows, reliability, guidance, and modern UX — ready for presentation to a Government Board.  
+**Constraint:** No live backend connection → we create our own mock data layer, local storage, and simulated APIs so every flow works end-to-end.
+
+---
+
+### 1. Project Scope & Objectives (Board-Ready Statement)
+
+**Current problems (evidence-based):**  
+- High rejection rates from photo/passport quality and data mismatches  
+- Confusing, multi-step, crash-prone forms  
+- Poor mobile experience  
+- Weak guidance and opaque errors  
+- Fragmented journeys (e-Visa / Regular / e-Arrival / Afghan / Status)  
+- Outdated design and accessibility gaps  
+
+**Prototype objectives:**  
+1. Demonstrate a modern, mobile-first, UX4G-compliant experience.  
+2. Reduce friction in the highest-volume flows (e-Visa + e-Arrival).  
+3. Show measurable improvements in completion rate, clarity, and error recovery.  
+4. Prove technical feasibility without touching production systems.  
+5. Deliver a living prototype the Board can click through on any device.
+
+**Success metrics for the prototype (to present):**  
+- Form completion time reduced by ≥ 40%  
+- Clear real-time validation (photo, passport, fields)  
+- Zero unexplained crashes in demo path  
+- WCAG 2.1 AA compliance  
+- Full light/dark + responsive support  
+- Plain-language content throughout
+
+---
+
+### 2. Improved User Flows (What We Will Redesign)
+
+We will rebuild these core journeys as guided wizards with progress indicators, auto-save, and contextual help:
+
+| Flow | Current Pain | Prototype Improvement |
+|------|--------------|-----------------------|
+| **Homepage / Service Selector** | Cluttered cards, mixed messages | Clean UX4G cards + smart eligibility quiz (“What do you need?”) |
+| **e-Visa Application** (highest priority) | Long form, opaque uploads, data loss | Multi-step wizard, OCR-assisted passport fill, live photo checker, partial save, clear fee + timeline |
+| **Photo & Passport Upload** | Strict rules, cryptic errors | Real-time preview + compliance score + sample overlay + auto-crop suggestion |
+| **Payment Simulation** | Real payment friction | Mock payment gateway with success/failure paths + receipt |
+| **Status Enquiry + ETA Download** | Basic lookup | Rich status timeline + downloadable ETA PDF + email simulation |
+| **e-Arrival Card** | Separate form, last-minute stress | Integrated, pre-fillable from previous visa data, group “Add Member” |
+| **Regular / Paper Visa** | Print + visit Mission | Online form + appointment booking simulator + document checklist |
+| **Afghan Portal** | Separate silo | Same design system + language support |
+| **Help & Support** | Phone/email only | In-context chatbot + searchable FAQ + ticket simulation |
+| **Group / Family Application** | Almost non-existent | Multi-applicant mode with shared address/payment |
+
+All flows will follow UX4G Content System (plain language, actionable errors, consistent labels).
+
+---
+
+### 3. Feature Set We Must Build (Functionality List)
+
+**Must-have for Board demo:**
+- Smart eligibility checker (nationality + purpose → recommended visa type + fee estimate)
+- Multi-step progressive forms with auto-save (localStorage + mock backend)
+- Real-time field validation + photo/passport quality checker (client-side)
+- OCR simulation for passport bio page (mock auto-fill)
+- Partial form resume across devices/sessions
+- Mock payment (success / decline / pending)
+- Status tracking with timeline and ETA PDF generation (client-side)
+- e-Arrival Card with pre-fill and group support
+- Dark mode + text-size controls + language switcher (English + Hindi minimum)
+- Full keyboard navigation + screen-reader support
+- Responsive (mobile-first → desktop XL)
+- Sample data for different nationalities and visa types
+- Admin-like “Demo Reset” button for Board presentations
+
+**Nice-to-have (if time allows):**
+- Chatbot with scripted answers
+- Fee calculator
+- Document checklist generator
+- Simulated email notifications
+
+---
+
+### 4. Technical Architecture (No Real Backend)
+
+**Frontend stack (recommended):**
+- Next.js 14/15 (App Router) + TypeScript  
+- UX4G Web Components (`ux4g-web-components`)  
+- Tailwind or pure UX4G utilities for layout  
+- React Hook Form + Zod for validation  
+- LocalStorage + IndexedDB for persistence  
+- Mock Service Worker (MSW) or simple in-memory API routes  
+
+**Mock Backend Layer (we create everything):**
+```
+/api/mock/
+  ├── visas/ (CRUD applications)
+  ├── status/:id
+  ├── payment/simulate
+  ├── upload/validate-photo
+  ├── upload/validate-passport
+  ├── eligibility
+  └── eta/generate
+```
+
+**Data model (JSON files + localStorage):**
+- Applications (with status history)
+- Users / sessions
+- Sample passports & photos (for demo)
+- Fee matrix by nationality + visa type
+- Countries list + eligibility rules
+
+**Persistence strategy:**
+- Every form step → auto-save to localStorage
+- “Submit” → write to mock API + generate Application ID
+- Status page reads from the same store
+- Demo Reset clears everything
+
+**PDF generation:** Client-side (jsPDF or @react-pdf) for ETA and application form.
+
+---
+
+### 5. UX4G Compliance Checklist (Mandatory)
+
+We follow the official contract exactly:
+1. Install `ux4g-web-components` and use only its classes/tokens.
+2. Use Content Design System for every label, helper, error, and success message.
+3. Spacing via semantic tokens (`--ux4g-stack-*`, `--ux4g-padding-*`, etc.).
+4. Material Symbols Outlined icons.
+5. Full class composition on every component (`ux4g-btn ux4g-btn-primary ux4g-btn-md`).
+6. Light + Dark theme support.
+7. WCAG 2.1 AA (contrast, focus, target size ≥ 44 px, keyboard).
+8. After every major screen, produce the mandatory completion report required by Design.md / SKILL.md.
+
+---
+
+### 6. Prototype Delivery Plan (Timeline for Board)
+
+**Week 1 – Foundations**
+- Project setup + UX4G install + content library
+- Homepage + Service Selector
+- Basic routing + mock data layer
+
+**Week 2 – Core e-Visa Flow**
+- Multi-step wizard
+- Photo/passport upload with real-time checks
+- Auto-save + resume
+- Mock payment + success screen
+
+**Week 3 – Status, e-Arrival & Polish**
+- Status enquiry + ETA PDF
+- e-Arrival Card (pre-fill capable)
+- Dark mode, accessibility audit, mobile testing
+- Demo script + sample data for Board
+
+**Week 4 – Board Presentation Package**
+- Clickable prototype (hosted on secure internal URL or local)
+- Side-by-side “Current vs Proposed” comparison slides
+- Metrics dashboard (simulated improvements)
+- Technical architecture one-pager
+- Risk & next-steps document (how to connect real backend later)
+
+---
+
+### 7. Board Presentation Structure (What We Will Deliver)
+
+1. **Problem Statement** (current pain points with evidence)
+2. **Vision** – “A modern, reliable, citizen-centric visa portal”
+3. **Live Demo** (click through the full e-Visa + e-Arrival journeys)
+4. **Key Improvements** (table of before/after)
+5. **UX4G Compliance & Accessibility**
+6. **Technical Feasibility** (mock backend explained)
+7. **Roadmap to Production** (how this prototype becomes the real system)
+8. **Ask** – Approval to proceed to detailed design + real backend integration
+
+---
+
+### 8. Immediate Next Actions (What We Start Right Now)
+
+1. Confirm theme preference (default UX4G or custom primary/secondary colours).
+2. Create the content library (labels + errors + helpers for all visa fields).
+3. Set up Next.js project with UX4G + mock API structure.
+4. Build the first screen: Homepage / Service Selector.
+5. Prepare sample data (3–4 nationalities, different visa types, good/bad photos).
+
+---

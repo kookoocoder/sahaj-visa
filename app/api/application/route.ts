@@ -48,7 +48,7 @@ export async function POST(req: Request) {
     const submitted = await transition(
       saved.id,
       "submitted",
-      "Citizen submitted. No further edits. Payment is next.",
+      "Application preparation completed. Record locked to preserve the reviewed details.",
     );
     if (!submitted) {
       return NextResponse.json({ error: "Invalid application status transition." }, { status: 409 });

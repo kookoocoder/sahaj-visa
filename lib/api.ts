@@ -1,4 +1,4 @@
-import type { Application, PaymentScenario } from "@/lib/types";
+import type { Application } from "@/lib/types";
 
 async function json<T>(res: Response): Promise<T> {
   const body = await res.json().catch(() => ({}));
@@ -22,52 +22,12 @@ export async function getApplicationApi(id: string) {
   return json<{ application: Application }>(await fetch(`/api/application/${id}`));
 }
 
-export async function payApi(id: string, scenario: PaymentScenario) {
-  return json<{ application: Application }>(
-    await fetch("/api/payment", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, scenario }),
-    }),
-  );
-}
-
-export async function reconcileApi(id: string) {
-  return json<{ application: Application }>(
-    await fetch("/api/payment", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, action: "reconcile" }),
-    }),
-  );
-}
-
 export async function precheckApi(id: string) {
   return json<{ application: Application }>(
     await fetch("/api/precheck", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id }),
-    }),
-  );
-}
-
-export async function statusMessageApi(id: string) {
-  return json<{ message: string; application: Application }>(
-    await fetch("/api/status-message", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id }),
-    }),
-  );
-}
-
-export async function loginApi(email: string, password: string) {
-  return json<{ ok: true; email: string }>(
-    await fetch("/api/auth", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
     }),
   );
 }

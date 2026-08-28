@@ -111,7 +111,7 @@ export const FORMAT_SPECS: Record<InputFormatId, FormatSpec> = {
       if (!EMAIL_RE.test(v)) return "Enter a valid email, for example name@example.com.";
       return undefined;
     },
-    hint: "Where a real ETA would be sent. Letters, numbers, and . _ % + - only.",
+    hint: "Use an address you check regularly. Letters, numbers, and . _ % + - only.",
     placeholder: "name@example.com",
     maxLength: 100,
     inputMode: "email",
@@ -171,7 +171,7 @@ export const FORMAT_SPECS: Record<InputFormatId, FormatSpec> = {
       if (!APPLICATION_ID_RE.test(v)) return "Application ID looks like SV-26-XXXXXXXXXX.";
       return undefined;
     },
-    hint: "Printed as SV-26-XXXXXXXXXX on the form once it first saves. Existing 6-character demo IDs still work.",
+    hint: "Shown as SV-26-XXXXXXXXXX after your application first saves.",
     placeholder: "SV-26-XXXXXXXXXX",
     maxLength: 16,
     autoCapitalize: "characters",

@@ -1,40 +1,23 @@
 import { cn } from "@/lib/utils";
 
+/** Jaali-inspired lattice mark — architectural, not heraldic. */
 export function SahajEmblem({ className }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 48 48"
-      className={cn("size-11 shrink-0", className)}
-      aria-hidden
-    >
-      <circle cx="24" cy="24" r="23" fill="#0B3D73" />
-      <circle cx="24" cy="24" r="18" fill="none" stroke="#F4C430" strokeWidth="1.5" />
+    <svg viewBox="0 0 48 48" className={cn("sahaj-emblem", className)} aria-hidden>
+      <rect x="1" y="1" width="46" height="46" rx="8" fill="var(--ux4g-bg-primary, #eef3fa)" />
+      <g fill="none" stroke="var(--ux4g-color-primary-600, #123a6e)" strokeWidth="1.1" strokeLinecap="round">
+        <path d="M8 10c4 0 4 8 0 8s-4-8 0-8zm8 0c4 0 4 8 0 8s-4-8 0-8zm8 0c4 0 4 8 0 8s-4-8 0-8zm8 0c4 0 4 8 0 8s-4-8 0-8z" />
+        <path d="M8 22c4 0 4 8 0 8s-4-8 0-8zm8 0c4 0 4 8 0 8s-4-8 0-8zm8 0c4 0 4 8 0 8s-4-8 0-8zm8 0c4 0 4 8 0 8s-4-8 0-8z" />
+        <path d="M8 34c4 0 4 8 0 8s-4-8 0-8zm8 0c4 0 4 8 0 8s-4-8 0-8zm8 0c4 0 4 8 0 8s-4-8 0-8zm8 0c4 0 4 8 0 8s-4-8 0-8z" />
+        <path d="M12 6v36M20 6v36M28 6v36M36 6v36" strokeOpacity="0.35" />
+      </g>
       <path
-        d="M24 10.5v6M24 31.5v6M10.5 24h6M31.5 24h6"
-        stroke="#F4C430"
-        strokeWidth="1.2"
+        d="M28 14c3 0 3 6 0 6s-3-6 0-6zm0 12c3 0 3 6 0 6s-3-6 0-6z"
+        fill="none"
+        stroke="var(--ux4g-color-secondary-400, #e07b28)"
+        strokeWidth="1.3"
         strokeLinecap="round"
       />
-      <circle cx="24" cy="24" r="7" fill="#0B3D73" stroke="#fff" strokeWidth="1.25" />
-      <circle cx="24" cy="24" r="2.2" fill="#F4C430" />
     </svg>
-  );
-}
-
-export function EVisaMark({ className }: { className?: string }) {
-  return (
-    <div className={cn("flex items-center gap-1.5", className)} aria-hidden>
-      <span className="relative flex size-11 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-border">
-        <span className="absolute inset-x-2 top-2 h-1 rounded-full bg-[#FF9933]" />
-        <span className="font-heading text-lg leading-none text-primary">e</span>
-        <span className="absolute inset-x-2 bottom-2 h-1 rounded-full bg-[#138808]" />
-      </span>
-      <span className="hidden text-left leading-tight sm:block">
-        <span className="block text-sm font-bold tracking-tight text-primary">e-Visa</span>
-        <span className="block text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-          Prototype
-        </span>
-      </span>
-    </div>
   );
 }

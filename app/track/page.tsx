@@ -1,34 +1,33 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Breadcrumbs, Container, InfoCallout, PageMasthead } from "@/components/site/chrome";
 import { ResumeForm } from "@/components/site/resume-form";
-import { DEMO_EMAIL, DEMO_PASSWORD } from "@/lib/constants";
 
 export const metadata: Metadata = { title: "Track application" };
 
 export default function TrackPage() {
   return (
     <div>
-      <PageMasthead title="Track Application" subtitle="Resume a draft or open a status timeline with your application ID" />
-      <Container className="max-w-2xl py-6 sm:py-8">
+      <PageMasthead
+        kicker="मेरा आवेदन"
+        title="My Application"
+        subtitle="Resume a saved draft or open your completed preparation record"
+        image="/india/india-gate.jpg"
+        imageAlt="India Gate, New Delhi"
+      />
+      <Container className="ux4g-py-xs sahaj-narrow-sm">
         <Breadcrumbs items={[{ href: "/", label: "Home" }, { label: "Track Application" }]} />
-        <div className="mt-6 space-y-6">
+        <div className="ux4g-d-flex ux4g-flex-column ux4g-gap-y-s ux4g-mt-s">
           <InfoCallout>
             <p>
-              Paste your SV-26 application ID. If the application is still a draft you return to the form. If you
-              have paid, you land on the status timeline.
+              Enter the application ID shown when your draft was first saved. Drafts reopen in the guided form;
+              completed records open in a read-only summary.
             </p>
           </InfoCallout>
-          <div className="rounded-xl border border-border bg-card p-5">
-            <ResumeForm />
+          <div className="ux4g-card ux4g-card-outline ux4g-card-vertical">
+            <div className="ux4g-card-body">
+              <ResumeForm />
+            </div>
           </div>
-          <p className="text-sm text-muted-foreground">
-            Or{" "}
-            <Link href="/login" className="font-medium text-primary underline-offset-2 hover:underline">
-              demo login
-            </Link>{" "}
-            with {DEMO_EMAIL} / {DEMO_PASSWORD}, then continue the form on this device.
-          </p>
         </div>
       </Container>
     </div>

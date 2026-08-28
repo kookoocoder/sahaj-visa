@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { HelpCircle, X } from "lucide-react";
 import { FIELD_HELP } from "@/lib/visa-rules";
+import { Icon } from "@/components/site/icon";
 
 export function FieldHelp({ field }: { field: string }) {
   const canned = FIELD_HELP[field];
@@ -10,31 +10,28 @@ export function FieldHelp({ field }: { field: string }) {
   const answer = canned?.body || "No additional guidance is available for this field.";
 
   return (
-    <span className="relative inline-flex">
+    <span className="ux4g-relative ux4g-d-inline-flex">
       <button
         type="button"
-        className="inline-flex size-12 items-center justify-center rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
+        className="ux4g-icon-btn ux4g-icon-btn-text-primary ux4g-icon-btn-md"
         aria-expanded={open}
         aria-label={`Help with ${canned?.title ?? field}`}
         onClick={() => setOpen((value) => !value)}
       >
-        <HelpCircle className="size-4" />
+        <Icon name="help" />
       </button>
       {open && (
-        <div
-          role="note"
-          className="absolute top-14 right-0 z-20 w-[min(18rem,calc(100vw-2rem))] rounded-xl border border-border bg-card p-3 text-left text-sm shadow-lg"
-        >
-          <div className="mb-1 flex items-start justify-between gap-2">
-            <p className="font-medium text-foreground">{canned?.title ?? "Help"}</p>
-            <button type="button" className="rounded p-2 hover:bg-muted" onClick={() => setOpen(false)} aria-label="Close help">
-              <X className="size-3.5" />
-            </button>
+        <div role="note" className="ux4g-card ux4g-card-outline" style={{ position: "absolute", top: "3.5rem", right: 0, zIndex: 20, width: "min(18rem, calc(100vw - 2rem))" }}>
+          <div className="ux4g-card-body">
+            <div className="ux4g-d-flex ux4g-jc-between ux4g-ai-center">
+              <p className="ux4g-card-title">{canned?.title ?? "Help"}</p>
+              <button type="button" className="ux4g-icon-btn ux4g-icon-btn-text-primary ux4g-icon-btn-sm" onClick={() => setOpen(false)} aria-label="Close help">
+                <Icon name="close" />
+              </button>
+            </div>
+            <p className="ux4g-card-sub-title">{answer}</p>
+            <p className="ux4g-body-xs-default ux4g-mt-xs">Application guidance</p>
           </div>
-          <p className="leading-relaxed text-muted-foreground">{answer}</p>
-          <p className="mt-2 text-[11px] uppercase tracking-wide text-muted-foreground/80">
-            From the mock rules document
-          </p>
         </div>
       )}
     </span>

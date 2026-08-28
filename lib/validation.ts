@@ -16,7 +16,7 @@ export const visaFormSchema = z.object({
   surname: zFormat("personName", "Surname"),
   dateOfBirth: z.string().min(1, "Enter your date of birth."),
   gender: z.string().min(1, "Choose a gender option."),
-  nationality: z.string().min(1, "Choose a nationality from the mocked eligible list."),
+  nationality: z.string().min(1, "Choose your nationality."),
   cityOfBirth: zFormat("place", "Place of birth"),
   countryOfBirth: zFormat("place", "Country of birth"),
   email: zFormat("email"),

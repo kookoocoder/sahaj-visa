@@ -150,7 +150,7 @@ export const STEPS = [
   { id: "travel", label: "Travel Details", short: "Travel" },
   { id: "documents", label: "Document Upload", short: "Documents" },
   { id: "review", label: "Review & Submit", short: "Review" },
-  { id: "pay", label: "Pay e-Visa Fee", short: "Pay" },
+  { id: "next", label: "Next Steps", short: "Finish" },
 ] as const;
 
 export type StepId = (typeof STEPS)[number]["id"];

@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { toast } from "sonner";
 
 const SIZES = ["sm", "md", "lg"] as const;
 type Size = (typeof SIZES)[number];
@@ -31,10 +30,18 @@ function applySize(size: Size) {
 
 export function A11yBar() {
   const size = useSyncExternalStore(subscribe, readSize, () => "md" as Size);
+  const [dark, setDark] = useState(false);
 
   useEffect(() => {
     applySize(size);
   }, [size]);
+
+  useEffect(() => {
+    const stored = window.localStorage.getItem("sahaj-theme");
+    const enabled = stored === "dark" || (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    document.documentElement.dataset.theme = enabled ? "dark" : "light";
+    queueMicrotask(() => setDark(enabled));
+  }, []);
 
   function changeSize(next: Size) {
     window.localStorage.setItem("sahaj-text-size", next);
@@ -42,68 +49,80 @@ export function A11yBar() {
     emit();
   }
 
+  function toggleTheme() {
+    const next = !dark;
+    setDark(next);
+    document.documentElement.dataset.theme = next ? "dark" : "light";
+    window.localStorage.setItem("sahaj-theme", next ? "dark" : "light");
+  }
+
   return (
-    <div className="bg-navy text-primary-foreground">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-1.5 text-xs sm:text-sm">
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+    <header className="ux4g-topbar ux4g-topbar-wide" role="banner">
+      <div className="ux4g-container">
+        <div className="ux4g-topbar__wrap ux4g-d-flex ux4g-jc-between ux4g-ai-center">
+          <div className="ux4g-d-flex ux4g-ai-center ux4g-gap-x-xs">
+            <span className="ux4g-icon-outlined ux4g-top-bar-icon" aria-hidden="true">public</span>
+            <span className="ux4g-label-m-default">Independent India visa guidance · स्वतंत्र मार्गदर्शन</span>
+          </div>
+          <nav aria-label="Top utilities" className="ux4g-d-flex ux4g-ai-center">
           <a
             href="#main-content"
-            className="rounded-sm underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            className="ux4g-label-m-default ux4g-topbar__skip"
           >
             Skip to Main Content
           </a>
+          <span className="ux4g-bl-1 acc-top-divider ux4g-d-none ux4g-md-d-flex" />
           <Link
             href="/instructions#accessibility"
-            className="rounded-sm underline-offset-2 hover:underline"
+            className="ux4g-label-m-default ux4g-topbar__skip ux4g-d-none ux4g-md-d-flex"
           >
             Screen Reader Access
           </Link>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1" role="group" aria-label="Text size">
+          <span className="ux4g-bl-1 acc-top-divider ux4g-d-none ux4g-md-d-flex" />
+          <div className="ux4g-topbar__group ux4g-d-flex ux4g-ai-center" role="group" aria-label="Text size controls">
             <button
               type="button"
-              className="rounded px-1.5 py-0.5 text-[11px] hover:bg-white/10"
-              onClick={() => changeSize("lg")}
-              aria-pressed={size === "lg"}
-            >
-              A+
-            </button>
-            <button
-              type="button"
-              className="rounded px-1.5 py-0.5 text-sm font-semibold hover:bg-white/10"
-              onClick={() => changeSize("md")}
-              aria-pressed={size === "md"}
-            >
-              A
-            </button>
-            <button
-              type="button"
-              className="rounded px-1.5 py-0.5 text-[11px] hover:bg-white/10"
+              className="ux4g-topbar__iconbtn ux4g-d-flex ux4g-jc-center ux4g-ai-center"
               onClick={() => changeSize("sm")}
+              aria-label="Decrease text size"
               aria-pressed={size === "sm"}
             >
-              A-
+              <span className="ux4g-icon-outlined ux4g-top-bar-icon" aria-hidden="true">text_decrease</span>
+            </button>
+            <button
+              type="button"
+              className="ux4g-topbar__iconbtn ux4g-d-flex ux4g-jc-center ux4g-ai-center"
+              onClick={() => changeSize("md")}
+              aria-label="Reset text size"
+              aria-pressed={size === "md"}
+            >
+              <span className="ux4g-icon-outlined ux4g-top-bar-icon" aria-hidden="true">font_download</span>
+            </button>
+            <button
+              type="button"
+              className="ux4g-topbar__iconbtn ux4g-d-flex ux4g-jc-center ux4g-ai-center"
+              onClick={() => changeSize("lg")}
+              aria-label="Increase text size"
+              aria-pressed={size === "lg"}
+            >
+              <span className="ux4g-icon-outlined ux4g-top-bar-icon" aria-hidden="true">text_increase</span>
             </button>
           </div>
-          <label className="flex items-center gap-1.5">
-            <span className="sr-only">Language</span>
-            <select
-              className="h-7 rounded border border-white/25 bg-navy px-1.5 text-xs text-primary-foreground"
-              defaultValue="en"
-              onChange={(e) => {
-                if (e.target.value !== "en") {
-                  e.target.value = "en";
-                  toast.message("This prototype is English-only for the demo.");
-                }
-              }}
-            >
-              <option value="en">English</option>
-              <option value="hi">हिन्दी</option>
-            </select>
-          </label>
+          <span className="ux4g-bl-1 acc-top-divider" />
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="ux4g-topbar__iconbtn ux4g-d-flex ux4g-jc-center ux4g-ai-center"
+            aria-label={dark ? "Use light theme" : "Use dark theme"}
+            title={dark ? "Use light theme" : "Use dark theme"}
+          >
+            <span className="ux4g-icon-outlined ux4g-top-bar-icon" aria-hidden="true">
+              {dark ? "light_mode" : "dark_mode"}
+            </span>
+          </button>
+          </nav>
         </div>
       </div>
-    </div>
+    </header>
   );
 }
