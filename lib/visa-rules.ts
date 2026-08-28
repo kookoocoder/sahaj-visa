@@ -25,15 +25,15 @@ TIMING
 PHOTO (the live portal's most common rejection)
 - JPEG, typically 10 KB to 300 KB (some pages say 1 MB — the live caps conflict, which is itself a problem).
 - Square, plain light background, full face, no borders, no heavy shadows, no hats/sunglasses.
-- This prototype: we square-crop and resize on your device, then an assistive pre-check explains remaining issues before you submit. The pre-check is not a decision.
+- This prototype: we square-crop and resize on your device, then a deterministic pre-check validates dimensions and file size before you submit. The pre-check is not a decision and does not inspect image contents.
 
 PASSPORT SCAN
 - Clear biodata page. Live portal often wants PDF with tight size caps (10–300/500 KB) and rejects without saying why.
-- This prototype accepts a photo or PDF-as-image, stores it with the draft, and checks readability assistively.
+- This prototype accepts a photo or PDF-as-image, stores it with the draft, and validates available file metadata. It cannot determine readability from image contents.
 
 AFTER SUBMIT
 - No edits after submit on the live system. We keep that rule.
-- You get a stable application ID (SV-26-XXXXXX) the moment the draft is created, not after a session roulette.
+- You get a stable, unguessable application ID (starting with SV-26) the moment the draft is created, not after a session roulette.
 - Drafts autosave. Closing the tab does not wipe the form.
 
 PAYMENT (mocked)
@@ -42,14 +42,14 @@ PAYMENT (mocked)
 
 STATUS
 - Timeline: Submitted → Payment confirmed → Under review → ETA issued.
-- ETA messaging is generated from mocked queue depth, with a confidence range, never a fake countdown to 72 hours.
+- ETA messaging is calculated from fixed mocked queue statistics, with a confidence range, never a fake countdown to 72 hours.
 
 SUPPORT
 - The live helpdesks often do not pick up; missions say they do not process e-visas.
 - This prototype answers field-level questions from THIS document only. If the answer is not here, it must say so.
 
 OUT OF SCOPE (mocked / not built)
-- Aadhaar, PAN, mobile, name, and passport number follow official input formats (12-digit Aadhaar, 10-character PAN, 10-digit mobile, letters-only names). OTP, biometrics, IVFRT, Immigration Check Posts, real payment gateways, security clearance are not built.
+- Names, international phone numbers, and passport numbers are format-checked. OTP, biometrics, IVFRT, Immigration Check Posts, real payment gateways, and security clearance are not built.
 - We are proposing the citizen-facing layer and state model that could sit in front of IVFRT, matching the March 2026 Cabinet note that the core application architecture needs a revamp.
 `.trim();
 
@@ -88,7 +88,7 @@ export const FIELD_HELP: Record<string, { title: string; body: string }> = {
   },
   phone: {
     title: "Mobile number",
-    body: "Enter a 10-digit Indian mobile number starting with 6, 7, 8 or 9. Do not type +91, spaces, or dashes — the field will not accept them.",
+    body: "Enter an international mobile number with its country code. Spaces and dashes are removed automatically.",
   },
   passportNumber: {
     title: "Passport number",
@@ -97,14 +97,6 @@ export const FIELD_HELP: Record<string, { title: string; body: string }> = {
   email: {
     title: "Email format",
     body: "Use a standard email (name@example.com). This is where a real ETA would be sent.",
-  },
-  aadhaarNumber: {
-    title: "Aadhaar number",
-    body: "UIDAI format: exactly 12 digits, first digit 2–9. We insert spaces as XXXX XXXX XXXX. Letters and extra digits are blocked.",
-  },
-  panNumber: {
-    title: "PAN",
-    body: "NSDL format for an individual: five letters, four digits, one letter (AAAAA9999A). The 4th character must be P. We force uppercase and block other symbols.",
   },
   humanCheck: {
     title: "Why this instead of a CAPTCHA?",

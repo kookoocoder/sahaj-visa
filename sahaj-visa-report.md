@@ -5,6 +5,7 @@
 **Deadline:** 28 August 2026, 8:00 PM IST  
 **Live demo:** [https://sahaj-visa.vercel.app](https://sahaj-visa.vercel.app)  
 **Demo login:** `demo@visa.test` / `sahaj-demo`
+**Build provenance:** Designed and built with ChatGPT; runtime checks remain deterministic.
 
 This is **not** a Government of India website. It is not affiliated with the Ministry of Home Affairs, the Bureau of Immigration, NIC, or [indianvisaonline.gov.in](https://indianvisaonline.gov.in/). No real visa is issued. No government logos are used as endorsement.
 
@@ -160,10 +161,10 @@ We do **not** rebuild immigration policy, biometrics, or IVFRT. We rebuild the c
 | P0 | Resumable form — autosave on blur / step-change; survives kill-tab | **Shipped** |
 | P0 | Status timeline: Submitted → Payment confirmed → Under review → ETA issued | **Shipped** |
 | P0 | Mock payment with idempotency; decline; charged-but-not-confirmed + reconcile | **Shipped** |
-| P0 | AI Feature 1 — OpenAI vision rejection-risk scanner | **Shipped** (needs `OPENAI_API_KEY`) |
+| P0 | Deterministic rejection-risk pre-check | **Shipped** |
 | P0 | Mobile-first UI, large tap targets, no marquee / pop-up clutter | **Shipped** |
-| P1 | AI Feature 2 — field co-pilot over a hand-written rules doc | **Shipped** |
-| P1 | AI Feature 3 — honest ETA phrasing from **mocked** queue stats | **Shipped** |
+| P1 | Field help from a hand-written rules doc | **Shipped** |
+| P1 | Honest ETA message calculated from **mocked** queue stats | **Shipped** |
 | P1 | CAPTCHA replacement — type INDIA (accessible) | **Shipped** |
 | P1 | Trust banner: independent prototype, official URL named | **Shipped** |
 | P2 | Multilingual explainer, passport OCR, family batching | Not built |
@@ -173,9 +174,9 @@ We do **not** rebuild immigration policy, biometrics, or IVFRT. We rebuild the c
 
 **Working in this demo**
 
-- Resumable application + stable ID (`SV-26-XXXXXX`)
+- Resumable application + stable bearer ID (`SV-26-XXXXXXXXXX`; legacy 6-character IDs remain accepted)
 - Status timeline and timestamped audit log
-- OpenAI vision pre-check when `OPENAI_API_KEY` is set; rules-engine fallback without a key
+- Deterministic pre-check for field formats, dates, passport validity, and upload metadata
 - Field help from a hand-written mock rules document (not scraped from the live site)
 - Accessible confirmation instead of a distorted text CAPTCHA
 
@@ -197,10 +198,10 @@ We do not scrape or contact indianvisaonline.gov.in.
 |---|---|
 | Session expired, restart from page 1 | Every field autosaves. Kill the tab, resume. ID is issued when the draft starts. |
 | Money deducted, status not updated, 30-minute lockout | Idempotency key per application. “Charged, not confirmed” is a visible state. Reconcile without a second charge. Retry immediately on decline. |
-| Photo/passport rejected with no reason | On-device square-crop + size window. Assistive pre-check names the issue next to the field (`{issue, severity, fix_suggestion}`). Not a decision-maker. |
+| Photo/passport rejected with no reason | On-device square-crop + deterministic dimension and size checks. The pre-check names metadata issues next to the field (`{issue, severity, fix_suggestion}`). It does not inspect image contents or make a visa decision. |
 | Distorted text CAPTCHA | Type **INDIA**. Readable, hearable, no sadism. |
 | Frozen “72 hours” / apply 4 days before vs 7–10 day waits | Honest range from mocked queue stats, citing the Cabinet five-year 91.24% figure **and** the 2025–26 traveller reports. Not a promise. |
-| No human support; missions bounce e-Visa queries | Narrow co-pilot that may only cite our mock rules doc. If the answer is not in the doc, it must say so. |
+| No human support; missions bounce e-Visa queries | Field-level help comes directly from a hand-written mock rules document. |
 | 140 clone URLs | Persistent banner: this is an independent prototype; official site is indianvisaonline.gov.in. |
 | Mobile “a total waste of time” | Single column, 48px tap targets, native `<select>` / `<input>`. |
 
@@ -218,9 +219,8 @@ Next.js 16 App Router (Vercel-ready)
 API routes
   /api/application   draft + submit
   /api/payment       mock idempotent state machine
-  /api/ai-review     OpenAI vision (gpt-4o) + rules engine
-  /api/ai-assist     co-pilot (gpt-4o-mini, grounded on mock rules)
-  /api/ai-status     honest ETA phrasing
+  /api/precheck      deterministic rules engine
+  /api/status-message queue-statistics template
   /api/auth          demo login
   /api/demo-eta      prototype shortcut
         │
@@ -230,21 +230,21 @@ JSON application store (local file; /tmp on serverless)
   audit_log: every transition, timestamped
 ```
 
-The OpenAI key is server-side only. Payment outcomes are **not** model-driven.
+No external AI service is called. Payment outcomes and pre-check results are deterministic.
 
-**At scale (submission “how it scales” answer):** session state moves from a row/file to Redis; AI review is rate-limited and cached; the real ICP / biometric / security backend stays as strict as today. We are proposing the citizen-facing layer and state model that could sit in front of IVFRT — the same gap the March 2026 Cabinet note names.
+**At scale (submission “how it scales” answer):** session state moves from a row/file to Redis; validation rules are versioned and evaluated on the server; the real ICP / biometric / security backend stays as strict as today. We are proposing the citizen-facing layer and state model that could sit in front of IVFRT — the same gap the March 2026 Cabinet note names.
 
 ### Tech stack
 
 | Layer | Choice |
 |---|---|
 | App | Next.js 16.3, React 19, TypeScript |
-| UI | Tailwind 4, shadcn/ui, Figtree + Newsreader |
+| UI | Tailwind 4, shadcn/ui, Figtree |
 | Client state | Zustand persist (localStorage) |
 | Server state | JSON store, Postgres-shaped `Application` model |
 | Validation | Zod on submit |
-| AI Feature 1 | `gpt-4o` vision via `openai` SDK |
-| AI Features 2–3 | `gpt-4o-mini` phrasing |
+| Pre-check | Deterministic TypeScript rules engine |
+| Field help / ETA | Hand-written content and fixed templates |
 | Payments | Deterministic state machine |
 
 ### Routes
@@ -262,7 +262,7 @@ The OpenAI key is server-side only. Payment outcomes are **not** model-driven.
 
 ```bash
 npm install
-cp .env.example .env.local   # set OPENAI_API_KEY for eligibility
+cp .env.example .env.local   # optional Redis persistence settings
 npm run dev
 ```
 
@@ -270,7 +270,7 @@ Open http://localhost:3000.
 
 **Demo:** `demo@visa.test` / `sahaj-demo`
 
-Without an API key the form, autosave, payment machine, and rules-engine pre-check still work. **Feature 1 is not an OpenAI model until the key is set** — that is the eligibility-critical runtime call.
+The product does not need an AI API key or call an external AI service.
 
 ---
 
@@ -278,15 +278,15 @@ Without an API key the form, autosave, payment machine, and rules-engine pre-che
 
 India’s authorised e-Visa site is the public face of IVFRT, a ₹1,800 crore programme whose March 2026 Cabinet note admits the core application architecture needs a revamp. Trustpilot sits at 1.3/5 from 72 reviews. About 3.17 million tourist e-visas were issued in the 13 months to November 2025; 9.64 million since 2020. Travellers describe session expiry that wipes the form, payments that charge without updating status, photo uploads rejected without a reason, and a 72-hour promise (91.24% over five years, per Cabinet) that in 2025–26 often meant 7–10 days. There is no citizen-facing incident log. Missions bounce queries to the portal. The government lists 140 clone URLs. People flee to scammers because the real site is unusable.
 
-Sahaj Visa rebuilds one journey — 30-day e-Tourist, one adult — around: I don’t know what’s happening to my application, and if anything goes wrong I have to start over. Drafts autosave. Closing the tab does not send you to page 1. A timeline (Submitted → Paid → Under review → ETA) replaces a frozen countdown. Payment is a mocked idempotent machine that can show “charged but not confirmed” and reconcile without a second charge or lockout. Before submit, OpenAI vision plus a rules engine explain photo and passport problems next to the field. Queue language is honest: we do not promise 72 hours.
+Sahaj Visa rebuilds one journey — 30-day e-Tourist, one adult — around: I don’t know what’s happening to my application, and if anything goes wrong I have to start over. Drafts autosave. Closing the tab does not send you to page 1. A timeline (Submitted → Paid → Under review → ETA) replaces a frozen countdown. Payment is a mocked idempotent machine that can show “charged but not confirmed” and reconcile without a second charge or lockout. Before submit, deterministic rules explain field, date, passport-validity, and upload-metadata problems next to the field. Queue language is honest: we do not promise 72 hours.
 
-Payment, biometrics, and IVFRT stay mocked. Form, session, status, and the OpenAI pre-check are working. Independent prototype, not a government website.
+Payment, biometrics, and IVFRT stay mocked. Form, session, status, and the deterministic pre-check are working. Independent prototype, not a government website.
 
 ---
 
 ## 8. Prototype-only numbers (not real; do not cite as official)
 
-Used only to phrase Feature 3 (honest ETA). Calibrated to 2025–26 traveller reports, **not** claimed as MHA data.
+Used only to build the honest ETA message. Calibrated to 2025–26 traveller reports, **not** claimed as MHA data.
 
 | Mock field | Value in this build |
 |---|---|
@@ -307,14 +307,14 @@ The UI must keep saying these are mocked.
 **First 60 seconds — citizen**
 
 1. Kill the tab mid-form; reopen; same ID and fields.  
-2. Upload a bad photo; pre-check says *why* (size / not square / shadow), not a blank reject.  
+2. Upload a bad photo; pre-check explains detectable metadata problems (size / dimensions), not a blank reject.
 3. Pay with “charged, not confirmed”; reconcile on the same key; no lockout.  
 4. Status page: honest days-range, not 72 hours; audit log.
 
 **Second 60 seconds — how we built it**
 
-1. Name the OpenAI vision call on `POST /api/ai-review` (eligibility).  
-2. Payment is a state machine, not a model.  
+1. Show the deterministic checks on `POST /api/precheck`.
+2. Payment is a deterministic state machine.
 3. This is a citizen-facing layer in front of IVFRT, not a replacement for 117 check posts.  
 4. Working vs mocked, on screen.
 

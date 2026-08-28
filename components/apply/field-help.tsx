@@ -1,31 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { HelpCircle, Loader2, X } from "lucide-react";
-import { assistApi } from "@/lib/api";
+import { HelpCircle, X } from "lucide-react";
 import { FIELD_HELP } from "@/lib/visa-rules";
 
-export function Copilot({ field }: { field: string }) {
+export function FieldHelp({ field }: { field: string }) {
   const canned = FIELD_HELP[field];
   const [open, setOpen] = useState(false);
-  const [answer, setAnswer] = useState(canned?.body ?? "");
-  const [loading, setLoading] = useState(false);
-  const [source, setSource] = useState("rules");
-
-  async function ask() {
-    setOpen(true);
-    setLoading(true);
-    try {
-      const res = await assistApi(field, canned?.title || `Help me with ${field}`);
-      setAnswer(res.answer);
-      setSource(res.source);
-    } catch {
-      setAnswer(canned?.body || "The co-pilot could not reach the server. Read the field hint, or try again.");
-      setSource("rules");
-    } finally {
-      setLoading(false);
-    }
-  }
+  const answer = canned?.body || "No additional guidance is available for this field.";
 
   return (
     <span className="relative inline-flex">
@@ -34,7 +16,7 @@ export function Copilot({ field }: { field: string }) {
         className="inline-flex size-12 items-center justify-center rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
         aria-expanded={open}
         aria-label={`Help with ${canned?.title ?? field}`}
-        onClick={() => (open ? setOpen(false) : ask())}
+        onClick={() => setOpen((value) => !value)}
       >
         <HelpCircle className="size-4" />
       </button>
@@ -49,15 +31,9 @@ export function Copilot({ field }: { field: string }) {
               <X className="size-3.5" />
             </button>
           </div>
-          {loading ? (
-            <p className="flex items-center gap-2 text-muted-foreground">
-              <Loader2 className="size-3.5 animate-spin" /> Looking at the mock rules…
-            </p>
-          ) : (
-            <p className="leading-relaxed text-muted-foreground">{answer}</p>
-          )}
+          <p className="leading-relaxed text-muted-foreground">{answer}</p>
           <p className="mt-2 text-[11px] uppercase tracking-wide text-muted-foreground/80">
-            {source === "openai-text" ? "Phrased by a language model from our mock rules" : "From the mock rules document"}
+            From the mock rules document
           </p>
         </div>
       )}

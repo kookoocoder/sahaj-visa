@@ -1,7 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
 import { Redis } from "@upstash/redis";
-import type { Application, AuditEvent } from "@/lib/types";
+import type { Application, AuditEvent, UploadMeta, VisaForm } from "@/lib/types";
 import { EMPTY_FORM } from "@/lib/types";
 import { FEE_USD } from "@/lib/constants";
 import { newId, newPublicId, nowIso } from "@/lib/id";
@@ -24,6 +24,13 @@ function emptyDb(): Database {
   return { applications: {} };
 }
 
+function normalizeApplication(application: Application): Application {
+  const normalized = { ...application } as Application & { aiReview?: unknown };
+  delete normalized.aiReview;
+  normalized.precheck ??= null;
+  return normalized;
+}
+
 function dataPath() {
   if (process.env.VERCEL) return path.join("/tmp", "sahaj-db.json");
   return path.join(process.cwd(), "data", "sahaj-db.json");
@@ -34,6 +41,11 @@ function redis(): Redis | null {
   const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
   const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
   g.__sahajRedis = url && token ? new Redis({ url, token }) : null;
+  if (process.env.VERCEL && !g.__sahajRedis) {
+    throw new Error(
+      "Redis is required on Vercel. Configure UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN.",
+    );
+  }
   return g.__sahajRedis;
 }
 
@@ -93,7 +105,7 @@ export function createDraft(partial?: Partial<Application>): Application {
     form: { ...EMPTY_FORM, ...partial?.form },
     photo: null,
     passportScan: null,
-    aiReview: null,
+    precheck: null,
     etaMessage: null,
     etaIssuedAt: null,
     payment: {
@@ -130,7 +142,8 @@ async function indexEmail(kv: Redis, app: Application, prevEmail?: string) {
 
 export async function saveApplication(app: Application, event?: string) {
   const prev = await getApplication(app.id);
-  const next = event ? stamp(app, event) : { ...app, updatedAt: nowIso() };
+  const normalized = normalizeApplication(app);
+  const next = event ? stamp(normalized, event) : { ...normalized, updatedAt: nowIso() };
   const kv = redis();
   if (kv) {
     await kv.set(`${APP_PREFIX}${next.id}`, next);
@@ -148,19 +161,20 @@ export async function getApplication(id: string) {
   const kv = redis();
   if (kv) {
     const direct = await kv.get<Application>(`${APP_PREFIX}${id}`);
-    if (direct) return direct;
+    if (direct) return normalizeApplication(direct);
     const resolved = await kv.get<string>(`${PUBLIC_PREFIX}${id}`);
     if (resolved) {
-      return (await kv.get<Application>(`${APP_PREFIX}${resolved}`)) ?? null;
+      const application = await kv.get<Application>(`${APP_PREFIX}${resolved}`);
+      return application ? normalizeApplication(application) : null;
     }
     return null;
   }
   const db = await loadFile();
-  return (
+  const application =
     db.applications[id] ??
     Object.values(db.applications).find((a) => a.publicId === id) ??
-    null
-  );
+    null;
+  return application ? normalizeApplication(application) : null;
 }
 
 export async function listByEmail(email: string) {
@@ -173,10 +187,12 @@ export async function listByEmail(email: string) {
     );
     return apps
       .filter((a): a is Application => Boolean(a))
+      .map(normalizeApplication)
       .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   }
   const db = await loadFile();
   return Object.values(db.applications)
+    .map(normalizeApplication)
     .filter((a) => a.form.email.trim().toLowerCase() === needle)
     .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
 }
@@ -189,6 +205,12 @@ export async function transition(
   const app = await getApplication(id);
   if (!app) return null;
   const fromStatus = app.status;
+  const allowed: Partial<Record<Application["status"], Application["status"][]>> = {
+    draft: ["submitted"],
+    payment_confirmed: ["under_review", "eta_issued"],
+    under_review: ["eta_issued"],
+  };
+  if (!allowed[fromStatus]?.includes(toStatus)) return null;
   const next = stamp(
     { ...app, status: toStatus },
     `status:${fromStatus}->${toStatus}`,
@@ -197,16 +219,29 @@ export async function transition(
   return saveApplication(next);
 }
 
-export async function upsertDraft(payload: Partial<Application> & { id?: string }) {
+type DraftUpdate = {
+  id?: string;
+  currentStep?: number;
+  form?: Partial<VisaForm>;
+  photo?: UploadMeta | null;
+  passportScan?: UploadMeta | null;
+};
+
+export async function upsertDraft(payload: DraftUpdate) {
   const existing = payload.id ? await getApplication(payload.id) : null;
   const base = existing ?? createDraft();
+  const hasPhoto = Object.prototype.hasOwnProperty.call(payload, "photo");
+  const hasPassportScan = Object.prototype.hasOwnProperty.call(payload, "passportScan");
+  const changedAnswers = Boolean(payload.form || hasPhoto || hasPassportScan);
   const merged: Application = {
     ...base,
-    ...payload,
     id: base.id,
     publicId: base.publicId,
+    currentStep: payload.currentStep ?? base.currentStep,
     form: { ...EMPTY_FORM, ...base.form, ...payload.form },
-    payment: { ...base.payment, ...payload.payment },
+    photo: hasPhoto ? (payload.photo ?? null) : base.photo,
+    passportScan: hasPassportScan ? (payload.passportScan ?? null) : base.passportScan,
+    precheck: changedAnswers ? null : base.precheck,
     createdAt: base.createdAt,
     auditLog: base.auditLog,
   };

@@ -1,5 +1,6 @@
 export const PRODUCT_NAME = "Sahaj Visa";
 export const PRODUCT_TAGLINE = "An independent prototype of a calmer Indian e-Visa.";
+export const BUILD_CREDIT = "Designed and built with ChatGPT";
 
 export const DEMO_EMAIL = "demo@visa.test";
 export const DEMO_PASSWORD = "sahaj-demo";

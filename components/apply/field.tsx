@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, type ComponentProps, type ReactNode } from "react";
-import { Copilot } from "@/components/apply/copilot";
+import { FieldHelp } from "@/components/apply/field-help";
 import { FORMAT_SPECS, type InputFormatId } from "@/lib/input-format";
 import { cn } from "@/lib/utils";
 
@@ -30,7 +30,7 @@ export function Field({
   htmlFor,
   hint,
   error,
-  copilotField,
+  helpField,
   why,
   required,
   children,
@@ -39,7 +39,7 @@ export function Field({
   htmlFor?: string;
   hint?: string;
   error?: string;
-  copilotField?: string;
+  helpField?: string;
   why?: string;
   required?: boolean;
   children: ReactNode;
@@ -62,7 +62,7 @@ export function Field({
             </span>
           ) : null}
         </label>
-        {copilotField ? <Copilot field={copilotField} /> : null}
+        {helpField ? <FieldHelp field={helpField} /> : null}
       </div>
       {children}
       {error ? (

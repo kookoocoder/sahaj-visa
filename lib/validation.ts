@@ -21,8 +21,6 @@ export const visaFormSchema = z.object({
   countryOfBirth: zFormat("place", "Country of birth"),
   email: zFormat("email"),
   phone: zFormat("mobile"),
-  aadhaarNumber: zFormat("aadhaar"),
-  panNumber: zFormat("pan"),
   passportNumber: zFormat("passport"),
   passportIssueDate: z.string().min(1, "Enter the issue date."),
   passportExpiryDate: z.string().min(1, "Enter the expiry date."),

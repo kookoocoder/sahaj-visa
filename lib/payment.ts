@@ -23,7 +23,7 @@ export async function attemptPayment(app: Application, scenario: PaymentScenario
     );
   }
 
-  if (app.payment.status === "charged_unconfirmed" && scenario !== "success") {
+  if (app.payment.status === "charged_unconfirmed") {
     return saveApplication(
       {
         ...app,

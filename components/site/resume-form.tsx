@@ -40,13 +40,13 @@ export function ResumeForm({ compact = false }: { compact?: boolean }) {
   return (
     <form onSubmit={onSubmit} className={compact ? "flex flex-col gap-3 sm:flex-row sm:items-end" : "space-y-3"}>
       <div className="min-w-0 flex-1">
-        <Field label="Resume with application ID" htmlFor="resume-id" hint={compact ? undefined : "Printed as SV-26-XXXXXX on the form once it first saves."}>
+        <Field label="Resume with application ID" htmlFor="resume-id" hint={compact ? undefined : FORMAT_SPECS.applicationId.hint}>
           <TextInput
             id="resume-id"
             format="applicationId"
             value={id}
             onChange={(e) => setId(e.target.value)}
-            placeholder="SV-26-XXXXXX"
+            placeholder={FORMAT_SPECS.applicationId.placeholder}
             autoComplete="off"
             spellCheck={false}
           />

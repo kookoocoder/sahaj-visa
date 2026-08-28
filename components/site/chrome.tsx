@@ -3,7 +3,7 @@ import Link from "next/link";
 import { AlertTriangle, Info, Phone, ShieldCheck } from "lucide-react";
 import { EVisaMark, SahajEmblem } from "@/components/site/logo";
 import { SiteHeader } from "@/components/site/header";
-import { OFFICIAL_PORTAL, PRODUCT_NAME } from "@/lib/constants";
+import { BUILD_CREDIT, OFFICIAL_PORTAL, PRODUCT_NAME } from "@/lib/constants";
 import { OFFICIAL_HELPDESK } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 
@@ -41,7 +41,7 @@ export function SiteFooter() {
     <footer className="mt-auto">
       <div className="border-t border-border bg-card px-4 py-6">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-3 text-center text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground sm:justify-between">
-          <span>Build What Moves India</span>
+          <span>{BUILD_CREDIT}</span>
           <span>Independent prototype</span>
           <span>No official logos used as endorsement</span>
         </div>
@@ -52,10 +52,10 @@ export function SiteFooter() {
             <SahajEmblem className="size-10" />
             <div className="max-w-xl space-y-2 text-white/80">
               <p>
-                Content on {PRODUCT_NAME} is a hackathon prototype. It is not affiliated with the
+                {PRODUCT_NAME} is a product prototype designed and built with ChatGPT. It is not affiliated with the
                 Ministry of Home Affairs, the Bureau of Immigration, NIC, or indianvisaonline.gov.in.
               </p>
-              <p>Payment, biometrics, IVFRT, and immigration clearance are mocked. Form session, status, and the vision pre-check are working in this demo.</p>
+              <p>Payment, biometrics, IVFRT, and immigration clearance are mocked. Form session, status, and the deterministic pre-check are working in this demo.</p>
             </div>
           </div>
           <EVisaMark className="self-end" />

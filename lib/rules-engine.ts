@@ -1,20 +1,20 @@
-import type { AiIssue, AiReview, Application } from "@/lib/types";
+import type { Application, ApplicationReview, ReviewIssue } from "@/lib/types";
 import { daysBetween, addMonths, parseDate } from "@/lib/id";
 import { HUMAN_CHECK_ANSWER } from "@/lib/constants";
 import { FORM_INPUT_FORMAT, FORMAT_SPECS, FIELD_LABELS } from "@/lib/input-format";
 
 function push(
-  issues: AiIssue[],
+  issues: ReviewIssue[],
   field: string,
-  severity: AiIssue["severity"],
+  severity: ReviewIssue["severity"],
   issue: string,
   fix_suggestion: string,
 ) {
   issues.push({ field, severity, issue, fix_suggestion });
 }
 
-export function runRulesEngine(app: Application): AiReview {
-  const issues: AiIssue[] = [];
+export function runRulesEngine(app: Application): ApplicationReview {
+  const issues: ReviewIssue[] = [];
   const { form, photo, passportScan } = app;
   const today = new Date().toISOString().slice(0, 10);
 

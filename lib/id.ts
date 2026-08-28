@@ -1,6 +1,6 @@
 import { customAlphabet } from "nanoid";
 
-const alphabet = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 6);
+const alphabet = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 10);
 
 export function newPublicId() {
   return `SV-26-${alphabet()}`;

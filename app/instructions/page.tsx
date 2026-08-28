@@ -24,7 +24,7 @@ export default function InstructionsPage() {
             <h2 className="font-heading text-2xl">How drafts work here</h2>
             <p className="text-muted-foreground">
               Every field autosaves. If the tab dies, come back and continue. Write down the
-              application ID (SV-26-XXXXXX) once it appears — that is how you resume on another
+              application ID (starting with SV-26) once it appears — that is how you resume on another
               device in this demo.
             </p>
             <Link href="/apply" className="inline-flex h-11 items-center rounded-md bg-primary px-4 font-medium text-primary-foreground">

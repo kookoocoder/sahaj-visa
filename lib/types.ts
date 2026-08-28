@@ -42,8 +42,6 @@ export type VisaForm = {
   countryOfBirth: string;
   email: string;
   phone: string;
-  aadhaarNumber: string;
-  panNumber: string;
   passportNumber: string;
   passportIssueDate: string;
   passportExpiryDate: string;
@@ -69,20 +67,19 @@ export type UploadMeta = {
   prepared?: boolean;
 };
 
-export type AiIssue = {
+export type ReviewIssue = {
   field: string;
   issue: string;
   severity: "error" | "warning" | "info";
   fix_suggestion: string;
 };
 
-export type AiReview = {
+export type ApplicationReview = {
   overall_risk: "low" | "medium" | "high";
   can_submit: boolean;
   summary: string;
-  issues: AiIssue[];
-  source: "openai-vision" | "rules-engine";
-  model?: string;
+  issues: ReviewIssue[];
+  source: "rules-engine";
 };
 
 export type AuditEvent = {
@@ -113,7 +110,7 @@ export type Application = {
   form: VisaForm;
   photo: UploadMeta | null;
   passportScan: UploadMeta | null;
-  aiReview: AiReview | null;
+  precheck: ApplicationReview | null;
   etaMessage: string | null;
   etaIssuedAt: string | null;
   payment: PaymentRecord;
@@ -132,8 +129,6 @@ export const EMPTY_FORM: VisaForm = {
   countryOfBirth: "",
   email: "",
   phone: "",
-  aadhaarNumber: "",
-  panNumber: "",
   passportNumber: "",
   passportIssueDate: "",
   passportExpiryDate: "",

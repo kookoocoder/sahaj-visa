@@ -16,7 +16,9 @@ export const metadata: Metadata = {
     template: "%s · Sahaj Visa",
   },
   description:
-    "A resumable, honest, mobile-first prototype of India’s e-Tourist Visa journey. Not a government website.",
+    "A ChatGPT-built, resumable, mobile-first prototype of India’s e-Tourist Visa journey. Not a government website.",
+  authors: [{ name: "Built with ChatGPT" }],
+  creator: "ChatGPT",
   robots: { index: false, follow: false },
 };
 

@@ -79,6 +79,13 @@ export async function prepareSquarePhoto(file: File, size = 600): Promise<Prepar
 }
 
 export async function fileToUpload(file: File, prepareSquare = false) {
+  const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
+  if (!allowedTypes.has(file.type)) {
+    throw new Error("Use a JPEG, PNG, or WebP image.");
+  }
+  if (file.size === 0 || file.size > 1024 * 1024) {
+    throw new Error("Choose an image between 1 byte and 1 MB.");
+  }
   if (prepareSquare && file.type.startsWith("image/")) {
     const prepared = await prepareSquarePhoto(file);
     return prepared;

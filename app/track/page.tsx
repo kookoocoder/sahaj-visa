@@ -15,7 +15,7 @@ export default function TrackPage() {
         <div className="mt-6 space-y-6">
           <InfoCallout>
             <p>
-              Paste SV-26-XXXXXX. If the application is still a draft you return to the form. If you
+              Paste your SV-26 application ID. If the application is still a draft you return to the form. If you
               have paid, you land on the status timeline.
             </p>
           </InfoCallout>

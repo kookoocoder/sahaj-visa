@@ -9,9 +9,7 @@ export type InputFormatId =
   | "place"
   | "address"
   | "purpose"
-  | "applicationId"
-  | "aadhaar"
-  | "pan";
+  | "applicationId";
 
 export type FormatSpec = {
   sanitize: (value: string) => string;
@@ -29,15 +27,13 @@ export type FormatSpec = {
 const NAME_TITLES = new Set(["mr", "mrs", "ms", "miss", "dr", "prof", "sir", "smt", "shri", "sri"]);
 
 const PERSON_NAME_RE = /^[A-Za-z]+(?: [A-Za-z]+)*$/;
-const MOBILE_RE = /^[6-9]\d{9}$/;
+const MOBILE_RE = /^\+?[1-9]\d{6,14}$/;
 const PASSPORT_RE = /^[A-Z0-9]{6,9}$/;
 const EMAIL_RE = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 const PLACE_RE = /^[A-Za-z]+(?:[ .'-][A-Za-z]+)*$/;
 const ADDRESS_RE = /^[A-Za-z0-9][A-Za-z0-9 ,./#-]{7,119}$/;
 const PURPOSE_RE = /^[\w\s.,'"()/\-]{4,200}$/;
-const APPLICATION_ID_RE = /^SV-26-[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/;
-const AADHAAR_RE = /^[2-9]\d{11}$/;
-const PAN_RE = /^[A-Z]{3}P[A-Z]\d{4}[A-Z]$/;
+const APPLICATION_ID_RE = /^SV-26-(?:[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}|[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{10})$/;
 
 function collapseSpaces(value: string) {
   return value.replace(/ {2,}/g, " ");
@@ -70,26 +66,24 @@ export const FORMAT_SPECS: Record<InputFormatId, FormatSpec> = {
   },
   mobile: {
     sanitize: (value) => {
-      let digits = value.replace(/\D/g, "");
-      if (digits.startsWith("91") && digits.length >= 12) digits = digits.slice(2);
-      else if (digits.startsWith("0") && digits.length >= 11) digits = digits.slice(1);
-      return digits.replace(/^[0-5]+/, "").slice(0, 10);
+      const trimmed = value.trim();
+      const digits = trimmed.replace(/\D/g, "").slice(0, 15);
+      return trimmed.startsWith("+") ? `+${digits}` : digits;
     },
     validate: (value) => {
       const v = value.trim();
-      if (!v) return "Enter a 10-digit mobile number.";
-      if (!/^\d{10}$/.test(v)) return "Mobile number must be exactly 10 digits.";
-      if (!MOBILE_RE.test(v)) return "Indian mobile numbers start with 6, 7, 8 or 9.";
+      if (!v) return "Enter a mobile number, including the country code.";
+      if (!MOBILE_RE.test(v)) return "Use 7–15 digits, with an optional leading + country code.";
       return undefined;
     },
-    hint: "Exactly 10 digits. Starts with 6, 7, 8 or 9. No +91, spaces, or dashes.",
-    placeholder: "9876543210",
-    maxLength: 10,
-    inputMaxLength: 15,
-    inputMode: "numeric",
+    hint: "Include your country code, for example +1 415 555 0123. Spaces and dashes are removed.",
+    placeholder: "+1 415 555 0123",
+    maxLength: 16,
+    inputMaxLength: 24,
+    inputMode: "tel",
     autoCapitalize: "off",
     spellCheck: false,
-    htmlPattern: "[6-9][0-9]{9}",
+    htmlPattern: "\\+?[1-9][0-9]{6,14}",
   },
   passport: {
     sanitize: (value) => value.replace(/[^A-Za-z0-9]/g, "").toUpperCase().slice(0, 9),
@@ -138,7 +132,7 @@ export const FORMAT_SPECS: Record<InputFormatId, FormatSpec> = {
     maxLength: 50,
     autoCapitalize: "words",
     spellCheck: false,
-    htmlPattern: "[A-Za-z]+([ .'-][A-Za-z]+)*",
+    htmlPattern: "[A-Za-z]+([ .'\\-][A-Za-z]+)*",
   },
   address: {
     sanitize: (value) => collapseSpaces(value.replace(/[^A-Za-z0-9 ,./#\-]/g, "")).slice(0, 120),
@@ -170,76 +164,19 @@ export const FORMAT_SPECS: Record<InputFormatId, FormatSpec> = {
     maxLength: 200,
   },
   applicationId: {
-    sanitize: (value) => value.toUpperCase().replace(/[^A-Z0-9-]/g, "").slice(0, 12),
+    sanitize: (value) => value.toUpperCase().replace(/[^A-Z0-9-]/g, "").slice(0, 16),
     validate: (value) => {
       const v = value.trim().toUpperCase();
-      if (!v) return "Paste your application ID (SV-26-XXXXXX).";
-      if (!APPLICATION_ID_RE.test(v)) return "Application ID looks like SV-26-XXXXXX.";
+      if (!v) return "Paste your application ID (SV-26-XXXXXXXXXX).";
+      if (!APPLICATION_ID_RE.test(v)) return "Application ID looks like SV-26-XXXXXXXXXX.";
       return undefined;
     },
-    hint: "Printed as SV-26-XXXXXX on the form once it first saves.",
-    placeholder: "SV-26-XXXXXX",
-    maxLength: 12,
+    hint: "Printed as SV-26-XXXXXXXXXX on the form once it first saves. Existing 6-character demo IDs still work.",
+    placeholder: "SV-26-XXXXXXXXXX",
+    maxLength: 16,
     autoCapitalize: "characters",
     spellCheck: false,
-    htmlPattern: "SV-26-[A-Z0-9]{6}",
-  },
-  aadhaar: {
-    sanitize: (value) => {
-      const digits = value.replace(/\D/g, "").replace(/^[01]+/, "").slice(0, 12);
-      return digits.replace(/(\d{4})(?=\d)/g, "$1 ").trim();
-    },
-    validate: (value) => {
-      const digits = value.replace(/\D/g, "");
-      if (!digits) return "Enter a 12-digit Aadhaar number.";
-      if (digits.length !== 12) return "Aadhaar number must be exactly 12 digits.";
-      if (!AADHAAR_RE.test(digits)) return "Aadhaar numbers are 12 digits and do not start with 0 or 1.";
-      return undefined;
-    },
-    hint: "12 digits, as on the Aadhaar card. First digit is 2–9. Spaces are added for you.",
-    placeholder: "2345 6789 0123",
-    maxLength: 14,
-    inputMaxLength: 20,
-    inputMode: "numeric",
-    autoCapitalize: "off",
-    spellCheck: false,
-    htmlPattern: "[2-9][0-9]{3} [0-9]{4} [0-9]{4}",
-  },
-  pan: {
-    sanitize: (value) => {
-      const raw = value.replace(/[^A-Za-z0-9]/g, "").toUpperCase();
-      let out = "";
-      for (const ch of raw) {
-        const i = out.length;
-        if (i >= 10) break;
-        if (i < 5) {
-          if (!/[A-Z]/.test(ch)) continue;
-          if (i === 3 && ch !== "P") continue;
-          out += ch;
-        } else if (i < 9) {
-          if (!/\d/.test(ch)) continue;
-          out += ch;
-        } else if (/[A-Z]/.test(ch)) {
-          out += ch;
-        }
-      }
-      return out;
-    },
-    validate: (value) => {
-      const v = value.trim().toUpperCase();
-      if (!v) return "Enter a 10-character PAN.";
-      if (v.length !== 10) return "PAN must be exactly 10 characters (AAAAA9999A).";
-      if (!/^[A-Z]{5}/.test(v)) return "PAN starts with five letters, for example ABCPS1234F.";
-      if (v[3] !== "P") return "The 4th character of a personal PAN must be P.";
-      if (!PAN_RE.test(v)) return "PAN format is five letters, four digits, one letter (AAAAA9999A).";
-      return undefined;
-    },
-    hint: "10 characters: five letters, four digits, one letter. 4th character is P for an individual.",
-    placeholder: "ABCPS1234F",
-    maxLength: 10,
-    autoCapitalize: "characters",
-    spellCheck: false,
-    htmlPattern: "[A-Z]{5}[0-9]{4}[A-Z]",
+    htmlPattern: "SV-26-[A-Z0-9]{6}([A-Z0-9]{4})?",
   },
 };
 
@@ -248,8 +185,6 @@ export const FORM_INPUT_FORMAT: Partial<Record<keyof VisaForm, InputFormatId>> =
   surname: "personName",
   email: "email",
   phone: "mobile",
-  aadhaarNumber: "aadhaar",
-  panNumber: "pan",
   cityOfBirth: "place",
   countryOfBirth: "place",
   passportNumber: "passport",
@@ -269,8 +204,6 @@ export const FIELD_LABELS: Partial<Record<keyof VisaForm, string>> = {
   countryOfBirth: "Country of birth",
   email: "Email",
   phone: "Mobile number",
-  aadhaarNumber: "Aadhaar number",
-  panNumber: "PAN",
   passportNumber: "Passport number",
   passportIssueDate: "Issue date",
   passportExpiryDate: "Expiry date",

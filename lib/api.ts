@@ -42,9 +42,9 @@ export async function reconcileApi(id: string) {
   );
 }
 
-export async function reviewApi(id: string) {
+export async function precheckApi(id: string) {
   return json<{ application: Application }>(
-    await fetch("/api/ai-review", {
+    await fetch("/api/precheck", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id }),
@@ -52,25 +52,9 @@ export async function reviewApi(id: string) {
   );
 }
 
-export async function reviewStatusApi() {
-  return json<{ hasOpenAI: boolean; visionModel: string }>(
-    await fetch("/api/ai-review", { cache: "no-store" }),
-  );
-}
-
-export async function assistApi(field: string, question: string, language?: string) {
-  return json<{ answer: string; source: string }>(
-    await fetch("/api/ai-assist", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ field, question, language }),
-    }),
-  );
-}
-
-export async function etaApi(id: string) {
+export async function statusMessageApi(id: string) {
   return json<{ message: string; application: Application }>(
-    await fetch("/api/ai-status", {
+    await fetch("/api/status-message", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id }),

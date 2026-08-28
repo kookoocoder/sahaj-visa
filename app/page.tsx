@@ -44,7 +44,7 @@ export default function HomePage() {
   return (
     <div>
       <PageMasthead
-        kicker="Authorized-looking, independently built"
+        kicker="Designed and built with ChatGPT"
         title="Portal for Visa Application to India"
         subtitle={`${PRODUCT_NAME} · not indianvisaonline.gov.in`}
       />
@@ -138,7 +138,7 @@ export default function HomePage() {
                 <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
                   <li>Resumable application and application ID</li>
                   <li>Status timeline and timestamped audit log</li>
-                  <li>OpenAI vision pre-submission check (when a key is set)</li>
+                  <li>Deterministic pre-submission validation</li>
                   <li>Plain-language field help from a hand-written rules doc</li>
                 </ul>
               </div>

@@ -15,7 +15,6 @@ import {
   ImageIcon,
   Loader2,
   Plane,
-  Sparkles,
   UserRound,
   BookOpen,
 } from "lucide-react";
@@ -27,8 +26,7 @@ import {
   getApplicationApi,
   payApi,
   reconcileApi,
-  reviewApi,
-  reviewStatusApi,
+  precheckApi,
   saveApplicationApi,
   submitApplicationApi,
 } from "@/lib/api";
@@ -46,7 +44,7 @@ import {
 import { daysFromToday, formatMoney } from "@/lib/id";
 import { fileToUpload } from "@/lib/photo";
 import { cn } from "@/lib/utils";
-import type { AiIssue } from "@/lib/types";
+import type { ReviewIssue } from "@/lib/types";
 
 const STEP_ICONS = [UserRound, BookOpen, Plane, ImageIcon, ClipboardCheck, CreditCard] as const;
 
@@ -55,6 +53,7 @@ function AccordionStep({
   title,
   active,
   done,
+  disabled = false,
   onOpen,
   children,
 }: {
@@ -62,6 +61,7 @@ function AccordionStep({
   title: string;
   active: boolean;
   done: boolean;
+  disabled?: boolean;
   onOpen: () => void;
   children: ReactNode;
 }) {
@@ -73,8 +73,10 @@ function AccordionStep({
           className={cn(
             "flex min-h-12 w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors",
             active ? "bg-info text-primary" : "hover:bg-muted/70",
+            disabled && "cursor-not-allowed opacity-60",
           )}
           aria-expanded={active}
+          disabled={disabled}
           onClick={onOpen}
         >
           <span className="flex items-center gap-3">
@@ -139,11 +141,11 @@ const GENDER_LABEL: Record<(typeof GENDERS)[number], string> = {
   prefer_not_to_say: "Prefer not to say",
 };
 
-function issuesByField(issues: AiIssue[] | undefined, field: string) {
+function issuesByField(issues: ReviewIssue[] | undefined, field: string) {
   return issues?.filter((i) => i.field === field) ?? [];
 }
 
-function IssueList({ issues }: { issues: AiIssue[] }) {
+function IssueList({ issues }: { issues: ReviewIssue[] }) {
   if (!issues.length) return null;
   return (
     <ul className="mt-1 space-y-1">
@@ -174,22 +176,18 @@ export function Wizard() {
   const [reviewing, setReviewing] = useState(false);
   const [lastTouched, setLastTouched] = useState<string | null>(null);
   const [pulsedField, setPulsedField] = useState<string | null>(null);
-  const [hasVision, setHasVision] = useState<boolean | null>(null);
-  const savingLock = useRef(false);
-  const issues = store.aiReview?.issues;
+  const savingPromise = useRef<Promise<boolean> | null>(null);
+  const issues = store.precheck?.issues;
 
   useEffect(() => {
     if (!store.hydrated) {
       const t = setTimeout(() => useDraft.setState({ hydrated: true }), 400);
       return () => clearTimeout(t);
     }
-  }, [store.hydrated]);
-
-  useEffect(() => {
-    void reviewStatusApi()
-      .then((s) => setHasVision(s.hasOpenAI))
-      .catch(() => setHasVision(false));
-  }, []);
+    if (store.status === "draft" && store.currentStep > 4) {
+      useDraft.setState({ currentStep: 4 });
+    }
+  }, [store.hydrated, store.status, store.currentStep]);
 
   useEffect(() => {
     if (!store.hydrated || !store.id) return;
@@ -211,7 +209,7 @@ export function Wizard() {
   }, [store.hydrated, store.id]);
 
   useEffect(() => {
-    if (!store.hydrated) return;
+    if (!store.hydrated || store.status !== "draft") return;
     const handle = setTimeout(() => {
       void persist();
     }, 600);
@@ -223,21 +221,32 @@ export function Wizard() {
     store.photo,
     store.passportScan,
     store.currentStep,
+    store.status,
   ]);
 
-  async function persist() {
-    if (!store.hydrated || savingLock.current) return;
-    savingLock.current = true;
-    store.markSaving();
-    try {
-      const { application } = await saveApplicationApi(draftToPayload());
-      store.markSaved(application);
-      if (lastTouched) setPulsedField(lastTouched);
-    } catch (err) {
-      store.markError(err instanceof Error ? err.message : "Could not save");
-    } finally {
-      savingLock.current = false;
+  function persist(): Promise<boolean> {
+    if (!store.hydrated) return Promise.resolve(false);
+    if (store.status !== "draft") return Promise.resolve(true);
+    if (savingPromise.current) {
+      return savingPromise.current.then(() => persist());
     }
+
+    const operation = (async () => {
+      store.markSaving();
+      try {
+        const { application } = await saveApplicationApi(draftToPayload());
+        store.markSaved(application);
+        if (lastTouched) setPulsedField(lastTouched);
+        return true;
+      } catch (err) {
+        store.markError(err instanceof Error ? err.message : "Could not save");
+        return false;
+      } finally {
+        savingPromise.current = null;
+      }
+    })();
+    savingPromise.current = operation;
+    return operation;
   }
 
   function set<K extends keyof VisaForm>(key: K, value: VisaForm[K]) {
@@ -273,7 +282,7 @@ export function Wizard() {
     const step = store.currentStep;
     const ok =
       step === 0
-        ? checkFields(["givenNames", "surname", "dateOfBirth", "gender", "nationality", "email", "phone", "aadhaarNumber", "panNumber", "cityOfBirth", "countryOfBirth"])
+        ? checkFields(["givenNames", "surname", "dateOfBirth", "gender", "nationality", "email", "phone", "cityOfBirth", "countryOfBirth"])
         : step === 1
           ? checkFields(["passportNumber", "passportIssueDate", "passportExpiryDate", "passportPlaceOfIssue"])
           : step === 2
@@ -284,7 +293,10 @@ export function Wizard() {
                 : (toast.error("Add both a photo and a passport scan first."), false)
               : true;
     if (!ok) return;
-    if (step === 3) await persist();
+    if (step === 3 && !(await persist())) {
+      toast.error("Your documents could not be saved. Check your connection and try again.");
+      return;
+    }
     store.setStep(Math.min(step + 1, STEPS.length - 1));
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -313,9 +325,9 @@ export function Wizard() {
     try {
       const { application: saved } = await saveApplicationApi(draftToPayload());
       store.markSaved(saved);
-      const { application } = await reviewApi(saved.id);
+      const { application } = await precheckApi(saved.id);
       store.hydrateFromServer(application);
-      if (application.aiReview?.can_submit) {
+      if (application.precheck?.can_submit) {
         toast.success("Pre-check looks clear. You can submit.");
       } else {
         toast.message("Pre-check found issues — they are next to the fields, not dumped at the end.");
@@ -336,8 +348,6 @@ export function Wizard() {
       "nationality",
       "email",
       "phone",
-      "aadhaarNumber",
-      "panNumber",
       "cityOfBirth",
       "countryOfBirth",
       "passportNumber",
@@ -420,9 +430,7 @@ export function Wizard() {
       cityOfBirth: "Boston",
       countryOfBirth: "United States of America",
       email: DEMO_EMAIL,
-      phone: "9876543210",
-      aadhaarNumber: "2345 6789 0123",
-      panNumber: "ABCPS1234F",
+      phone: "+14155550123",
       passportNumber: "X1234567",
       passportIssueDate: "2021-01-12",
       passportExpiryDate: "2031-01-11",
@@ -467,8 +475,9 @@ export function Wizard() {
           className="h-12 px-4 text-base"
           disabled={busy}
           onClick={() => {
-            void persist().then(() => {
-              router.push("/");
+            void persist().then((saved) => {
+              if (saved) router.push("/");
+              else toast.error("Save failed. Your draft is still open so you can try again.");
             });
           }}
         >
@@ -502,17 +511,22 @@ export function Wizard() {
                 const Icon = STEP_ICONS[i];
                 const done = i < step;
                 const active = i === step;
+                const locked =
+                  (store.status !== "draft" && i < 5) ||
+                  (store.status === "draft" && i === 5);
                 return (
                   <li key={s.id} className="border-b border-border last:border-0">
                     <button
                       type="button"
                       onClick={() => store.setStep(i)}
+                      disabled={locked}
                       aria-current={active ? "step" : undefined}
                       className={cn(
                         "flex min-h-12 w-full items-center gap-3 px-4 py-3 text-left text-sm transition-colors",
                         active && "bg-info font-medium text-primary",
                         done && !active && "text-foreground",
                         !active && !done && "text-muted-foreground hover:bg-muted/60",
+                        locked && "cursor-not-allowed opacity-60",
                       )}
                     >
                       <span
@@ -556,7 +570,7 @@ export function Wizard() {
               {saveLabel}
             </p>
             <div className="flex gap-4">
-              <button type="button" className="text-sm underline underline-offset-2" onClick={fillSample}>
+              <button type="button" className="text-sm underline underline-offset-2 disabled:opacity-50" disabled={store.status !== "draft"} onClick={fillSample}>
                 Fill sample answers
               </button>
               <button
@@ -585,6 +599,7 @@ export function Wizard() {
               title={STEPS[0].label}
               active={step === 0}
               done={step > 0}
+              disabled={store.status !== "draft"}
               onOpen={() => store.setStep(0)}
             >
               <p className="mb-4 text-sm text-muted-foreground">
@@ -599,7 +614,7 @@ export function Wizard() {
                     className="bg-muted/60"
                   />
                 </Field>
-                <Field label="Given names" htmlFor="givenNames" hint={FORMAT_SPECS.personName.hint} error={errors.givenNames} copilotField="givenNames" required>
+                <Field label="Given names" htmlFor="givenNames" hint={FORMAT_SPECS.personName.hint} error={errors.givenNames} helpField="givenNames" required>
                   <TextInput id="givenNames" format="personName" autoComplete="given-name" value={store.form.givenNames} error={errors.givenNames} onChange={(e) => set("givenNames", e.target.value)} onBlur={() => blurField("givenNames")} />
                   <IssueList issues={issuesByField(issues, "givenNames")} />
                 </Field>
@@ -617,7 +632,7 @@ export function Wizard() {
                     ))}
                   </SelectInput>
                 </Field>
-                <Field label="Nationality" htmlFor="nationality" error={errors.nationality} copilotField="nationality" required>
+                <Field label="Nationality" htmlFor="nationality" error={errors.nationality} helpField="nationality" required>
                   <SelectInput id="nationality" value={store.form.nationality} error={errors.nationality} onChange={(e) => set("nationality", e.target.value)}>
                     <option value="">Select (mocked list)</option>
                     {NATIONALITIES.map((n) => (
@@ -634,14 +649,8 @@ export function Wizard() {
                 <Field label="Email" htmlFor="email" hint={FORMAT_SPECS.email.hint} error={errors.email} required>
                   <TextInput id="email" type="email" format="email" autoComplete="email" value={store.form.email} error={errors.email} onChange={(e) => set("email", e.target.value)} onBlur={() => blurField("email")} />
                 </Field>
-                <Field label="Mobile number" htmlFor="phone" hint={FORMAT_SPECS.mobile.hint} error={errors.phone} copilotField="phone" required>
+                <Field label="Mobile number" htmlFor="phone" hint={FORMAT_SPECS.mobile.hint} error={errors.phone} helpField="phone" required>
                   <TextInput id="phone" type="tel" format="mobile" autoComplete="tel" value={store.form.phone} error={errors.phone} onChange={(e) => set("phone", e.target.value)} onBlur={() => blurField("phone")} />
-                </Field>
-                <Field label="Aadhaar number" htmlFor="aadhaarNumber" hint={FORMAT_SPECS.aadhaar.hint} error={errors.aadhaarNumber} copilotField="aadhaarNumber" required>
-                  <TextInput id="aadhaarNumber" format="aadhaar" autoComplete="off" value={store.form.aadhaarNumber ?? ""} error={errors.aadhaarNumber} onChange={(e) => set("aadhaarNumber", e.target.value)} onBlur={() => blurField("aadhaarNumber")} />
-                </Field>
-                <Field label="PAN" htmlFor="panNumber" hint={FORMAT_SPECS.pan.hint} error={errors.panNumber} copilotField="panNumber" required>
-                  <TextInput id="panNumber" format="pan" autoComplete="off" value={store.form.panNumber ?? ""} error={errors.panNumber} onChange={(e) => set("panNumber", e.target.value)} onBlur={() => blurField("panNumber")} />
                 </Field>
               </div>
               <div className="mt-6 hidden lg:block">{nav}</div>
@@ -652,6 +661,7 @@ export function Wizard() {
               title={STEPS[1].label}
               active={step === 1}
               done={step > 1}
+              disabled={store.status !== "draft"}
               onOpen={() => store.setStep(1)}
             >
               <p className="mb-4 text-sm text-muted-foreground">Must stay valid six months after you land.</p>
@@ -661,7 +671,7 @@ export function Wizard() {
                   htmlFor="passportNumber"
                   hint={FORMAT_SPECS.passport.hint}
                   error={errors.passportNumber}
-                  copilotField="passportNumber"
+                  helpField="passportNumber"
                   required
                   why="We match this to the biodata page so a mistyped number is caught before you pay, not at the airport."
                 >
@@ -673,7 +683,7 @@ export function Wizard() {
                 <Field label="Issue date" htmlFor="passportIssueDate" error={errors.passportIssueDate} required>
                   <TextInput id="passportIssueDate" type="date" value={store.form.passportIssueDate} error={errors.passportIssueDate} onChange={(e) => set("passportIssueDate", e.target.value)} onBlur={() => blurField("passportIssueDate")} />
                 </Field>
-                <Field label="Expiry date" htmlFor="passportExpiryDate" error={errors.passportExpiryDate} copilotField="passportExpiryDate" required>
+                <Field label="Expiry date" htmlFor="passportExpiryDate" error={errors.passportExpiryDate} helpField="passportExpiryDate" required>
                   <TextInput id="passportExpiryDate" type="date" value={store.form.passportExpiryDate} error={errors.passportExpiryDate} onChange={(e) => set("passportExpiryDate", e.target.value)} onBlur={() => blurField("passportExpiryDate")} />
                   <IssueList issues={issuesByField(issues, "passportExpiryDate")} />
                 </Field>
@@ -686,13 +696,14 @@ export function Wizard() {
               title={STEPS[2].label}
               active={step === 2}
               done={step > 2}
+              disabled={store.status !== "draft"}
               onOpen={() => store.setStep(2)}
             >
               <p className="mb-4 text-sm text-muted-foreground">
                 {VISA_PRODUCT_LABEL}. Apply with more than four days in hand — recent waits are often longer.
               </p>
               <div className="grid gap-4 sm:grid-cols-2">
-                <Field label="Intended arrival" htmlFor="arrivalDate" error={errors.arrivalDate} copilotField="arrivalDate" required>
+                <Field label="Intended arrival" htmlFor="arrivalDate" error={errors.arrivalDate} helpField="arrivalDate" required>
                   <TextInput id="arrivalDate" type="date" value={store.form.arrivalDate} error={errors.arrivalDate} onChange={(e) => set("arrivalDate", e.target.value)} />
                   <IssueList issues={issuesByField(issues, "arrivalDate")} />
                 </Field>
@@ -730,6 +741,7 @@ export function Wizard() {
               title={STEPS[3].label}
               active={step === 3}
               done={step > 3}
+              disabled={store.status !== "draft"}
               onOpen={() => store.setStep(3)}
             >
               <p className="mb-4 text-sm text-muted-foreground">
@@ -742,7 +754,7 @@ export function Wizard() {
                   why="The live portal often rejects photos without saying why. We store this on your draft so a closed tab does not mean starting the photo again."
                   preview={store.photo}
                   busy={busy}
-                  copilotField="photo"
+                  helpField="photo"
                   issues={issuesByField(issues, "photo")}
                   onRaw={(f) => onUpload("photo", f, false)}
                   onPrepare={(f) => onUpload("photo", f, true)}
@@ -753,7 +765,7 @@ export function Wizard() {
                   hint="All four corners, no flash glare."
                   preview={store.passportScan}
                   busy={busy}
-                  copilotField="passportScan"
+                  helpField="passportScan"
                   issues={issuesByField(issues, "passportScan")}
                   onRaw={(f) => onUpload("passport", f, false)}
                   onPrepare={(f) => onUpload("passport", f, true)}
@@ -768,43 +780,33 @@ export function Wizard() {
               title={STEPS[4].label}
               active={step === 4}
               done={step > 4}
+              disabled={store.status !== "draft"}
               onOpen={() => store.setStep(4)}
             >
               <p className="mb-4 text-sm text-muted-foreground">
                 This pre-check is assistive, not a decision. On a real system the backend would still do the final validation.
               </p>
-              {hasVision === false && (
-                <p className="mb-4 rounded-xl border border-border bg-muted/50 px-4 py-3 text-sm">
-                  OpenAI vision is not configured on this deployment. The scan will use the rules engine and will say so
-                  in the result — it will not pretend to be an AI photo check.
-                </p>
-              )}
-              {hasVision === true && (
-                <p className="mb-4 rounded-xl border border-border bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
-                  OpenAI vision is on. The result will name the model if the photo check actually ran.
-                </p>
-              )}
+              <p className="mb-4 rounded-xl border border-border bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
+                The scan uses fixed validation rules for field formats, dates, passport validity, and uploaded file
+                dimensions and sizes. It does not inspect image contents or make a visa decision.
+              </p>
               <Button type="button" className="h-12 px-5 text-base" disabled={reviewing} onClick={() => void runPrecheck()}>
-                {reviewing ? <Loader2 className="size-4 animate-spin" /> : <Sparkles className="size-4" />}
+                {reviewing ? <Loader2 className="size-4 animate-spin" /> : <ClipboardCheck className="size-4" />}
                 Run rejection-risk scan
               </Button>
-              {store.aiReview && (
+              {store.precheck && (
                 <div className="mt-4 rounded-xl border border-border bg-muted/40 p-4">
-                  <p className="text-sm uppercase tracking-wide text-muted-foreground">
-                    {store.aiReview.source === "openai-vision"
-                      ? `OpenAI vision ran (${store.aiReview.model})`
-                      : "Rules engine — OpenAI vision did not run (no API key, the model failed, or no images)."}
-                  </p>
-                  <p className="mt-2 text-lg font-medium">{store.aiReview.summary}</p>
+                  <p className="text-sm uppercase tracking-wide text-muted-foreground">Deterministic rules engine</p>
+                  <p className="mt-2 text-lg font-medium">{store.precheck.summary}</p>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    Risk: {store.aiReview.overall_risk}
-                    {store.aiReview.can_submit ? " · clear to submit" : " · blocking issues remain"}
+                    Risk: {store.precheck.overall_risk}
+                    {store.precheck.can_submit ? " · clear to submit" : " · blocking issues remain"}
                   </p>
-                  <IssueList issues={store.aiReview.issues} />
+                  <IssueList issues={store.precheck.issues} />
                 </div>
               )}
               <div className="mt-5">
-                <Field label={HUMAN_CHECK_PROMPT} htmlFor="humanCheck" error={errors.humanCheck} copilotField="humanCheck" required>
+                <Field label={HUMAN_CHECK_PROMPT} htmlFor="humanCheck" error={errors.humanCheck} helpField="humanCheck" required>
                   <TextInput id="humanCheck" value={store.form.humanCheck} error={errors.humanCheck} onChange={(e) => set("humanCheck", e.target.value)} autoComplete="off" />
                 </Field>
               </div>
@@ -829,6 +831,7 @@ export function Wizard() {
               title={STEPS[5].label}
               active={step === 5}
               done={false}
+              disabled={store.status === "draft"}
               onOpen={() => store.setStep(5)}
             >
               <p className="mb-4 text-sm text-muted-foreground">
@@ -838,7 +841,14 @@ export function Wizard() {
               <div className="rounded-xl border border-border bg-muted/40 p-4 text-sm">
                 <p><strong>Product</strong> {VISA_PRODUCT_LABEL}</p>
                 <p><strong>Amount</strong> {formatMoney(FEE_USD)} (no 2.5% surcharge in this demo)</p>
-                <p><strong>Status</strong> {store.id ? "application submitted, waiting for payment" : "save first"}</p>
+                <p>
+                  <strong>Status</strong>{" "}
+                  {store.status === "submitted"
+                    ? "application submitted, waiting for payment"
+                    : store.status === "draft"
+                      ? "submit the application first"
+                      : "payment already processed"}
+                </p>
               </div>
               <div className="mt-4 grid gap-3">
                 <Button className="h-12 px-5 text-base" disabled={busy} onClick={() => void pay("success")}>
@@ -903,7 +913,7 @@ function UploadCard({
   onPrepare,
   prepareLabel,
   issues,
-  copilotField,
+  helpField,
 }: {
   title: string;
   hint: string;
@@ -913,12 +923,12 @@ function UploadCard({
   onRaw: (file: File) => void;
   onPrepare: (file: File) => void;
   prepareLabel: string;
-  issues: AiIssue[];
-  copilotField: string;
+  issues: ReviewIssue[];
+  helpField: string;
 }) {
   return (
     <div className="rounded-xl border border-border bg-card p-4">
-      <Field label={title} hint={hint} copilotField={copilotField} why={why}>
+      <Field label={title} hint={hint} helpField={helpField} why={why}>
         <div className="flex flex-col gap-3 sm:flex-row">
           <label className={cn("relative inline-flex h-12 min-h-12 cursor-pointer items-center justify-center overflow-hidden rounded-lg border border-input bg-background px-4 text-sm font-medium", busy && "opacity-50")}>
             Upload as-is

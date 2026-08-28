@@ -1,7 +1,16 @@
 import { NextResponse } from "next/server";
-import { getApplication, transition } from "@/lib/db";
+import { getApplication, saveApplication, transition } from "@/lib/db";
 import { attemptPayment, reconcilePayment } from "@/lib/payment";
-import { PAYMENT_SCENARIOS, type PaymentScenario } from "@/lib/types";
+import { buildEtaMessage } from "@/lib/status-message";
+import { PAYMENT_SCENARIOS, type Application, type PaymentScenario } from "@/lib/types";
+
+async function addEtaMessage(application: Application) {
+  if (application.etaMessage) return application;
+  return saveApplication(
+    { ...application, etaMessage: buildEtaMessage() },
+    "eta_message_generated",
+  );
+}
 
 export async function POST(req: Request) {
   const body = (await req.json()) as {
@@ -21,13 +30,38 @@ export async function POST(req: Request) {
   }
 
   if (body.action === "reconcile") {
+    if (app.payment.status !== "charged_unconfirmed" && app.payment.status !== "pending") {
+      return NextResponse.json(
+        { error: "Only an unconfirmed charge can be reconciled." },
+        { status: 409 },
+      );
+    }
     const reconciled = await reconcilePayment(app);
     const reviewing = await transition(
       reconciled.id,
       "under_review",
       "Payment reconciled without a second charge. Application moved to review.",
     );
-    return NextResponse.json({ application: reviewing });
+    if (!reviewing) {
+      return NextResponse.json({ error: "Invalid payment status transition." }, { status: 409 });
+    }
+    return NextResponse.json({ application: await addEtaMessage(reviewing) });
+  }
+
+  if (app.payment.status === "charged_unconfirmed") {
+    return NextResponse.json(
+      { error: "A charge may already exist. Reconcile it instead of starting another payment." },
+      { status: 409 },
+    );
+  }
+  if (app.payment.status === "confirmed") {
+    return NextResponse.json({ application: app });
+  }
+  if (!["submitted", "payment_pending", "payment_failed"].includes(app.status)) {
+    return NextResponse.json(
+      { error: "This application is not waiting for payment." },
+      { status: 409 },
+    );
   }
 
   const scenario = body.scenario ?? "success";
@@ -42,7 +76,10 @@ export async function POST(req: Request) {
       "under_review",
       "Payment confirmed. Mock review queue — not IVFRT, not a real clearance.",
     );
-    return NextResponse.json({ application: reviewing });
+    if (!reviewing) {
+      return NextResponse.json({ error: "Invalid payment status transition." }, { status: 409 });
+    }
+    return NextResponse.json({ application: await addEtaMessage(reviewing) });
   }
   return NextResponse.json({ application: paid });
 }

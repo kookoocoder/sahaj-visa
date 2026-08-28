@@ -2,6 +2,8 @@
 ### Reimagining indianvisaonline.gov.in's e-Visa journey
 **Event:** Build What Moves India · Deadline: Aug 28, 2026, 8:00 PM IST
 
+> **Superseded implementation note (28 Aug 2026):** This product was designed and built with ChatGPT. The runtime AI design below is retained only as historical planning context; the implemented product uses deterministic TypeScript validation, hand-written field help, and fixed queue-statistics templates. It makes no model API calls.
+
 ---
 
 ## 1. Eligibility constraint (read this first)

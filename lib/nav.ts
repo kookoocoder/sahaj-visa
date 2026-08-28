@@ -13,8 +13,8 @@ export const PRIMARY_NAV = [
 export const QUICK_ACTIONS = [
   {
     href: "/apply",
-    label: "Sample application",
-    description: "Open the working e-Tourist form",
+    label: "Open the guided form",
+    description: "Try the working 30-day e-Tourist journey",
   },
   {
     href: "/apply",
@@ -33,7 +33,7 @@ export const QUICK_ACTIONS = [
   },
   {
     href: "/track",
-    label: "Print application",
+    label: "Open application record",
     description: "Open status and the audit log",
   },
   {
@@ -43,8 +43,8 @@ export const QUICK_ACTIONS = [
   },
   {
     href: "/apply",
-    label: "Re-upload data",
-    description: "Photo and passport stay on your draft",
+    label: "Update draft documents",
+    description: "Return to your saved photo and passport scan",
   },
 ] as const;
 

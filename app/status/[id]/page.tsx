@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { Check, Loader2 } from "lucide-react";
 import { Breadcrumbs, Container, PageMasthead } from "@/components/site/chrome";
 import { Button } from "@/components/ui/button";
-import { etaApi, getApplicationApi } from "@/lib/api";
+import { getApplicationApi, statusMessageApi } from "@/lib/api";
 import { useDraft } from "@/lib/draft-store";
 import type { Application, ApplicationStatus } from "@/lib/types";
 import { QUEUE_STATS } from "@/lib/constants";
@@ -49,7 +49,7 @@ export default function StatusPage() {
       const { application } = await getApplicationApi(params.id);
       setApp(application);
       if (!application.etaMessage && application.status !== "draft") {
-        const { application: next } = await etaApi(application.id);
+        const { application: next } = await statusMessageApi(application.id);
         setApp(next);
       }
     } catch (err) {
