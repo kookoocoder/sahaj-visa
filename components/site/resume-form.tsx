@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { getApplicationApi } from "@/lib/api";
 import { useDraft } from "@/lib/draft-store";
+import { FORMAT_SPECS } from "@/lib/input-format";
 import { Field, TextInput } from "@/components/apply/field";
 
 export function ResumeForm({ compact = false }: { compact?: boolean }) {
@@ -14,9 +15,10 @@ export function ResumeForm({ compact = false }: { compact?: boolean }) {
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
-    const needle = id.trim();
-    if (!needle) {
-      toast.error("Paste your application ID (SV-26-XXXXXX).");
+    const needle = FORMAT_SPECS.applicationId.sanitize(id);
+    const formatError = FORMAT_SPECS.applicationId.validate(needle);
+    if (formatError) {
+      toast.error(formatError);
       return;
     }
     setBusy(true);
@@ -41,8 +43,9 @@ export function ResumeForm({ compact = false }: { compact?: boolean }) {
         <Field label="Resume with application ID" htmlFor="resume-id" hint={compact ? undefined : "Printed as SV-26-XXXXXX on the form once it first saves."}>
           <TextInput
             id="resume-id"
+            format="applicationId"
             value={id}
-            onChange={(e) => setId(e.target.value.toUpperCase())}
+            onChange={(e) => setId(e.target.value)}
             placeholder="SV-26-XXXXXX"
             autoComplete="off"
             spellCheck={false}

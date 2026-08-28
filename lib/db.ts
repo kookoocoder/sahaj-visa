@@ -205,7 +205,7 @@ export async function upsertDraft(payload: Partial<Application> & { id?: string 
     ...payload,
     id: base.id,
     publicId: base.publicId,
-    form: { ...base.form, ...payload.form },
+    form: { ...EMPTY_FORM, ...base.form, ...payload.form },
     payment: { ...base.payment, ...payload.payment },
     createdAt: base.createdAt,
     auditLog: base.auditLog,

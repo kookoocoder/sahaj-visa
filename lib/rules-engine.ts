@@ -1,6 +1,7 @@
 import type { AiIssue, AiReview, Application } from "@/lib/types";
 import { daysBetween, addMonths, parseDate } from "@/lib/id";
 import { HUMAN_CHECK_ANSWER } from "@/lib/constants";
+import { FORM_INPUT_FORMAT, FORMAT_SPECS, FIELD_LABELS } from "@/lib/input-format";
 
 function push(
   issues: AiIssue[],
@@ -25,6 +26,15 @@ export function runRulesEngine(app: Application): AiReview {
       "Name is incomplete.",
       "Copy the given names and surname exactly as they appear on the passport biodata page — no extra initials.",
     );
+  }
+
+  for (const [key, format] of Object.entries(FORM_INPUT_FORMAT)) {
+    const value = form[key as keyof typeof form];
+    if (typeof value !== "string" || !value) continue;
+    const message = FORMAT_SPECS[format].validate(value, FIELD_LABELS[key as keyof typeof FIELD_LABELS]);
+    if (message) {
+      push(issues, key, "error", message, FORMAT_SPECS[format].hint);
+    }
   }
 
   if (form.dateOfBirth && form.dateOfBirth > today) {

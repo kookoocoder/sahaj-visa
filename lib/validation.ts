@@ -1,31 +1,39 @@
 import { z } from "zod";
 import { HUMAN_CHECK_ANSWER } from "@/lib/constants";
+import { FORMAT_SPECS, type FieldErrors } from "@/lib/input-format";
+
+export type { FieldErrors };
+
+function zFormat(format: keyof typeof FORMAT_SPECS, label?: string) {
+  const spec = FORMAT_SPECS[format];
+  return z.string().trim().refine((val) => spec.validate(val, label) === undefined, {
+    message: spec.hint,
+  });
+}
 
 export const visaFormSchema = z.object({
-  givenNames: z.string().trim().min(1, "Enter your given names as in the passport."),
-  surname: z.string().trim().min(1, "Enter your surname as in the passport."),
+  givenNames: zFormat("personName", "Given names"),
+  surname: zFormat("personName", "Surname"),
   dateOfBirth: z.string().min(1, "Enter your date of birth."),
   gender: z.string().min(1, "Choose a gender option."),
   nationality: z.string().min(1, "Choose a nationality from the mocked eligible list."),
-  cityOfBirth: z.string().trim().min(1, "Enter city of birth."),
-  countryOfBirth: z.string().trim().min(1, "Enter country of birth."),
-  email: z.string().trim().email("Enter a valid email — this is where the ETA would go."),
-  phone: z.string().trim().min(8, "Enter a phone number with country code."),
-  passportNumber: z
-    .string()
-    .trim()
-    .min(5, "Enter the passport number.")
-    .regex(/^[A-Za-z0-9]+$/, "Passport numbers are letters and numbers only."),
+  cityOfBirth: zFormat("place", "Place of birth"),
+  countryOfBirth: zFormat("place", "Country of birth"),
+  email: zFormat("email"),
+  phone: zFormat("mobile"),
+  aadhaarNumber: zFormat("aadhaar"),
+  panNumber: zFormat("pan"),
+  passportNumber: zFormat("passport"),
   passportIssueDate: z.string().min(1, "Enter the issue date."),
   passportExpiryDate: z.string().min(1, "Enter the expiry date."),
-  passportPlaceOfIssue: z.string().trim().min(1, "Enter place of issue."),
+  passportPlaceOfIssue: zFormat("place", "Place of issue"),
   visaProduct: z.literal("e-tourist-30"),
   arrivalDate: z.string().min(1, "Enter your intended arrival date."),
   departureDate: z.string().min(1, "Enter your intended departure date."),
   portOfArrival: z.string().min(1, "Choose a port of arrival."),
-  addressInIndia: z.string().trim().min(8, "Enter the first address where you will stay."),
-  cityInIndia: z.string().trim().min(2, "Enter the city."),
-  purpose: z.string().trim().min(4, "In a sentence, why are you visiting?"),
+  addressInIndia: zFormat("address"),
+  cityInIndia: zFormat("place", "City in India"),
+  purpose: zFormat("purpose"),
   declaration: z.boolean().refine((v) => v === true, {
     message: "You need to confirm the declaration to submit.",
   }),
@@ -37,8 +45,6 @@ export const visaFormSchema = z.object({
     }),
 });
 
-export type FieldErrors = Record<string, string>;
-
 export function flattenZod(error: z.ZodError): FieldErrors {
   const out: FieldErrors = {};
   for (const issue of error.issues) {
@@ -47,3 +53,5 @@ export function flattenZod(error: z.ZodError): FieldErrors {
   }
   return out;
 }
+
+export { validateVisaFields } from "@/lib/input-format";

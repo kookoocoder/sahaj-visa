@@ -49,7 +49,7 @@ SUPPORT
 - This prototype answers field-level questions from THIS document only. If the answer is not here, it must say so.
 
 OUT OF SCOPE (mocked / not built)
-- Aadhaar, PAN, OTP, biometrics, IVFRT, Immigration Check Posts, real payment gateways, security clearance.
+- Aadhaar, PAN, mobile, name, and passport number follow official input formats (12-digit Aadhaar, 10-character PAN, 10-digit mobile, letters-only names). OTP, biometrics, IVFRT, Immigration Check Posts, real payment gateways, security clearance are not built.
 - We are proposing the citizen-facing layer and state model that could sit in front of IVFRT, matching the March 2026 Cabinet note that the core application architecture needs a revamp.
 `.trim();
 
@@ -81,6 +81,30 @@ export const FIELD_HELP: Record<string, { title: string; body: string }> = {
   nationality: {
     title: "Eligible nationalities",
     body: "The live e-Visa country list is long and changes. This demo uses a short mocked list so we never scrape or claim to mirror the official eligibility table.",
+  },
+  givenNames: {
+    title: "Name format",
+    body: "Official e-Visa forms accept English letters and spaces only. No numbers, no Mr/Mrs/Dr, no special characters. Copy the passport biodata page exactly.",
+  },
+  phone: {
+    title: "Mobile number",
+    body: "Enter a 10-digit Indian mobile number starting with 6, 7, 8 or 9. Do not type +91, spaces, or dashes — the field will not accept them.",
+  },
+  passportNumber: {
+    title: "Passport number",
+    body: "6–9 letters and numbers only, matching the biodata page. Spaces, hyphens, and symbols are rejected.",
+  },
+  email: {
+    title: "Email format",
+    body: "Use a standard email (name@example.com). This is where a real ETA would be sent.",
+  },
+  aadhaarNumber: {
+    title: "Aadhaar number",
+    body: "UIDAI format: exactly 12 digits, first digit 2–9. We insert spaces as XXXX XXXX XXXX. Letters and extra digits are blocked.",
+  },
+  panNumber: {
+    title: "PAN",
+    body: "NSDL format for an individual: five letters, four digits, one letter (AAAAA9999A). The 4th character must be P. We force uppercase and block other symbols.",
   },
   humanCheck: {
     title: "Why this instead of a CAPTCHA?",

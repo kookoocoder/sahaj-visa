@@ -1,0 +1,259 @@
+- generic [active] [ref=f1e1]:
+  - generic [ref=f1e3]:
+    - generic [ref=f1e4]:
+      - link "Skip to Main Content" [ref=f1e5] [cursor=pointer]:
+        - /url: "#main-content"
+      - link "Screen Reader Access" [ref=f1e6] [cursor=pointer]:
+        - /url: /instructions#accessibility
+    - generic [ref=f1e7]:
+      - group "Text size" [ref=f1e8]:
+        - button "A+" [ref=f1e9]
+        - button "A" [pressed] [ref=f1e10]
+        - button "A-" [ref=f1e11]
+      - generic [ref=f1e12]:
+        - generic [ref=f1e13]: Language
+        - combobox "Language" [ref=f1e14]:
+          - option "English" [selected]
+          - option "हिन्दी"
+  - generic [ref=f1e16]:
+    - paragraph [ref=f1e17]:
+      - generic [ref=f1e21]:
+        - text: You are on an
+        - strong [ref=f1e22]: independent prototype
+        - text: ", not a Government of India website. No real visa is issued here."
+    - paragraph [ref=f1e23]:
+      - text: "Official e-Visa:"
+      - link "indianvisaonline.gov.in" [ref=f1e24] [cursor=pointer]:
+        - /url: https://indianvisaonline.gov.in/evisa/tvoa.html
+  - banner [ref=f1e25]:
+    - generic [ref=f1e26]:
+      - link "Independent prototype Not a Government of India website" [ref=f1e27] [cursor=pointer]:
+        - /url: /
+        - generic [ref=f1e34]:
+          - generic [ref=f1e35]: Independent prototype
+          - generic [ref=f1e36]: Not a Government of India website
+      - generic [ref=f1e37]:
+        - paragraph [ref=f1e38]: Sahaj Visa
+        - paragraph [ref=f1e39]: A calmer visa application to India
+      - generic [ref=f1e41]:
+        - generic [ref=f1e42]: e
+        - generic [ref=f1e46]:
+          - generic [ref=f1e47]: e-Visa
+          - generic [ref=f1e48]: Prototype
+    - navigation "Primary" [ref=f1e49]:
+      - list [ref=f1e50]:
+        - listitem [ref=f1e51]:
+          - link "Home" [ref=f1e52] [cursor=pointer]:
+            - /url: /
+        - listitem [ref=f1e56]:
+          - link "Instructions" [ref=f1e57] [cursor=pointer]:
+            - /url: /instructions
+        - listitem [ref=f1e58]:
+          - link "Visa Categories" [ref=f1e59] [cursor=pointer]:
+            - /url: /#visa-services
+        - listitem [ref=f1e60]:
+          - link "e-Visa Application Process" [ref=f1e61] [cursor=pointer]:
+            - /url: /e-visa
+        - listitem [ref=f1e62]:
+          - link "Visa on Arrival" [ref=f1e63] [cursor=pointer]:
+            - /url: /visa-on-arrival
+        - listitem [ref=f1e64]:
+          - link "Track Application" [ref=f1e65] [cursor=pointer]:
+            - /url: /track
+        - listitem [ref=f1e66]:
+          - link "Useful Weblinks" [ref=f1e67] [cursor=pointer]:
+            - /url: /contact#weblinks
+        - listitem [ref=f1e68]:
+          - link "FAQs" [ref=f1e69] [cursor=pointer]:
+            - /url: /faqs
+        - listitem [ref=f1e70]:
+          - link "Contact Us" [ref=f1e71] [cursor=pointer]:
+            - /url: /contact
+  - generic [ref=f1e73]:
+    - navigation "Breadcrumb" [ref=f1e75]:
+      - list [ref=f1e76]:
+        - listitem [ref=f1e77]:
+          - link "Home" [ref=f1e78] [cursor=pointer]:
+            - /url: /
+        - listitem [ref=f1e79]:
+          - generic [ref=f1e80]: ›
+          - link "e-Visa Application" [ref=f1e81] [cursor=pointer]:
+            - /url: /e-visa
+        - listitem [ref=f1e82]:
+          - generic [ref=f1e83]: ›
+          - generic [ref=f1e84]: Apply Online
+    - generic [ref=f1e441]:
+      - complementary [ref=f1e442]:
+        - navigation "Application steps" [ref=f1e443]:
+          - paragraph [ref=f1e444]: Application progress
+          - list [ref=f1e445]:
+            - listitem [ref=f1e446]:
+              - button "Step 1 Personal Details" [ref=f1e447]:
+                - generic [ref=f1e451]:
+                  - generic [ref=f1e452]: Step 1
+                  - text: Personal Details
+            - listitem [ref=f1e453]:
+              - button "Step 2 Passport Details" [ref=f1e454]:
+                - generic [ref=f1e458]:
+                  - generic [ref=f1e459]: Step 2
+                  - text: Passport Details
+            - listitem [ref=f1e460]:
+              - button "Step 3 Travel Details" [ref=f1e461]:
+                - generic [ref=f1e465]:
+                  - generic [ref=f1e466]: Step 3
+                  - text: Travel Details
+            - listitem [ref=f1e467]:
+              - button "Step 4 Document Upload" [ref=f1e468]:
+                - generic [ref=f1e474]:
+                  - generic [ref=f1e475]: Step 4
+                  - text: Document Upload
+            - listitem [ref=f1e476]:
+              - button "Step 5 Review & Submit" [ref=f1e477]:
+                - generic [ref=f1e483]:
+                  - generic [ref=f1e484]: Step 5
+                  - text: Review & Submit
+            - listitem [ref=f1e485]:
+              - button "Step 6 Pay e-Visa Fee" [ref=f1e486]:
+                - generic [ref=f1e490]:
+                  - generic [ref=f1e491]: Step 6
+                  - text: Pay e-Visa Fee
+        - complementary [ref=f1e492]:
+          - paragraph [ref=f1e493]: Visa helpdesk
+          - paragraph [ref=f1e496]: Bureau of Immigration helpdesk on the live government portal — not staffed by this prototype.
+          - paragraph [ref=f1e497]:
+            - link "+91 82 7808 7808" [ref=f1e498] [cursor=pointer]:
+              - /url: tel:+918278087808
+          - paragraph [ref=f1e499]:
+            - link "indianvisaonline-boi@mha.gov.in" [ref=f1e500] [cursor=pointer]:
+              - /url: mailto:indianvisaonline-boi@mha.gov.in
+      - generic [ref=f1e501]:
+        - generic [ref=f1e502]:
+          - paragraph [ref=f1e503]: Saved · SV-26-MG8T4D
+          - generic [ref=f1e506]:
+            - button "Fill sample answers" [ref=f1e507]
+            - button "Start over" [ref=f1e508]
+        - paragraph [ref=f1e513]: Note down your Application ID when it appears. Fields marked * are required. One adult, e-Tourist Visa only.
+        - generic [ref=f1e514]:
+          - heading [level=2] [ref=f1e516]:
+            - button "Personal Details" [ref=f1e517]
+          - heading [level=2] [ref=f1e627]:
+            - button "Passport Details" [ref=f1e628]
+          - generic [ref=f1e579]:
+            - heading [level=2] [ref=f1e580]:
+              - button "3 Travel Details" [expanded] [ref=f1e581]:
+                - generic [ref=f1e582]:
+                  - generic [ref=f1e583]: "3"
+                  - generic [ref=f1e584]: Travel Details
+            - generic [ref=f1e633]:
+              - paragraph [ref=f1e634]: 30-day e-Tourist Visa (double entry). Apply with more than four days in hand — recent waits are often longer.
+              - generic [ref=f1e635]:
+                - generic [ref=f1e636]:
+                  - generic [ref=f1e637]:
+                    - generic [ref=f1e638]:
+                      - text: Intended arrival
+                      - generic [ref=f1e639]: "*"
+                    - button "Help with When should I apply?" [ref=f1e641]
+                  - textbox "Intended arrival" [ref=f1e645]: 2026-09-11
+                - generic [ref=f1e646]:
+                  - generic [ref=f1e648]:
+                    - text: Intended departure
+                    - generic [ref=f1e649]: "*"
+                  - textbox "Intended departure" [ref=f1e650]: 2026-09-21
+                - generic [ref=f1e651]:
+                  - generic [ref=f1e653]:
+                    - text: Port of arrival
+                    - generic [ref=f1e654]: "*"
+                  - combobox "Port of arrival" [ref=f1e655]:
+                    - option "Select airport"
+                    - option "Delhi — Indira Gandhi International (DEL)" [selected]
+                    - option "Mumbai — Chhatrapati Shivaji Maharaj (BOM)"
+                    - option "Bengaluru — Kempegowda (BLR)"
+                    - option "Chennai International (MAA)"
+                    - option "Hyderabad — Rajiv Gandhi (HYD)"
+                    - option "Kolkata — Netaji Subhas Chandra Bose (CCU)"
+                    - option "Kochi — Cochin International (COK)"
+                    - option "Goa — Manohar / Dabolim (GOI / GOX)"
+                    - option "Ahmedabad — Sardar Vallabhbhai Patel (AMD)"
+                    - option "Pune (PNQ)"
+                    - option "Jaipur (JAI)"
+                    - option "Thiruvananthapuram (TRV)"
+                - generic [ref=f1e656]:
+                  - generic [ref=f1e658]:
+                    - text: City in India
+                    - generic [ref=f1e659]: "*"
+                  - textbox "City in India" [ref=f1e660]: New Delhi
+                  - paragraph [ref=f1e661]: Letters and spaces only. Hyphens and apostrophes are allowed.
+                - generic [ref=f1e663]:
+                  - generic [ref=f1e665]:
+                    - text: First address in India
+                    - generic [ref=f1e666]: "*"
+                  - textbox "First address in India" [ref=f1e667]: 12 Khan Market, New Delhi
+                  - paragraph [ref=f1e668]: "Letters, numbers, and , . / # - only. No other symbols."
+                - generic [ref=f1e670]:
+                  - generic [ref=f1e672]:
+                    - text: Purpose of visit
+                    - generic [ref=f1e673]: "*"
+                  - textbox "Purpose of visit" [ref=f1e674]: Tourism - family visit and museums.
+                  - paragraph [ref=f1e675]: A short sentence. Letters, numbers, and basic punctuation only.
+              - generic [ref=f1e677]:
+                - button "Back" [ref=f1e678]
+                - generic [ref=f1e679]:
+                  - button "Save & exit" [ref=f1e680]
+                  - button "Save & Continue" [ref=f1e681]
+          - heading [level=2] [ref=f1e588]:
+            - button "4 Document Upload" [ref=f1e589]:
+              - generic [ref=f1e590]:
+                - generic [ref=f1e591]: "4"
+                - generic [ref=f1e592]: Document Upload
+          - heading [level=2] [ref=f1e596]:
+            - button "5 Review & Submit" [ref=f1e597]:
+              - generic [ref=f1e598]:
+                - generic [ref=f1e599]: "5"
+                - generic [ref=f1e600]: Review & Submit
+          - heading [level=2] [ref=f1e604]:
+            - button "6 Pay e-Visa Fee" [ref=f1e605]:
+              - generic [ref=f1e606]:
+                - generic [ref=f1e607]: "6"
+                - generic [ref=f1e608]: Pay e-Visa Fee
+      - complementary [ref=f1e611]:
+        - generic [ref=f1e612]:
+          - generic [ref=f1e613]:
+            - paragraph [ref=f1e614]: Documents to be uploaded
+            - list [ref=f1e615]:
+              - listitem [ref=f1e616]: Face photograph (JPEG, square, light background)
+              - listitem [ref=f1e617]: Passport biodata page (all four corners visible)
+          - generic [ref=f1e618]:
+            - paragraph [ref=f1e619]: Photo guidelines
+            - list [ref=f1e620]:
+              - listitem [ref=f1e621]: Recent, colour, face clearly visible
+              - listitem [ref=f1e622]: We can square-crop on this device — no desktop required
+              - listitem [ref=f1e623]: A rejection here is explained next to the field, not after you pay
+          - generic [ref=f1e624]: You can save and continue later. Closing the tab does not restart page 1.
+  - contentinfo [ref=f1e88]:
+    - generic [ref=f1e90]:
+      - generic [ref=f1e91]: Build What Moves India
+      - generic [ref=f1e92]: Independent prototype
+      - generic [ref=f1e93]: No official logos used as endorsement
+    - generic [ref=f1e94]:
+      - generic [ref=f1e95]:
+        - generic [ref=f1e103]:
+          - paragraph [ref=f1e104]: Content on Sahaj Visa is a hackathon prototype. It is not affiliated with the Ministry of Home Affairs, the Bureau of Immigration, NIC, or indianvisaonline.gov.in.
+          - paragraph [ref=f1e105]: Payment, biometrics, IVFRT, and immigration clearance are mocked. Form session, status, and the vision pre-check are working in this demo.
+        - generic [ref=f1e106]:
+          - generic [ref=f1e107]: e
+          - generic [ref=f1e111]:
+            - generic [ref=f1e112]: e-Visa
+            - generic [ref=f1e113]: Prototype
+      - generic [ref=f1e114]:
+        - link "Privacy" [ref=f1e115] [cursor=pointer]:
+          - /url: /instructions
+        - link "Terms" [ref=f1e116] [cursor=pointer]:
+          - /url: /instructions
+        - link "Help" [ref=f1e117] [cursor=pointer]:
+          - /url: /faqs
+        - link "Contact" [ref=f1e118] [cursor=pointer]:
+          - /url: /contact
+        - generic [ref=f1e119]: Last updated 28 August 2026 · Demo only
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f1e125] [cursor=pointer]
+  - alert [ref=f1e370]

@@ -42,6 +42,8 @@ export type VisaForm = {
   countryOfBirth: string;
   email: string;
   phone: string;
+  aadhaarNumber: string;
+  panNumber: string;
   passportNumber: string;
   passportIssueDate: string;
   passportExpiryDate: string;
@@ -130,6 +132,8 @@ export const EMPTY_FORM: VisaForm = {
   countryOfBirth: "",
   email: "",
   phone: "",
+  aadhaarNumber: "",
+  panNumber: "",
   passportNumber: "",
   passportIssueDate: "",
   passportExpiryDate: "",

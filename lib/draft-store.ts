@@ -61,7 +61,7 @@ export const useDraft = create<DraftState>()(
           id: app.id,
           publicId: app.publicId,
           currentStep: app.currentStep,
-          form: app.form,
+          form: { ...EMPTY_FORM, ...app.form },
           photo: app.photo,
           passportScan: app.passportScan,
           aiReview: app.aiReview,
@@ -93,8 +93,11 @@ export const useDraft = create<DraftState>()(
         aiReview: s.aiReview,
         lastSavedAt: s.lastSavedAt,
       }),
-      onRehydrateStorage: () => () => {
-        useDraft.setState({ hydrated: true });
+      onRehydrateStorage: () => (state) => {
+        useDraft.setState({
+          hydrated: true,
+          form: { ...EMPTY_FORM, ...state?.form },
+        });
       },
     },
   ),

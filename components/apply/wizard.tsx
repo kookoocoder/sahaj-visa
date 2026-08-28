@@ -34,6 +34,7 @@ import {
 } from "@/lib/api";
 import { STEPS, type VisaForm } from "@/lib/types";
 import { GENDERS } from "@/lib/types";
+import { FORMAT_SPECS, sanitizeFormValue, validateVisaFields } from "@/lib/input-format";
 import {
   DEMO_EMAIL,
   FEE_USD,
@@ -240,7 +241,7 @@ export function Wizard() {
   }
 
   function set<K extends keyof VisaForm>(key: K, value: VisaForm[K]) {
-    store.setForm(key, value);
+    store.setForm(key, sanitizeFormValue(key, value));
     setLastTouched(key);
     setErrors((e) => {
       if (!e[key]) return e;
@@ -250,27 +251,33 @@ export function Wizard() {
     });
   }
 
-  function required(fields: (keyof VisaForm)[]) {
-    const next: Record<string, string> = {};
-    for (const key of fields) {
-      const value = store.form[key];
-      if (value === false || value === "" || value == null) {
-        next[key] = "This field is needed to continue.";
-      }
-    }
+  function checkFields(fields: (keyof VisaForm)[]) {
+    const next = validateVisaFields(store.form, fields);
     setErrors(next);
     return Object.keys(next).length === 0;
+  }
+
+  function blurField(key: keyof VisaForm) {
+    const message = validateVisaFields(store.form, [key])[key];
+    setErrors((e) => {
+      if (message) return { ...e, [key]: message };
+      if (!e[key]) return e;
+      const next = { ...e };
+      delete next[key];
+      return next;
+    });
+    void persist();
   }
 
   async function next() {
     const step = store.currentStep;
     const ok =
       step === 0
-        ? required(["givenNames", "surname", "dateOfBirth", "gender", "nationality", "email", "phone", "cityOfBirth", "countryOfBirth"])
+        ? checkFields(["givenNames", "surname", "dateOfBirth", "gender", "nationality", "email", "phone", "aadhaarNumber", "panNumber", "cityOfBirth", "countryOfBirth"])
         : step === 1
-          ? required(["passportNumber", "passportIssueDate", "passportExpiryDate", "passportPlaceOfIssue"])
+          ? checkFields(["passportNumber", "passportIssueDate", "passportExpiryDate", "passportPlaceOfIssue"])
           : step === 2
-            ? required(["arrivalDate", "departureDate", "portOfArrival", "addressInIndia", "cityInIndia", "purpose"])
+            ? checkFields(["arrivalDate", "departureDate", "portOfArrival", "addressInIndia", "cityInIndia", "purpose"])
             : step === 3
               ? store.photo && store.passportScan
                 ? true
@@ -321,12 +328,34 @@ export function Wizard() {
   }
 
   async function submit() {
-    if (!store.form.declaration) {
-      setErrors({ declaration: "Confirm the declaration to submit." });
-      return;
-    }
-    if (store.form.humanCheck.trim().toUpperCase() !== "INDIA") {
-      setErrors({ humanCheck: "Type INDIA to confirm you are a person applying for yourself." });
+    const submitErrors = validateVisaFields(store.form, [
+      "givenNames",
+      "surname",
+      "dateOfBirth",
+      "gender",
+      "nationality",
+      "email",
+      "phone",
+      "aadhaarNumber",
+      "panNumber",
+      "cityOfBirth",
+      "countryOfBirth",
+      "passportNumber",
+      "passportIssueDate",
+      "passportExpiryDate",
+      "passportPlaceOfIssue",
+      "arrivalDate",
+      "departureDate",
+      "portOfArrival",
+      "addressInIndia",
+      "cityInIndia",
+      "purpose",
+      "declaration",
+      "humanCheck",
+    ]);
+    if (Object.keys(submitErrors).length) {
+      setErrors(submitErrors);
+      toast.error("Fix the highlighted fields. Each one must match the official format.");
       return;
     }
     setBusy(true);
@@ -391,7 +420,9 @@ export function Wizard() {
       cityOfBirth: "Boston",
       countryOfBirth: "United States of America",
       email: DEMO_EMAIL,
-      phone: "+1 415 555 0199",
+      phone: "9876543210",
+      aadhaarNumber: "2345 6789 0123",
+      panNumber: "ABCPS1234F",
       passportNumber: "X1234567",
       passportIssueDate: "2021-01-12",
       passportExpiryDate: "2031-01-11",
@@ -401,7 +432,7 @@ export function Wizard() {
       portOfArrival: "DEL",
       addressInIndia: "12 Khan Market, New Delhi",
       cityInIndia: "New Delhi",
-      purpose: "Tourism — family visit and museums.",
+      purpose: "Tourism - family visit and museums.",
       declaration: true,
       humanCheck: "INDIA",
     });
@@ -568,12 +599,12 @@ export function Wizard() {
                     className="bg-muted/60"
                   />
                 </Field>
-                <Field label="Given names" htmlFor="givenNames" error={errors.givenNames} required>
-                  <TextInput id="givenNames" autoComplete="given-name" value={store.form.givenNames} error={errors.givenNames} onChange={(e) => set("givenNames", e.target.value)} onBlur={() => void persist()} />
+                <Field label="Given names" htmlFor="givenNames" hint={FORMAT_SPECS.personName.hint} error={errors.givenNames} copilotField="givenNames" required>
+                  <TextInput id="givenNames" format="personName" autoComplete="given-name" value={store.form.givenNames} error={errors.givenNames} onChange={(e) => set("givenNames", e.target.value)} onBlur={() => blurField("givenNames")} />
                   <IssueList issues={issuesByField(issues, "givenNames")} />
                 </Field>
-                <Field label="Surname / family name" htmlFor="surname" error={errors.surname} required>
-                  <TextInput id="surname" autoComplete="family-name" value={store.form.surname} error={errors.surname} onChange={(e) => set("surname", e.target.value)} onBlur={() => void persist()} />
+                <Field label="Surname / family name" htmlFor="surname" hint={FORMAT_SPECS.personName.hint} error={errors.surname} required>
+                  <TextInput id="surname" format="personName" autoComplete="family-name" value={store.form.surname} error={errors.surname} onChange={(e) => set("surname", e.target.value)} onBlur={() => blurField("surname")} />
                 </Field>
                 <Field label="Date of birth" htmlFor="dateOfBirth" error={errors.dateOfBirth} required>
                   <TextInput id="dateOfBirth" type="date" value={store.form.dateOfBirth} error={errors.dateOfBirth} onChange={(e) => set("dateOfBirth", e.target.value)} onBlur={() => void persist()} />
@@ -594,17 +625,23 @@ export function Wizard() {
                     ))}
                   </SelectInput>
                 </Field>
-                <Field label="Country of birth" htmlFor="countryOfBirth" error={errors.countryOfBirth} required>
-                  <TextInput id="countryOfBirth" value={store.form.countryOfBirth} error={errors.countryOfBirth} onChange={(e) => set("countryOfBirth", e.target.value)} onBlur={() => void persist()} />
+                <Field label="Country of birth" htmlFor="countryOfBirth" hint={FORMAT_SPECS.place.hint} error={errors.countryOfBirth} required>
+                  <TextInput id="countryOfBirth" format="place" value={store.form.countryOfBirth} error={errors.countryOfBirth} onChange={(e) => set("countryOfBirth", e.target.value)} onBlur={() => blurField("countryOfBirth")} />
                 </Field>
-                <Field label="Place of birth" htmlFor="cityOfBirth" error={errors.cityOfBirth} required>
-                  <TextInput id="cityOfBirth" value={store.form.cityOfBirth} error={errors.cityOfBirth} onChange={(e) => set("cityOfBirth", e.target.value)} onBlur={() => void persist()} />
+                <Field label="Place of birth" htmlFor="cityOfBirth" hint={FORMAT_SPECS.place.hint} error={errors.cityOfBirth} required>
+                  <TextInput id="cityOfBirth" format="place" value={store.form.cityOfBirth} error={errors.cityOfBirth} onChange={(e) => set("cityOfBirth", e.target.value)} onBlur={() => blurField("cityOfBirth")} />
                 </Field>
-                <Field label="Email" htmlFor="email" hint="Where a real ETA would be sent." error={errors.email} required>
-                  <TextInput id="email" type="email" autoComplete="email" inputMode="email" value={store.form.email} error={errors.email} onChange={(e) => set("email", e.target.value)} onBlur={() => void persist()} />
+                <Field label="Email" htmlFor="email" hint={FORMAT_SPECS.email.hint} error={errors.email} required>
+                  <TextInput id="email" type="email" format="email" autoComplete="email" value={store.form.email} error={errors.email} onChange={(e) => set("email", e.target.value)} onBlur={() => blurField("email")} />
                 </Field>
-                <Field label="Phone" htmlFor="phone" error={errors.phone} required>
-                  <TextInput id="phone" type="tel" autoComplete="tel" value={store.form.phone} error={errors.phone} onChange={(e) => set("phone", e.target.value)} onBlur={() => void persist()} />
+                <Field label="Mobile number" htmlFor="phone" hint={FORMAT_SPECS.mobile.hint} error={errors.phone} copilotField="phone" required>
+                  <TextInput id="phone" type="tel" format="mobile" autoComplete="tel" value={store.form.phone} error={errors.phone} onChange={(e) => set("phone", e.target.value)} onBlur={() => blurField("phone")} />
+                </Field>
+                <Field label="Aadhaar number" htmlFor="aadhaarNumber" hint={FORMAT_SPECS.aadhaar.hint} error={errors.aadhaarNumber} copilotField="aadhaarNumber" required>
+                  <TextInput id="aadhaarNumber" format="aadhaar" autoComplete="off" value={store.form.aadhaarNumber ?? ""} error={errors.aadhaarNumber} onChange={(e) => set("aadhaarNumber", e.target.value)} onBlur={() => blurField("aadhaarNumber")} />
+                </Field>
+                <Field label="PAN" htmlFor="panNumber" hint={FORMAT_SPECS.pan.hint} error={errors.panNumber} copilotField="panNumber" required>
+                  <TextInput id="panNumber" format="pan" autoComplete="off" value={store.form.panNumber ?? ""} error={errors.panNumber} onChange={(e) => set("panNumber", e.target.value)} onBlur={() => blurField("panNumber")} />
                 </Field>
               </div>
               <div className="mt-6 hidden lg:block">{nav}</div>
@@ -622,20 +659,22 @@ export function Wizard() {
                 <Field
                   label="Passport number"
                   htmlFor="passportNumber"
+                  hint={FORMAT_SPECS.passport.hint}
                   error={errors.passportNumber}
+                  copilotField="passportNumber"
                   required
                   why="We match this to the biodata page so a mistyped number is caught before you pay, not at the airport."
                 >
-                  <TextInput id="passportNumber" value={store.form.passportNumber} error={errors.passportNumber} onChange={(e) => set("passportNumber", e.target.value.toUpperCase())} onBlur={() => void persist()} />
+                  <TextInput id="passportNumber" format="passport" value={store.form.passportNumber} error={errors.passportNumber} onChange={(e) => set("passportNumber", e.target.value)} onBlur={() => blurField("passportNumber")} />
                 </Field>
-                <Field label="Place of issue" htmlFor="passportPlaceOfIssue" error={errors.passportPlaceOfIssue} required>
-                  <TextInput id="passportPlaceOfIssue" value={store.form.passportPlaceOfIssue} error={errors.passportPlaceOfIssue} onChange={(e) => set("passportPlaceOfIssue", e.target.value)} onBlur={() => void persist()} />
+                <Field label="Place of issue" htmlFor="passportPlaceOfIssue" hint={FORMAT_SPECS.place.hint} error={errors.passportPlaceOfIssue} required>
+                  <TextInput id="passportPlaceOfIssue" format="place" value={store.form.passportPlaceOfIssue} error={errors.passportPlaceOfIssue} onChange={(e) => set("passportPlaceOfIssue", e.target.value)} onBlur={() => blurField("passportPlaceOfIssue")} />
                 </Field>
                 <Field label="Issue date" htmlFor="passportIssueDate" error={errors.passportIssueDate} required>
-                  <TextInput id="passportIssueDate" type="date" value={store.form.passportIssueDate} error={errors.passportIssueDate} onChange={(e) => set("passportIssueDate", e.target.value)} />
+                  <TextInput id="passportIssueDate" type="date" value={store.form.passportIssueDate} error={errors.passportIssueDate} onChange={(e) => set("passportIssueDate", e.target.value)} onBlur={() => blurField("passportIssueDate")} />
                 </Field>
                 <Field label="Expiry date" htmlFor="passportExpiryDate" error={errors.passportExpiryDate} copilotField="passportExpiryDate" required>
-                  <TextInput id="passportExpiryDate" type="date" value={store.form.passportExpiryDate} error={errors.passportExpiryDate} onChange={(e) => set("passportExpiryDate", e.target.value)} />
+                  <TextInput id="passportExpiryDate" type="date" value={store.form.passportExpiryDate} error={errors.passportExpiryDate} onChange={(e) => set("passportExpiryDate", e.target.value)} onBlur={() => blurField("passportExpiryDate")} />
                   <IssueList issues={issuesByField(issues, "passportExpiryDate")} />
                 </Field>
               </div>
@@ -669,17 +708,17 @@ export function Wizard() {
                     ))}
                   </SelectInput>
                 </Field>
-                <Field label="City in India" htmlFor="cityInIndia" error={errors.cityInIndia} required>
-                  <TextInput id="cityInIndia" value={store.form.cityInIndia} error={errors.cityInIndia} onChange={(e) => set("cityInIndia", e.target.value)} />
+                <Field label="City in India" htmlFor="cityInIndia" hint={FORMAT_SPECS.place.hint} error={errors.cityInIndia} required>
+                  <TextInput id="cityInIndia" format="place" value={store.form.cityInIndia} error={errors.cityInIndia} onChange={(e) => set("cityInIndia", e.target.value)} onBlur={() => blurField("cityInIndia")} />
                 </Field>
                 <div className="sm:col-span-2">
-                  <Field label="First address in India" htmlFor="addressInIndia" error={errors.addressInIndia} required>
-                    <TextInput id="addressInIndia" value={store.form.addressInIndia} error={errors.addressInIndia} onChange={(e) => set("addressInIndia", e.target.value)} />
+                  <Field label="First address in India" htmlFor="addressInIndia" hint={FORMAT_SPECS.address.hint} error={errors.addressInIndia} required>
+                    <TextInput id="addressInIndia" format="address" value={store.form.addressInIndia} error={errors.addressInIndia} onChange={(e) => set("addressInIndia", e.target.value)} onBlur={() => blurField("addressInIndia")} />
                   </Field>
                 </div>
                 <div className="sm:col-span-2">
-                  <Field label="Purpose of visit" htmlFor="purpose" error={errors.purpose} required>
-                    <TextArea id="purpose" value={store.form.purpose} error={errors.purpose} onChange={(e) => set("purpose", e.target.value)} />
+                  <Field label="Purpose of visit" htmlFor="purpose" hint={FORMAT_SPECS.purpose.hint} error={errors.purpose} required>
+                    <TextArea id="purpose" format="purpose" value={store.form.purpose} error={errors.purpose} onChange={(e) => set("purpose", e.target.value)} onBlur={() => blurField("purpose")} />
                   </Field>
                 </div>
               </div>

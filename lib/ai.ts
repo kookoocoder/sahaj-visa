@@ -87,6 +87,8 @@ export async function reviewApplication(app: Application): Promise<AiReview> {
                 ...app.form,
                 email: app.form.email ? "[present]" : "",
                 phone: app.form.phone ? "[present]" : "",
+                aadhaarNumber: app.form.aadhaarNumber ? "[present]" : "",
+                panNumber: app.form.panNumber ? "[present]" : "",
                 passportNumber: app.form.passportNumber ? "[present]" : "",
               })}`,
             },

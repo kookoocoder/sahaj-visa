@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, type ComponentProps, type ReactNode } from "react";
 import { Copilot } from "@/components/apply/copilot";
+import { FORMAT_SPECS, type InputFormatId } from "@/lib/input-format";
 import { cn } from "@/lib/utils";
 
 export const SavePulseContext = createContext<string | null>(null);
@@ -80,14 +81,36 @@ export function TextInput({
   id,
   error,
   className,
+  format,
+  onChange,
+  maxLength,
+  inputMode,
+  autoCapitalize,
+  spellCheck,
+  placeholder,
+  pattern,
   ...props
-}: ComponentProps<"input"> & { error?: string }) {
+}: ComponentProps<"input"> & { error?: string; format?: InputFormatId }) {
+  const spec = format ? FORMAT_SPECS[format] : undefined;
   return (
     <input
+      {...props}
       id={id}
       className={cn(controlClass, className)}
       aria-invalid={error ? true : undefined}
-      {...props}
+      maxLength={maxLength ?? spec?.inputMaxLength ?? spec?.maxLength}
+      inputMode={inputMode ?? spec?.inputMode}
+      autoCapitalize={autoCapitalize ?? spec?.autoCapitalize}
+      spellCheck={spellCheck ?? spec?.spellCheck}
+      placeholder={placeholder ?? spec?.placeholder}
+      pattern={pattern ?? spec?.htmlPattern}
+      onChange={(e) => {
+        if (spec) {
+          const sanitized = spec.sanitize(e.target.value);
+          if (sanitized !== e.target.value) e.target.value = sanitized;
+        }
+        onChange?.(e);
+      }}
     />
   );
 }
@@ -113,14 +136,26 @@ export function SelectInput({
 export function TextArea({
   id,
   error,
+  format,
+  onChange,
+  maxLength,
   ...props
-}: ComponentProps<"textarea"> & { error?: string }) {
+}: ComponentProps<"textarea"> & { error?: string; format?: InputFormatId }) {
+  const spec = format ? FORMAT_SPECS[format] : undefined;
   return (
     <textarea
+      {...props}
       id={id}
       className={cn(controlClass, "min-h-24 py-3")}
       aria-invalid={error ? true : undefined}
-      {...props}
+      maxLength={maxLength ?? spec?.maxLength}
+      onChange={(e) => {
+        if (spec) {
+          const sanitized = spec.sanitize(e.target.value);
+          if (sanitized !== e.target.value) e.target.value = sanitized;
+        }
+        onChange?.(e);
+      }}
     />
   );
 }
