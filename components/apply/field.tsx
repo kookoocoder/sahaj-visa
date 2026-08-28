@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 export const SavePulseContext = createContext<string | null>(null);
 
 export const controlClass =
-  "min-h-12 w-full rounded-lg border border-input bg-card px-3 text-base text-foreground outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/40 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20";
+  "min-h-12 w-full rounded-md border border-input bg-card px-3 text-base text-foreground outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/40 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20";
 
 function WhyAsk({ text }: { text: string }) {
   const [open, setOpen] = useState(false);
@@ -31,6 +31,7 @@ export function Field({
   error,
   copilotField,
   why,
+  required,
   children,
 }: {
   label: string;
@@ -39,6 +40,7 @@ export function Field({
   error?: string;
   copilotField?: string;
   why?: string;
+  required?: boolean;
   children: ReactNode;
 }) {
   const pulsed = useContext(SavePulseContext);
@@ -48,6 +50,11 @@ export function Field({
       <div className="flex items-center justify-between gap-2">
         <label htmlFor={htmlFor} className="flex min-h-8 items-center gap-2 text-sm font-medium">
           {label}
+          {required ? (
+            <span className="text-destructive" aria-hidden>
+              *
+            </span>
+          ) : null}
           {justSaved ? (
             <span className="saved-pulse text-xs font-normal text-primary" aria-live="polite">
               Saved

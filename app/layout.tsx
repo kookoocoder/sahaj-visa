@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import { Figtree, Newsreader } from "next/font/google";
+import { Figtree } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
+import { A11yBar } from "@/components/site/a11y-bar";
+import { SiteFooter, SiteHeader, TrustBanner } from "@/components/site/chrome";
 import "./globals.css";
 
 const figtree = Figtree({
@@ -8,13 +10,11 @@ const figtree = Figtree({
   subsets: ["latin"],
 });
 
-const newsreader = Newsreader({
-  variable: "--font-newsreader",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "Sahaj Visa — independent e-Visa prototype",
+  title: {
+    default: "Sahaj Visa — independent e-Visa prototype",
+    template: "%s · Sahaj Visa",
+  },
   description:
     "A resumable, honest, mobile-first prototype of India’s e-Tourist Visa journey. Not a government website.",
   robots: { index: false, follow: false },
@@ -22,12 +22,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${figtree.variable} ${newsreader.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col bg-background text-foreground">
-        {children}
+    <html lang="en" data-scroll-behavior="smooth" className={`${figtree.variable} text-size-md h-full antialiased`}>
+      <body className="flex min-h-full flex-col bg-background text-foreground">
+        <A11yBar />
+        <TrustBanner />
+        <SiteHeader />
+        <div id="main-content" className="flex flex-1 flex-col" tabIndex={-1}>
+          {children}
+        </div>
+        <SiteFooter />
         <Toaster />
       </body>
     </html>

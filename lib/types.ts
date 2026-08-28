@@ -146,12 +146,12 @@ export const EMPTY_FORM: VisaForm = {
 };
 
 export const STEPS = [
-  { id: "you", label: "You", short: "You" },
-  { id: "passport", label: "Passport", short: "Passport" },
-  { id: "travel", label: "Travel", short: "Travel" },
-  { id: "documents", label: "Photo & scan", short: "Docs" },
-  { id: "review", label: "Check & submit", short: "Check" },
-  { id: "pay", label: "Pay", short: "Pay" },
+  { id: "you", label: "Personal Details", short: "Personal" },
+  { id: "passport", label: "Passport Details", short: "Passport" },
+  { id: "travel", label: "Travel Details", short: "Travel" },
+  { id: "documents", label: "Document Upload", short: "Documents" },
+  { id: "review", label: "Review & Submit", short: "Review" },
+  { id: "pay", label: "Pay e-Visa Fee", short: "Pay" },
 ] as const;
 
 export type StepId = (typeof STEPS)[number]["id"];

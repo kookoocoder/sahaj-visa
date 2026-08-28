@@ -1,0 +1,299 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - link "Skip to Main Content" [ref=e5] [cursor=pointer]:
+        - /url: "#main-content"
+      - link "Screen Reader Access" [ref=e6] [cursor=pointer]:
+        - /url: /instructions#accessibility
+    - generic [ref=e7]:
+      - group "Text size" [ref=e8]:
+        - button "A+" [ref=e9]
+        - button "A" [pressed] [ref=e10]
+        - button "A-" [ref=e11]
+      - generic [ref=e12]:
+        - generic [ref=e13]: Language
+        - combobox "Language" [ref=e14]:
+          - option "English" [selected]
+          - option "हिन्दी"
+  - generic [ref=e16]:
+    - paragraph [ref=e17]:
+      - generic [ref=e21]:
+        - text: You are on an
+        - strong [ref=e22]: independent prototype
+        - text: ", not a Government of India website. No real visa is issued here."
+    - paragraph [ref=e23]:
+      - text: "Official e-Visa:"
+      - link "indianvisaonline.gov.in" [ref=e24] [cursor=pointer]:
+        - /url: https://indianvisaonline.gov.in/evisa/tvoa.html
+  - banner [ref=e25]:
+    - generic [ref=e26]:
+      - link "Independent prototype Not a Government of India website" [ref=e27] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e34]:
+          - generic [ref=e35]: Independent prototype
+          - generic [ref=e36]: Not a Government of India website
+      - generic [ref=e37]:
+        - paragraph [ref=e38]: Sahaj Visa
+        - paragraph [ref=e39]: A calmer visa application to India
+      - generic [ref=e41]:
+        - generic [ref=e42]: e
+        - generic [ref=e46]:
+          - generic [ref=e47]: e-Visa
+          - generic [ref=e48]: Prototype
+    - navigation "Primary" [ref=e49]:
+      - list [ref=e50]:
+        - listitem [ref=e51]:
+          - link "Home" [ref=e52] [cursor=pointer]:
+            - /url: /
+        - listitem [ref=e56]:
+          - link "Instructions" [ref=e57] [cursor=pointer]:
+            - /url: /instructions
+        - listitem [ref=e58]:
+          - link "Visa Categories" [ref=e59] [cursor=pointer]:
+            - /url: /#visa-services
+        - listitem [ref=e60]:
+          - link "e-Visa Application Process" [ref=e61] [cursor=pointer]:
+            - /url: /e-visa
+        - listitem [ref=e62]:
+          - link "Visa on Arrival" [ref=e63] [cursor=pointer]:
+            - /url: /visa-on-arrival
+        - listitem [ref=e64]:
+          - link "Track Application" [ref=e65] [cursor=pointer]:
+            - /url: /track
+        - listitem [ref=e66]:
+          - link "Useful Weblinks" [ref=e67] [cursor=pointer]:
+            - /url: /contact#weblinks
+        - listitem [ref=e68]:
+          - link "FAQs" [ref=e69] [cursor=pointer]:
+            - /url: /faqs
+        - listitem [ref=e70]:
+          - link "Contact Us" [ref=e71] [cursor=pointer]:
+            - /url: /contact
+  - generic [ref=e177]:
+    - navigation "Breadcrumb" [ref=e179]:
+      - list [ref=e180]:
+        - listitem [ref=e181]:
+          - link "Home" [ref=e182] [cursor=pointer]:
+            - /url: /
+        - listitem [ref=e183]:
+          - generic [ref=e184]: ›
+          - link "e-Visa Application" [ref=e185] [cursor=pointer]:
+            - /url: /e-visa
+        - listitem [ref=e186]:
+          - generic [ref=e187]: ›
+          - generic [ref=e188]: Apply Online
+    - generic [ref=e190]:
+      - complementary [ref=e191]:
+        - navigation "Application steps" [ref=e192]:
+          - paragraph [ref=e193]: Application progress
+          - list [ref=e194]:
+            - listitem [ref=e195]:
+              - button "Step 1 Personal Details" [ref=e196]:
+                - generic [ref=e201]:
+                  - generic [ref=e202]: Step 1
+                  - text: Personal Details
+            - listitem [ref=e203]:
+              - button "Step 2 Passport Details" [ref=e204]:
+                - generic [ref=e208]:
+                  - generic [ref=e209]: Step 2
+                  - text: Passport Details
+            - listitem [ref=e210]:
+              - button "Step 3 Travel Details" [ref=e211]:
+                - generic [ref=e215]:
+                  - generic [ref=e216]: Step 3
+                  - text: Travel Details
+            - listitem [ref=e217]:
+              - button "Step 4 Document Upload" [ref=e218]:
+                - generic [ref=e224]:
+                  - generic [ref=e225]: Step 4
+                  - text: Document Upload
+            - listitem [ref=e226]:
+              - button "Step 5 Review & Submit" [ref=e227]:
+                - generic [ref=e233]:
+                  - generic [ref=e234]: Step 5
+                  - text: Review & Submit
+            - listitem [ref=e235]:
+              - button "Step 6 Pay e-Visa Fee" [ref=e236]:
+                - generic [ref=e240]:
+                  - generic [ref=e241]: Step 6
+                  - text: Pay e-Visa Fee
+        - complementary [ref=e242]:
+          - paragraph [ref=e243]: Visa helpdesk
+          - paragraph [ref=e246]: Bureau of Immigration helpdesk on the live government portal — not staffed by this prototype.
+          - paragraph [ref=e247]:
+            - link "+91 82 7808 7808" [ref=e248] [cursor=pointer]:
+              - /url: tel:+918278087808
+          - paragraph [ref=e249]:
+            - link "indianvisaonline-boi@mha.gov.in" [ref=e250] [cursor=pointer]:
+              - /url: mailto:indianvisaonline-boi@mha.gov.in
+      - generic [ref=e251]:
+        - generic [ref=e252]:
+          - paragraph [ref=e253]: Draft saves as you go
+          - generic [ref=e256]:
+            - button "Fill sample answers" [ref=e257]
+            - button "Start over" [ref=e258]
+        - paragraph [ref=e263]: Note down your Application ID when it appears. Fields marked * are required. One adult, e-Tourist Visa only.
+        - generic [ref=e264]:
+          - generic [ref=e265]:
+            - heading [level=2] [ref=e266]:
+              - button "1 Personal Details" [expanded] [ref=e267]:
+                - generic [ref=e268]:
+                  - generic [ref=e269]: "1"
+                  - generic [ref=e270]: Personal Details
+            - generic [ref=e275]:
+              - paragraph [ref=e276]: Copy the passport. This draft is yours even if the tab dies.
+              - generic [ref=e277]:
+                - generic [ref=e278]:
+                  - generic [ref=e279]: Full name (as in passport)
+                  - textbox "Full name (as in passport)" [ref=e281]
+                  - paragraph [ref=e282]: Filled from given name and surname.
+                - generic [ref=e283]:
+                  - generic [ref=e285]:
+                    - text: Given names
+                    - generic [ref=e286]: "*"
+                  - textbox "Given names" [ref=e287]
+                - generic [ref=e288]:
+                  - generic [ref=e290]:
+                    - text: Surname / family name
+                    - generic [ref=e291]: "*"
+                  - textbox "Surname / family name" [ref=e292]
+                - generic [ref=e293]:
+                  - generic [ref=e295]:
+                    - text: Date of birth
+                    - generic [ref=e296]: "*"
+                  - textbox "Date of birth" [ref=e297]
+                - generic [ref=e298]:
+                  - generic [ref=e300]:
+                    - text: Gender
+                    - generic [ref=e301]: "*"
+                  - combobox "Gender" [ref=e302]:
+                    - option "Select" [selected]
+                    - option "Female"
+                    - option "Male"
+                    - option "Other"
+                    - option "Prefer not to say"
+                - generic [ref=e303]:
+                  - generic [ref=e304]:
+                    - generic [ref=e305]:
+                      - text: Nationality
+                      - generic [ref=e306]: "*"
+                    - button "Help with Eligible nationalities" [ref=e308]
+                  - combobox "Nationality" [ref=e312]:
+                    - option "Select (mocked list)" [selected]
+                    - option "United States of America"
+                    - option "United Kingdom"
+                    - option "Canada"
+                    - option "Australia"
+                    - option "Germany"
+                    - option "France"
+                    - option "Japan"
+                    - option "Singapore"
+                    - option "United Arab Emirates"
+                    - option "Brazil"
+                    - option "South Africa"
+                    - option "Republic of Korea"
+                    - option "Spain"
+                    - option "Italy"
+                    - option "Netherlands"
+                    - option "New Zealand"
+                    - option "Ireland"
+                    - option "Sweden"
+                    - option "Switzerland"
+                    - option "Mexico"
+                - generic [ref=e313]:
+                  - generic [ref=e315]:
+                    - text: Country of birth
+                    - generic [ref=e316]: "*"
+                  - textbox "Country of birth" [ref=e317]
+                - generic [ref=e318]:
+                  - generic [ref=e320]:
+                    - text: Place of birth
+                    - generic [ref=e321]: "*"
+                  - textbox "Place of birth" [ref=e322]
+                - generic [ref=e323]:
+                  - generic [ref=e325]:
+                    - text: Email
+                    - generic [ref=e326]: "*"
+                  - textbox "Email" [ref=e327]
+                  - paragraph [ref=e328]: Where a real ETA would be sent.
+                - generic [ref=e329]:
+                  - generic [ref=e331]:
+                    - text: Phone
+                    - generic [ref=e332]: "*"
+                  - textbox "Phone" [ref=e333]
+              - generic [ref=e335]:
+                - button "Back" [disabled]
+                - generic [ref=e336]:
+                  - button "Save & exit" [ref=e337]
+                  - button "Save & Continue" [ref=e338]
+          - heading [level=2] [ref=e340]:
+            - button "2 Passport Details" [ref=e341]:
+              - generic [ref=e342]:
+                - generic [ref=e343]: "2"
+                - generic [ref=e344]: Passport Details
+          - heading [level=2] [ref=e348]:
+            - button "3 Travel Details" [ref=e349]:
+              - generic [ref=e350]:
+                - generic [ref=e351]: "3"
+                - generic [ref=e352]: Travel Details
+          - heading [level=2] [ref=e356]:
+            - button "4 Document Upload" [ref=e357]:
+              - generic [ref=e358]:
+                - generic [ref=e359]: "4"
+                - generic [ref=e360]: Document Upload
+          - heading [level=2] [ref=e364]:
+            - button "5 Review & Submit" [ref=e365]:
+              - generic [ref=e366]:
+                - generic [ref=e367]: "5"
+                - generic [ref=e368]: Review & Submit
+          - heading [level=2] [ref=e372]:
+            - button "6 Pay e-Visa Fee" [ref=e373]:
+              - generic [ref=e374]:
+                - generic [ref=e375]: "6"
+                - generic [ref=e376]: Pay e-Visa Fee
+      - complementary [ref=e379]:
+        - generic [ref=e380]:
+          - generic [ref=e381]:
+            - paragraph [ref=e382]: Documents to be uploaded
+            - list [ref=e383]:
+              - listitem [ref=e384]: Face photograph (JPEG, square, light background)
+              - listitem [ref=e385]: Passport biodata page (all four corners visible)
+          - generic [ref=e386]:
+            - paragraph [ref=e387]: Photo guidelines
+            - list [ref=e388]:
+              - listitem [ref=e389]: Recent, colour, face clearly visible
+              - listitem [ref=e390]: We can square-crop on this device — no desktop required
+              - listitem [ref=e391]: A rejection here is explained next to the field, not after you pay
+          - generic [ref=e392]: You can save and continue later. Closing the tab does not restart page 1.
+  - contentinfo [ref=e104]:
+    - generic [ref=e106]:
+      - generic [ref=e107]: Build What Moves India
+      - generic [ref=e108]: Independent prototype
+      - generic [ref=e109]: No official logos used as endorsement
+    - generic [ref=e110]:
+      - generic [ref=e111]:
+        - generic [ref=e119]:
+          - paragraph [ref=e120]: Content on Sahaj Visa is a hackathon prototype. It is not affiliated with the Ministry of Home Affairs, the Bureau of Immigration, NIC, or indianvisaonline.gov.in.
+          - paragraph [ref=e121]: Payment, biometrics, IVFRT, and immigration clearance are mocked. Form session, status, and the vision pre-check are working in this demo.
+        - generic [ref=e122]:
+          - generic [ref=e123]: e
+          - generic [ref=e127]:
+            - generic [ref=e128]: e-Visa
+            - generic [ref=e129]: Prototype
+      - generic [ref=e130]:
+        - link "Privacy" [ref=e131] [cursor=pointer]:
+          - /url: /instructions
+        - link "Terms" [ref=e132] [cursor=pointer]:
+          - /url: /instructions
+        - link "Help" [ref=e133] [cursor=pointer]:
+          - /url: /faqs
+        - link "Contact" [ref=e134] [cursor=pointer]:
+          - /url: /contact
+        - generic [ref=e135]: Last updated 28 August 2026 · Demo only
+  - region "Notifications alt+T":
+    - list:
+      - listitem [ref=e393]:
+        - button "Close toast" [ref=e394] [cursor=pointer]
+        - generic [ref=e401]: Demo session started.
+  - button "Open Next.js Dev Tools" [ref=e141] [cursor=pointer]
+  - alert [ref=e145]: Apply online · Sahaj Visa

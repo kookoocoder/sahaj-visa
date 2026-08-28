@@ -1,0 +1,195 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - link "Skip to Main Content" [ref=e5] [cursor=pointer]:
+        - /url: "#main-content"
+      - link "Screen Reader Access" [ref=e6] [cursor=pointer]:
+        - /url: /instructions#accessibility
+    - generic [ref=e7]:
+      - group "Text size" [ref=e8]:
+        - button "A+" [ref=e9]
+        - button "A" [pressed] [ref=e10]
+        - button "A-" [ref=e11]
+      - generic [ref=e12]:
+        - generic [ref=e13]: Language
+        - combobox "Language" [ref=e14]:
+          - option "English" [selected]
+          - option "हिन्दी"
+  - generic [ref=e16]:
+    - paragraph [ref=e17]:
+      - generic [ref=e21]:
+        - text: You are on an
+        - strong [ref=e22]: independent prototype
+        - text: ", not a Government of India website. No real visa is issued here."
+    - paragraph [ref=e23]:
+      - text: "Official e-Visa:"
+      - link "indianvisaonline.gov.in" [ref=e24] [cursor=pointer]:
+        - /url: https://indianvisaonline.gov.in/evisa/tvoa.html
+  - banner [ref=e25]:
+    - generic [ref=e26]:
+      - link [ref=e282] [cursor=pointer]:
+        - /url: /
+      - paragraph [ref=e38]: Sahaj Visa
+      - generic [ref=e40]:
+        - generic [ref=e41]: e
+        - button "Close menu" [expanded] [active] [ref=e285]
+    - navigation "Primary" [ref=e49]:
+      - list [ref=e289]:
+        - listitem [ref=e290]:
+          - link "Home" [ref=e291] [cursor=pointer]:
+            - /url: /
+        - listitem [ref=e292]:
+          - link "Instructions" [ref=e293] [cursor=pointer]:
+            - /url: /instructions
+        - listitem [ref=e294]:
+          - link "Visa Categories" [ref=e295] [cursor=pointer]:
+            - /url: /#visa-services
+        - listitem [ref=e296]:
+          - link "e-Visa Application Process" [ref=e297] [cursor=pointer]:
+            - /url: /e-visa
+        - listitem [ref=e298]:
+          - link "Visa on Arrival" [ref=e299] [cursor=pointer]:
+            - /url: /visa-on-arrival
+        - listitem [ref=e300]:
+          - link "Track Application" [ref=e301] [cursor=pointer]:
+            - /url: /track
+        - listitem [ref=e302]:
+          - link "Useful Weblinks" [ref=e303] [cursor=pointer]:
+            - /url: /contact#weblinks
+        - listitem [ref=e304]:
+          - link "FAQs" [ref=e305] [cursor=pointer]:
+            - /url: /faqs
+        - listitem [ref=e306]:
+          - link "Contact Us" [ref=e307] [cursor=pointer]:
+            - /url: /contact
+  - generic [ref=e73]:
+    - generic [ref=e82]:
+      - paragraph [ref=e83]: Authorized-looking, independently built
+      - heading "Portal for Visa Application to India" [level=1] [ref=e84]
+      - paragraph [ref=e85]: Sahaj Visa · not indianvisaonline.gov.in
+    - generic [ref=e94]:
+      - generic [ref=e98]:
+        - paragraph [ref=e99]: All foreign nationals need a valid passport and an appropriate visa or ETA before travel, except where the Government of India has notified otherwise. This site does not issue either.
+        - paragraph [ref=e100]: The live government e-Arrival card is on the official portal — we link out, we do not scrape it.
+      - generic [ref=e102]:
+        - article [ref=e103]:
+          - heading "Regular / Paper Visa" [level=2] [ref=e108]
+          - paragraph [ref=e109]: For applicants who must apply through an Indian Mission or Post. The paper journey is mapped here; the working demo is e-Tourist.
+          - link "Apply Here →" [ref=e110] [cursor=pointer]:
+            - /url: /paper-visa
+        - article [ref=e111]:
+          - heading "e-Visa" [level=2] [ref=e115]
+          - paragraph [ref=e116]: Tourism, business, medical and conference categories. This prototype runs the 30-day e-Tourist path end to end.
+          - link "Apply e-Visa →" [ref=e117] [cursor=pointer]:
+            - /url: /e-visa
+        - article [ref=e118]:
+          - heading "Visa on Arrival" [level=2] [ref=e122]
+          - paragraph [ref=e123]: Facility for eligible nationals of Japan, South Korea and the UAE at selected airports.
+          - link "View Eligibility →" [ref=e124] [cursor=pointer]:
+            - /url: /visa-on-arrival
+        - article [ref=e125]:
+          - heading "Afghan Visa" [level=2] [ref=e130]
+          - paragraph [ref=e131]: Entry, medical, student and other categories for Afghanistan nationals, explained in plain language.
+          - link "Apply Here →" [ref=e132] [cursor=pointer]:
+            - /url: /afghanistan
+      - generic [ref=e136]:
+        - paragraph [ref=e137]: Advisory
+        - paragraph [ref=e138]:
+          - text: Do not pay anyone who claims they can “speed up” or “guarantee” an Indian visa. The live government portal charges only the notified fee. This prototype takes no real money. Fake lookalike sites are common — if you need a real visa, use
+          - link "indianvisaonline.gov.in" [ref=e139] [cursor=pointer]:
+            - /url: https://indianvisaonline.gov.in/evisa/tvoa.html
+          - text: only.
+      - generic [ref=e140]:
+        - heading "Continue an application" [level=2] [ref=e141]
+        - list [ref=e142]:
+          - listitem [ref=e143]:
+            - link "Sample application" [ref=e144] [cursor=pointer]:
+              - /url: /apply
+          - listitem [ref=e152]:
+            - link "Apply here for e-Visa" [ref=e153] [cursor=pointer]:
+              - /url: /apply
+          - listitem [ref=e158]:
+            - link "Complete a partial application" [ref=e159] [cursor=pointer]:
+              - /url: /track
+          - listitem [ref=e165]:
+            - link "Verify payment" [ref=e166] [cursor=pointer]:
+              - /url: /track
+          - listitem [ref=e171]:
+            - link "Print application" [ref=e172] [cursor=pointer]:
+              - /url: /track
+          - listitem [ref=e179]:
+            - link "Check visa status" [ref=e180] [cursor=pointer]:
+              - /url: /track
+          - listitem [ref=e187]:
+            - link "Re-upload data" [ref=e188] [cursor=pointer]:
+              - /url: /apply
+      - generic [ref=e194]:
+        - generic [ref=e195]:
+          - generic [ref=e196]:
+            - heading "The same four official steps. A state layer that does not forget you." [level=2] [ref=e197]
+            - list [ref=e198]:
+              - listitem [ref=e199]:
+                - generic [ref=e200]: "1"
+                - paragraph [ref=e201]: Apply online
+                - paragraph [ref=e202]: Resumable form, one adult, e-Tourist only
+              - listitem [ref=e203]:
+                - generic [ref=e204]: "2"
+                - paragraph [ref=e205]: Pay the fee
+                - paragraph [ref=e206]: Mocked, idempotent, no 30-minute lockout
+              - listitem [ref=e207]:
+                - generic [ref=e208]: "3"
+                - paragraph [ref=e209]: Receive ETA
+                - paragraph [ref=e210]: Honest range from mocked queue stats
+              - listitem [ref=e211]:
+                - generic [ref=e212]: "4"
+                - paragraph [ref=e213]: Fly to India
+                - paragraph [ref=e214]: Out of scope — we do not pretend to be IVFRT
+          - generic [ref=e215]:
+            - generic [ref=e216]:
+              - heading "Working in this demo" [level=3] [ref=e217]
+              - list [ref=e218]:
+                - listitem [ref=e219]: Resumable application and application ID
+                - listitem [ref=e220]: Status timeline and timestamped audit log
+                - listitem [ref=e221]: OpenAI vision pre-submission check (when a key is set)
+                - listitem [ref=e222]: Plain-language field help from a hand-written rules doc
+            - generic [ref=e223]:
+              - heading "Mocked on purpose" [level=3] [ref=e224]
+              - list [ref=e225]:
+                - listitem [ref=e226]: Payment gateway (state machine only)
+                - listitem [ref=e227]: Biometrics, security clearance, IVFRT
+                - listitem [ref=e228]: Immigration Check Posts and the live country list
+                - listitem [ref=e229]: We do not scrape or contact indianvisaonline.gov.in
+          - paragraph [ref=e230]: Demo login demo@visa.test · sahaj-demo · no real money, no official visa.
+        - complementary [ref=e231]:
+          - paragraph [ref=e232]: Visa helpdesk
+          - paragraph [ref=e235]: Bureau of Immigration helpdesk on the live government portal — not staffed by this prototype.
+          - paragraph [ref=e236]:
+            - link "+91 82 7808 7808" [ref=e237] [cursor=pointer]:
+              - /url: tel:+918278087808
+          - paragraph [ref=e238]:
+            - link "indianvisaonline-boi@mha.gov.in" [ref=e239] [cursor=pointer]:
+              - /url: mailto:indianvisaonline-boi@mha.gov.in
+  - contentinfo [ref=e240]:
+    - generic [ref=e242]:
+      - generic [ref=e243]: Build What Moves India
+      - generic [ref=e244]: Independent prototype
+      - generic [ref=e245]: No official logos used as endorsement
+    - generic [ref=e246]:
+      - generic [ref=e247]:
+        - generic [ref=e255]:
+          - paragraph [ref=e256]: Content on Sahaj Visa is a hackathon prototype. It is not affiliated with the Ministry of Home Affairs, the Bureau of Immigration, NIC, or indianvisaonline.gov.in.
+          - paragraph [ref=e257]: Payment, biometrics, IVFRT, and immigration clearance are mocked. Form session, status, and the vision pre-check are working in this demo.
+        - generic [ref=e258]: e
+      - generic [ref=e266]:
+        - link "Privacy" [ref=e267] [cursor=pointer]:
+          - /url: /instructions
+        - link "Terms" [ref=e268] [cursor=pointer]:
+          - /url: /instructions
+        - link "Help" [ref=e269] [cursor=pointer]:
+          - /url: /faqs
+        - link "Contact" [ref=e270] [cursor=pointer]:
+          - /url: /contact
+        - generic [ref=e271]: Last updated 28 August 2026 · Demo only
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e277] [cursor=pointer]
+  - alert [ref=e281]

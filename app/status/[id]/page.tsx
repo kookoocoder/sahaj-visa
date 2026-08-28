@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Check, Loader2 } from "lucide-react";
-import { SiteFooter, SiteHeader, TrustBanner } from "@/components/site/chrome";
+import { Breadcrumbs, Container, PageMasthead } from "@/components/site/chrome";
 import { Button } from "@/components/ui/button";
 import { etaApi, getApplicationApi } from "@/lib/api";
 import { useDraft } from "@/lib/draft-store";
@@ -86,24 +86,21 @@ export default function StatusPage() {
 
   if (error) {
     return (
-      <>
-        <TrustBanner />
-        <SiteHeader />
-        <main className="mx-auto max-w-lg flex-1 px-4 py-16">
-          <h1 className="font-heading text-3xl">We could not find that application</h1>
-          <p className="mt-3 leading-relaxed text-muted-foreground">
+      <div>
+        <PageMasthead title="Application not found" />
+        <Container className="max-w-lg py-10">
+          <p className="leading-relaxed text-muted-foreground">
             The ID in the address bar may be mistyped, or this draft was never saved. Your form on
             this device may still be on the apply page — you have not lost the day.
           </p>
           <Link
-            className="mt-6 inline-flex min-h-12 items-center rounded-lg bg-primary px-5 font-medium text-primary-foreground"
+            className="mt-6 inline-flex min-h-12 items-center rounded-md bg-primary px-5 font-medium text-primary-foreground"
             href="/apply"
           >
             Return to the form
           </Link>
-        </main>
-        <SiteFooter />
-      </>
+        </Container>
+      </div>
     );
   }
 
@@ -118,14 +115,19 @@ export default function StatusPage() {
   const current = rank(app.status);
 
   return (
-    <>
-      <TrustBanner />
-      <SiteHeader compact />
-      <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-10">
-        <p className="text-sm uppercase tracking-wide text-muted-foreground">Application {app.publicId}</p>
-        <h1 className="mt-2 font-heading text-4xl leading-tight sm:text-5xl">
+    <div>
+      <PageMasthead title="Track Application" subtitle={`Application ${app.publicId}`} />
+      <Container className="max-w-2xl py-8">
+        <Breadcrumbs
+          items={[
+            { href: "/", label: "Home" },
+            { href: "/track", label: "Track Application" },
+            { label: app.publicId },
+          ]}
+        />
+        <h2 className="mt-6 font-heading text-4xl leading-tight sm:text-5xl">
           About {QUEUE_STATS.p50}–{QUEUE_STATS.p90} days
-        </h1>
+        </h2>
         <p className="mt-3 text-lg text-muted-foreground">
           Median in this mock queue is {QUEUE_STATS.medianDays} days. This is not a promise, and it is
           not 72 hours.
@@ -227,8 +229,7 @@ export default function StatusPage() {
             ))}
           </ol>
         </details>
-      </main>
-      <SiteFooter />
-    </>
+      </Container>
+    </div>
   );
 }

@@ -1,0 +1,87 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - link "Skip to Main Content" [ref=e5] [cursor=pointer]:
+        - /url: "#main-content"
+      - link "Screen Reader Access" [ref=e6] [cursor=pointer]:
+        - /url: /instructions#accessibility
+    - generic [ref=e7]:
+      - group "Text size" [ref=e8]:
+        - button "A+" [active] [pressed] [ref=e9]
+        - button "A" [ref=e10]
+        - button "A-" [ref=e11]
+      - generic [ref=e12]:
+        - generic [ref=e13]: Language
+        - combobox "Language" [ref=e14]:
+          - option "English" [selected]
+          - option "हिन्दी"
+  - generic [ref=e16]:
+    - paragraph [ref=e17]:
+      - generic [ref=e21]:
+        - text: You are on an
+        - strong [ref=e22]: independent prototype
+        - text: ", not a Government of India website. No real visa is issued here."
+    - paragraph [ref=e23]:
+      - text: "Official e-Visa:"
+      - link "indianvisaonline.gov.in" [ref=e24] [cursor=pointer]:
+        - /url: https://indianvisaonline.gov.in/evisa/tvoa.html
+  - banner [ref=e25]:
+    - generic [ref=e26]:
+      - link [ref=e282] [cursor=pointer]:
+        - /url: /
+      - paragraph [ref=e38]: Sahaj Visa
+      - generic [ref=e40]:
+        - generic [ref=e41]: e
+        - button "Open menu" [ref=e308]
+    - navigation "Primary"
+  - generic [ref=e310]:
+    - generic [ref=e313]:
+      - heading "Track Application" [level=1] [ref=e314]
+      - paragraph [ref=e315]: Resume a draft or open a status timeline with your application ID
+    - generic [ref=e316]:
+      - navigation "Breadcrumb" [ref=e317]:
+        - list [ref=e318]:
+          - listitem [ref=e319]:
+            - link "Home" [ref=e320] [cursor=pointer]:
+              - /url: /
+          - listitem [ref=e321]:
+            - generic [ref=e322]: ›
+            - generic [ref=e323]: Track Application
+      - generic [ref=e324]:
+        - paragraph [ref=e329]: Paste SV-26-XXXXXX. If the application is still a draft you return to the form. If you have paid, you land on the status timeline.
+        - generic [ref=e331]:
+          - generic [ref=e333]:
+            - generic [ref=e334]: Resume with application ID
+            - textbox "Resume with application ID" [ref=e336]:
+              - /placeholder: SV-26-XXXXXX
+            - paragraph [ref=e337]: Printed as SV-26-XXXXXX on the form once it first saves.
+          - button "Open" [ref=e338]
+        - paragraph [ref=e339]:
+          - text: Or
+          - link "demo login" [ref=e340] [cursor=pointer]:
+            - /url: /login
+          - text: with demo@visa.test / sahaj-demo, then continue the form on this device.
+  - contentinfo [ref=e240]:
+    - generic [ref=e242]:
+      - generic [ref=e243]: Build What Moves India
+      - generic [ref=e244]: Independent prototype
+      - generic [ref=e245]: No official logos used as endorsement
+    - generic [ref=e246]:
+      - generic [ref=e247]:
+        - generic [ref=e255]:
+          - paragraph [ref=e256]: Content on Sahaj Visa is a hackathon prototype. It is not affiliated with the Ministry of Home Affairs, the Bureau of Immigration, NIC, or indianvisaonline.gov.in.
+          - paragraph [ref=e257]: Payment, biometrics, IVFRT, and immigration clearance are mocked. Form session, status, and the vision pre-check are working in this demo.
+        - generic [ref=e258]: e
+      - generic [ref=e266]:
+        - link "Privacy" [ref=e267] [cursor=pointer]:
+          - /url: /instructions
+        - link "Terms" [ref=e268] [cursor=pointer]:
+          - /url: /instructions
+        - link "Help" [ref=e269] [cursor=pointer]:
+          - /url: /faqs
+        - link "Contact" [ref=e270] [cursor=pointer]:
+          - /url: /contact
+        - generic [ref=e271]: Last updated 28 August 2026 · Demo only
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e277] [cursor=pointer]
+  - alert [ref=e281]: Track Application

@@ -3,8 +3,8 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { SiteFooter, SiteHeader, TrustBanner } from "@/components/site/chrome";
 import { Field, TextInput } from "@/components/apply/field";
+import { Container, PageMasthead } from "@/components/site/chrome";
 import { loginApi } from "@/lib/api";
 import { DEMO_EMAIL, DEMO_PASSWORD } from "@/lib/constants";
 import { useDraft } from "@/lib/draft-store";
@@ -31,20 +31,15 @@ export default function LoginPage() {
   }
 
   return (
-    <>
-      <TrustBanner />
-      <SiteHeader />
-      <main className="mx-auto w-full max-w-md flex-1 px-4 py-12">
-        <h1 className="font-heading text-3xl">Demo login</h1>
-        <p className="mt-2 text-muted-foreground">
-          Mock credentials only. Shown here on purpose so judges can enter without requesting access.
-        </p>
+    <div>
+      <PageMasthead title="Demo login" subtitle="Mock credentials, shown on purpose so anyone can enter" />
+      <Container className="max-w-md py-10">
         <form
           onSubmit={(e) => {
             e.preventDefault();
             void onSubmit(e);
           }}
-          className="mt-8 space-y-4"
+          className="space-y-4 rounded-xl border border-border bg-card p-5 shadow-sm"
         >
           <Field label="Email" htmlFor="email">
             <TextInput id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" />
@@ -55,13 +50,12 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={busy}
-            className="inline-flex h-12 w-full items-center justify-center rounded-lg bg-primary text-base font-medium text-primary-foreground disabled:opacity-50"
+            className="inline-flex h-12 w-full items-center justify-center rounded-md bg-primary text-base font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
           >
             Continue
           </button>
         </form>
-      </main>
-      <SiteFooter />
-    </>
+      </Container>
+    </div>
   );
 }

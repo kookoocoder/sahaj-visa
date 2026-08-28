@@ -1,0 +1,185 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - link "Skip to Main Content" [ref=e5] [cursor=pointer]:
+        - /url: "#main-content"
+      - link "Screen Reader Access" [ref=e6] [cursor=pointer]:
+        - /url: /instructions#accessibility
+    - generic [ref=e7]:
+      - group "Text size" [ref=e8]:
+        - button "A+" [ref=e9]
+        - button "A" [pressed] [ref=e10]
+        - button "A-" [ref=e11]
+      - generic [ref=e12]:
+        - generic [ref=e13]: Language
+        - combobox "Language" [ref=e14]:
+          - option "English" [selected]
+          - option "हिन्दी"
+  - generic [ref=e16]:
+    - paragraph [ref=e17]:
+      - generic [ref=e21]:
+        - text: You are on an
+        - strong [ref=e22]: independent prototype
+        - text: ", not a Government of India website. No real visa is issued here."
+    - paragraph [ref=e23]:
+      - text: "Official e-Visa:"
+      - link "indianvisaonline.gov.in" [ref=e24] [cursor=pointer]:
+        - /url: https://indianvisaonline.gov.in/evisa/tvoa.html
+  - banner [ref=e25]:
+    - generic [ref=e26]:
+      - link "Independent prototype Not a Government of India website" [ref=e27] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e34]:
+          - generic [ref=e35]: Independent prototype
+          - generic [ref=e36]: Not a Government of India website
+      - generic [ref=e37]:
+        - paragraph [ref=e38]: Sahaj Visa
+        - paragraph [ref=e39]: A calmer visa application to India
+      - generic [ref=e41]:
+        - generic [ref=e42]: e
+        - generic [ref=e46]:
+          - generic [ref=e47]: e-Visa
+          - generic [ref=e48]: Prototype
+    - navigation "Primary" [ref=e49]:
+      - list [ref=e50]:
+        - listitem [ref=e51]:
+          - link "Home" [ref=e52] [cursor=pointer]:
+            - /url: /
+        - listitem [ref=e56]:
+          - link "Instructions" [ref=e57] [cursor=pointer]:
+            - /url: /instructions
+        - listitem [ref=e58]:
+          - link "Visa Categories" [ref=e59] [cursor=pointer]:
+            - /url: /#visa-services
+        - listitem [ref=e60]:
+          - link "e-Visa Application Process" [ref=e61] [cursor=pointer]:
+            - /url: /e-visa
+        - listitem [ref=e62]:
+          - link "Visa on Arrival" [ref=e63] [cursor=pointer]:
+            - /url: /visa-on-arrival
+        - listitem [ref=e64]:
+          - link "Track Application" [ref=e65] [cursor=pointer]:
+            - /url: /track
+        - listitem [ref=e66]:
+          - link "Useful Weblinks" [ref=e67] [cursor=pointer]:
+            - /url: /contact#weblinks
+        - listitem [ref=e68]:
+          - link "FAQs" [ref=e69] [cursor=pointer]:
+            - /url: /faqs
+        - listitem [ref=e70]:
+          - link "Contact Us" [ref=e71] [cursor=pointer]:
+            - /url: /contact
+  - generic [ref=e282]:
+    - generic [ref=e284]:
+      - generic [ref=e291]:
+        - heading "e-Visa Application" [level=1] [ref=e292]
+        - paragraph [ref=e293]: Apply for e-Visa to India — prototype of the citizen journey
+      - generic [ref=e294]:
+        - generic [ref=e295]: e
+        - generic [ref=e299]:
+          - generic [ref=e300]: e-Visa
+          - generic [ref=e301]: Prototype
+    - generic [ref=e302]:
+      - navigation "Breadcrumb" [ref=e303]:
+        - list [ref=e304]:
+          - listitem [ref=e305]:
+            - link "Home" [ref=e306] [cursor=pointer]:
+              - /url: /
+          - listitem [ref=e307]:
+            - generic [ref=e308]: ›
+            - generic [ref=e309]: e-Visa Application
+      - list [ref=e310]:
+        - listitem [ref=e311]:
+          - generic [ref=e312]: "1"
+          - paragraph [ref=e316]: Apply online
+          - paragraph [ref=e317]: Fill a resumable form. Close the tab — your draft is still there.
+        - listitem [ref=e318]:
+          - generic [ref=e319]: "2"
+          - paragraph [ref=e322]: Pay e-Visa fee online
+          - paragraph [ref=e323]: Mock gateway. Same payment key on every retry. No lockout.
+        - listitem [ref=e324]:
+          - generic [ref=e325]: "3"
+          - paragraph [ref=e330]: Receive ETA online
+          - paragraph [ref=e331]: An honest range from mocked queue stats, not a frozen 72 hours.
+        - listitem [ref=e332]:
+          - generic [ref=e333]: "4"
+          - paragraph [ref=e336]: Fly to India
+          - paragraph [ref=e337]: Present a real ETA at a real airport. That part is out of scope here.
+      - generic [ref=e338]:
+        - generic [ref=e339]:
+          - generic [ref=e340]:
+            - paragraph [ref=e341]: Who this prototype covers
+            - paragraph [ref=e342]: The live portal lists several e-Visa categories. Only the 30-day e-Tourist visa is a working form here. The rest are shown so the information architecture matches the official site without pretending we issue those visas.
+            - list [ref=e343]:
+              - listitem [ref=e344]: e-Tourist (working demo)
+              - listitem [ref=e345]: e-Business
+              - listitem [ref=e346]: e-Medical
+              - listitem [ref=e347]: e-Medical Attendant
+              - listitem [ref=e348]: e-Conference
+              - listitem [ref=e349]: e-Ayush
+              - listitem [ref=e350]: e-Emergency
+              - listitem [ref=e351]: e-Credit
+          - generic [ref=e355]:
+            - paragraph [ref=e356]: Technical notes
+            - paragraph [ref=e357]: The live site still mentions Internet Explorer. This prototype is built for current browsers, phones, and slower connections. Drafts autosave. You do not need Adobe Acrobat to continue.
+          - link "Apply here for e-Visa →" [ref=e358] [cursor=pointer]:
+            - /url: /apply
+          - list [ref=e359]:
+            - listitem [ref=e360]:
+              - link "Sample application" [ref=e361] [cursor=pointer]:
+                - /url: /apply
+            - listitem [ref=e369]:
+              - link "Apply here for e-Visa" [ref=e370] [cursor=pointer]:
+                - /url: /apply
+            - listitem [ref=e375]:
+              - link "Complete a partial application" [ref=e376] [cursor=pointer]:
+                - /url: /track
+            - listitem [ref=e382]:
+              - link "Verify payment" [ref=e383] [cursor=pointer]:
+                - /url: /track
+            - listitem [ref=e388]:
+              - link "Print application" [ref=e389] [cursor=pointer]:
+                - /url: /track
+            - listitem [ref=e396]:
+              - link "Check visa status" [ref=e397] [cursor=pointer]:
+                - /url: /track
+            - listitem [ref=e404]:
+              - link "Re-upload data" [ref=e405] [cursor=pointer]:
+                - /url: /apply
+        - complementary [ref=e411]:
+          - paragraph [ref=e412]: Visa helpdesk
+          - paragraph [ref=e415]: Bureau of Immigration helpdesk on the live government portal — not staffed by this prototype.
+          - paragraph [ref=e416]:
+            - link "+91 82 7808 7808" [ref=e417] [cursor=pointer]:
+              - /url: tel:+918278087808
+          - paragraph [ref=e418]:
+            - link "indianvisaonline-boi@mha.gov.in" [ref=e419] [cursor=pointer]:
+              - /url: mailto:indianvisaonline-boi@mha.gov.in
+  - contentinfo [ref=e240]:
+    - generic [ref=e242]:
+      - generic [ref=e243]: Build What Moves India
+      - generic [ref=e244]: Independent prototype
+      - generic [ref=e245]: No official logos used as endorsement
+    - generic [ref=e246]:
+      - generic [ref=e247]:
+        - generic [ref=e255]:
+          - paragraph [ref=e256]: Content on Sahaj Visa is a hackathon prototype. It is not affiliated with the Ministry of Home Affairs, the Bureau of Immigration, NIC, or indianvisaonline.gov.in.
+          - paragraph [ref=e257]: Payment, biometrics, IVFRT, and immigration clearance are mocked. Form session, status, and the vision pre-check are working in this demo.
+        - generic [ref=e258]:
+          - generic [ref=e259]: e
+          - generic [ref=e263]:
+            - generic [ref=e264]: e-Visa
+            - generic [ref=e265]: Prototype
+      - generic [ref=e266]:
+        - link "Privacy" [ref=e267] [cursor=pointer]:
+          - /url: /instructions
+        - link "Terms" [ref=e268] [cursor=pointer]:
+          - /url: /instructions
+        - link "Help" [ref=e269] [cursor=pointer]:
+          - /url: /faqs
+        - link "Contact" [ref=e270] [cursor=pointer]:
+          - /url: /contact
+        - generic [ref=e271]: Last updated 28 August 2026 · Demo only
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e277] [cursor=pointer]
+  - alert [ref=e281]: e-Visa Application
